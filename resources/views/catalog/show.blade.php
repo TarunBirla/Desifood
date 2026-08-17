@@ -107,22 +107,22 @@
                 </template>
             </div>
 
-            <!-- Add to Cart / Added in Cart Button -->
-            @if($inCart)
-                <a href="{{ route('cart.index') }}" class="btn btn-outline btn-block" style="color: var(--maroon); border-color: var(--saffron); background: rgba(230,126,34,0.1); font-size: 1.05rem; padding: 14px 24px; margin-bottom: 32px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i class="fa-solid fa-check"></i> Item Added to Cart (Click to View Shopping Cart)
-                </a>
-            @else
-                <form action="{{ route('cart.add') }}" method="POST" style="display: flex; gap: 16px; margin-bottom: 32px;">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <input type="hidden" name="quantity" value="1">
-
-                    <button type="submit" class="btn btn-primary" style="flex: 1; padding: 14px 24px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;" :disabled="stock <= 0">
-                        <i class="fa-solid fa-plus"></i> <span>Add to Shopping Cart</span>
+            <!-- Quantity Selector & AJAX Add to Cart Button -->
+            <div style="display: flex; gap: 16px; margin-bottom: 32px; align-items: center;" x-data="{ itemQty: 1 }">
+                <div style="display: inline-flex; align-items: center; border: 1px solid var(--cream-dark); border-radius: 14px; background: var(--cream); overflow: hidden; height: 50px;">
+                    <button type="button" @click="if (itemQty > 1) itemQty--" style="width: 44px; height: 100%; border: none; background: none; font-weight: 700; color: var(--maroon); cursor: pointer; font-size: 1.1rem;">
+                        <i class="fa-solid fa-minus"></i>
                     </button>
-                </form>
-            @endif
+                    <input type="number" x-model.number="itemQty" readonly style="width: 50px; text-align: center; border: none; background: none; font-weight: 700; color: var(--maroon); font-size: 1.1rem; outline: none;">
+                    <button type="button" @click="itemQty++" style="width: 44px; height: 100%; border: none; background: none; font-weight: 700; color: var(--maroon); cursor: pointer; font-size: 1.1rem;">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <button type="button" @click="addToCartAjax({{ $product->id }}, itemQty, $event)" class="btn btn-primary" style="flex: 1; height: 50px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;" :disabled="stock <= 0">
+                    <i class="fa-solid fa-plus"></i> <span>Add to Shopping Cart</span>
+                </button>
+            </div>
 
             <!-- Policy Assurances -->
             <div style="border-top: 1px solid var(--cream-dark); padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.88rem; color: var(--charcoal-light);">

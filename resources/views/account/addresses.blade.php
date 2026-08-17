@@ -57,57 +57,69 @@
         </div>
     </div>
 
-    <!-- Modal for adding new address -->
+    <!-- Centered Modal for adding new address with proper scrollable container -->
     <template x-teleport="body">
-        <div x-show="showModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;" x-cloak>
-            <div @click.away="showModal = false" style="background: var(--white); border-radius: 20px; padding: 32px; width: 100%; max-width: 540px; box-shadow: var(--shadow-lg);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon);">Add Delivery Address</h3>
-                    <button type="button" @click="showModal = false" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <div x-show="showModal" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             style="position: fixed; inset: 0; background: rgba(44, 24, 16, 0.75); backdrop-filter: blur(8px); z-index: 999999; display: grid; place-items: center; padding: 20px; overflow-y: auto;" 
+             x-cloak>
+            
+            <div @click.away="showModal = false" 
+                 style="background: var(--white); border-radius: 24px; padding: 32px; width: 100%; max-width: 540px; box-shadow: 0 25px 60px rgba(0,0,0,0.35); border: 1px solid var(--cream-dark); margin: auto; max-height: 85vh; overflow-y: auto;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 12px;">
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin: 0;">Add Delivery Address</h3>
+                    <button type="button" @click="showModal = false" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--maroon); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--cream);">&times;</button>
                 </div>
+                
                 <form action="{{ route('account.addresses.store') }}" method="POST">
                     @csrf
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g. Jyoshna Patel" required>
+                    <div style="margin-bottom: 14px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Full Name</label>
+                        <input type="text" name="name" required placeholder="e.g. Jyoshna Patel" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Phone Number</label>
-                        <input type="text" name="phone" class="form-control" placeholder="07700 900123" required>
+                    <div style="margin-bottom: 14px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Phone Number (UK)</label>
+                        <input type="text" name="phone" required placeholder="07700 900123" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Address Line 1</label>
-                        <input type="text" name="address_line_1" class="form-control" placeholder="House / Flat #, Street" required>
+                    <div style="margin-bottom: 14px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Address Line 1</label>
+                        <input type="text" name="address_line_1" required placeholder="House / Flat #, Street" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Address Line 2 (Optional)</label>
-                        <input type="text" name="address_line_2" class="form-control" placeholder="Locality / Area">
+                    <div style="margin-bottom: 14px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Address Line 2 (Optional)</label>
+                        <input type="text" name="address_line_2" placeholder="Locality / Area" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div class="form-group">
-                            <label class="form-label">Town / City</label>
-                            <input type="text" name="city" class="form-control" value="Hounslow" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                        <div>
+                            <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Town / City</label>
+                            <input type="text" name="city" value="Hounslow" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Postcode</label>
-                            <input type="text" name="pincode" class="form-control" placeholder="TW3 2EN" required>
+                        <div>
+                            <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Postcode</label>
+                            <input type="text" name="pincode" required placeholder="TW3 2EN" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">County / State</label>
-                        <input type="text" name="state" class="form-control" value="Greater London" required>
+                    <div style="margin-bottom: 14px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">County / State</label>
+                        <input type="text" name="state" value="Greater London" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Address Type</label>
-                        <select name="address_type" class="form-control">
+                    <div style="margin-bottom: 24px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Address Type</label>
+                        <select name="address_type" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
                             <option value="home">Home</option>
                             <option value="work">Work</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
-                        <button type="button" @click="showModal = false" class="btn btn-outline btn-sm">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Save Address</button>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--cream-dark);">
+                        <button type="button" @click="showModal = false" class="btn btn-outline btn-sm" style="padding: 10px 20px;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm" style="padding: 10px 24px;">Save Address</button>
                     </div>
                 </form>
             </div>

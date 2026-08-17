@@ -25,7 +25,9 @@
                             <span style="background: var(--maroon); color: var(--white); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700;">1</span>
                             <span>Delivery Address</span>
                         </div>
-                        <a href="{{ route('account.addresses') }}" target="_blank" style="font-size: 0.88rem; color: var(--saffron-deep); font-weight: 600;">+ Add New Address</a>
+                        <button type="button" @click="showAddressModal = true" class="btn btn-outline btn-sm" style="font-size: 0.88rem; color: var(--saffron-deep); font-weight: 600;">
+                            <i class="fa-solid fa-plus me-1"></i> Add New Address
+                        </button>
                     </h3>
 
                     @if($addresses->count() > 0)
@@ -48,12 +50,12 @@
                     @else
                         <div style="background: var(--cream); padding: 20px; border-radius: 16px; text-align: center;">
                             <p style="color: var(--charcoal-light); margin-bottom: 12px;">No delivery address found in your account.</p>
-                            <a href="{{ route('account.addresses') }}" class="btn btn-primary btn-sm">+ Add Delivery Address</a>
+                            <button type="button" @click="showAddressModal = true" class="btn btn-primary btn-sm">+ Add Delivery Address</button>
                         </div>
                     @endif
                 </div>
 
-                <!-- Step 2: Shipping Method -->
+                <!-- Step 2: Delivery Method -->
                 <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
                     <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                         <span style="background: var(--maroon); color: var(--white); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700;">2</span>
@@ -79,32 +81,16 @@
                     </div>
                 </div>
 
-                <!-- Step 3: Payment Method -->
-                <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm);">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                        <span style="background: var(--maroon); color: var(--white); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700;">3</span>
-                        <span>Payment Options</span>
-                    </h3>
-
-                    <div style="display: flex; flex-direction: column; gap: 14px;">
-                        <label style="border: 1px solid var(--cream-dark); border-radius: 16px; padding: 18px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: all 0.3s var(--ease);"
-                               :style="paymentMethod === 'razorpay' ? 'border-color: var(--saffron); background: rgba(230,126,34,0.06);' : ''">
-                            <input type="radio" name="payment_method" value="razorpay" x-model="paymentMethod">
-                            <div>
-                                <div style="font-weight: 700; color: var(--maroon);"><i class="fa-solid fa-credit-card me-2"></i> Online Payment (Credit / Debit Card, Apple Pay, Google Pay)</div>
-                                <div style="font-size: 0.85rem; color: var(--charcoal-light); margin-top: 2px;">Instant 256-bit SSL encrypted secure payment</div>
-                            </div>
-                        </label>
-
-                        <label style="border: 1px solid var(--cream-dark); border-radius: 16px; padding: 18px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: all 0.3s var(--ease);"
-                               :style="paymentMethod === 'cod' ? 'border-color: var(--saffron); background: rgba(230,126,34,0.06);' : ''">
-                            <input type="radio" name="payment_method" value="cod" x-model="paymentMethod">
-                            <div>
-                                <div style="font-weight: 700; color: var(--maroon);"><i class="fa-solid fa-money-bill-wave me-2"></i> Cash on Delivery / Pay at Store Collection</div>
-                                <div style="font-size: 0.85rem; color: var(--charcoal-light); margin-top: 2px;">Pay in cash or card upon delivery or store pickup</div>
-                            </div>
-                        </label>
+                <!-- Payment Notice Box (Payment gateway options removed as requested) -->
+                <div style="background: #E8F8F5; border: 1px solid #A3E4D7; border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #117864; color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
                     </div>
+                    <div>
+                        <h4 style="font-family: 'Playfair Display', serif; font-size: 1.15rem; color: #117864; margin-bottom: 2px;">Pay on Delivery (Cash or Card at Doorstep)</h4>
+                        <p style="font-size: 0.88rem; color: #145A32; margin: 0;">No online payment required. Pay via cash or card when your groceries arrive or at store pickup.</p>
+                    </div>
+                    <input type="hidden" name="payment_method" value="cod">
                 </div>
             </div>
 
@@ -161,150 +147,176 @@
                         <span style="font-size: 1.8rem; font-weight: 700; color: var(--maroon);" x-text="'£' + grandTotal.toFixed(2)"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block" style="padding: 14px 24px; font-size: 1.05rem;" :disabled="loading">
-                        <span x-show="!loading">Confirm & Place Order</span>
-                        <span x-show="loading">Processing Order...</span>
+                    <button type="submit" class="btn btn-primary btn-block" style="padding: 16px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px;" :disabled="isPlacing">
+                        <i class="fa-solid fa-lock"></i>
+                        <span x-text="isPlacing ? 'Placing Order...' : 'Place Grocery Order'"></span>
                     </button>
                 </div>
             </div>
         </div>
     </form>
+
+    <!-- Centered Add Address Modal with Smooth Scrollable Container -->
+    <div x-show="showAddressModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         style="position: fixed; inset: 0; background: rgba(44, 24, 16, 0.75); backdrop-filter: blur(8px); z-index: 999999; display: grid; place-items: center; padding: 20px; overflow-y: auto;" 
+         x-cloak>
+        
+        <div @click.away="showAddressModal = false" 
+             style="background: var(--white); border-radius: 24px; padding: 32px; width: 100%; max-width: 540px; box-shadow: 0 25px 60px rgba(0,0,0,0.35); border: 1px solid var(--cream-dark); margin: auto; max-height: 85vh; overflow-y: auto;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 12px;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-map-location-dot" style="color: var(--saffron-deep);"></i> Add Delivery Address
+                </h3>
+                <button type="button" @click="showAddressModal = false" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--maroon); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--cream);">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('account.addresses.store') }}" method="POST">
+                @csrf
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Full Name</label>
+                    <input type="text" name="name" required placeholder="e.g. Jyoshna Patel" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Phone Number (UK)</label>
+                    <input type="text" name="phone" required placeholder="07700 900123" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Address Line 1</label>
+                    <input type="text" name="address_line_1" required placeholder="House / Flat #, Street" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Address Line 2 (Optional)</label>
+                    <input type="text" name="address_line_2" placeholder="Locality / Area" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Town / City</label>
+                        <input type="text" name="city" value="Hounslow" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Postcode</label>
+                        <input type="text" name="pincode" required placeholder="TW3 2EN" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">County / State</label>
+                    <input type="text" name="state" value="Greater London" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 4px;">Address Type</label>
+                    <select name="address_type" style="width: 100%; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.9rem; background: var(--cream);">
+                        <option value="home">Home</option>
+                        <option value="work">Work</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--cream-dark);">
+                    <button type="button" @click="showAddressModal = false" class="btn btn-outline btn-sm" style="padding: 10px 20px;">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" style="padding: 10px 24px;">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Save Address
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @endsection
 
 @section('scripts')
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     function checkoutApp() {
         return {
             selectedAddressId: {{ $addresses->first() ? $addresses->first()->id : 'null' }},
             selectedShippingId: {{ $shippingMethods->first() ? $shippingMethods->first()->id : 'null' }},
             paymentMethod: 'cod',
+            showAddressModal: false,
             couponCode: '',
             couponMessage: '',
             couponSuccess: false,
-            subtotal: {{ $cart->items->sum('subtotal') }},
-            discountAmount: 0.00,
-            shippingFee: {{ $shippingMethods->first() ? $shippingMethods->first()->cost : 0.00 }},
-            grandTotal: 0.00,
-            loading: false,
+            discountAmount: 0,
+            baseSubtotal: {{ $cart->items->sum('subtotal') }},
+            shippingFee: {{ $shippingMethods->first() ? $shippingMethods->first()->cost : 0 }},
+            isPlacing: false,
 
-            init() {
-                this.calculateGrandTotal();
+            get grandTotal() {
+                return Math.max(0, this.baseSubtotal - this.discountAmount) + this.shippingFee;
             },
+
             recalculateTotals(cost) {
-                this.shippingFee = Number(cost);
-                this.calculateGrandTotal();
+                this.shippingFee = parseFloat(cost);
             },
-            calculateGrandTotal() {
-                let taxable = Math.max(0, this.subtotal - this.discountAmount);
-                this.grandTotal = Math.round((taxable + this.shippingFee) * 100) / 100;
-            },
+
             applyCoupon() {
-                if (!this.couponCode) {
-                    this.couponMessage = 'Please enter a coupon code.';
-                    this.couponSuccess = false;
-                    return;
-                }
+                if (!this.couponCode) return;
                 fetch('{{ route("checkout.coupon.verify") }}', {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ code: this.couponCode })
+                    body: JSON.stringify({ code: this.couponCode, subtotal: this.baseSubtotal })
                 })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.valid) {
-                        this.discountAmount = Number(data.discount);
-                        this.couponMessage = data.message;
-                        this.couponSuccess = true;
-                        this.calculateGrandTotal();
+                    this.couponMessage = data.message;
+                    this.couponSuccess = data.success;
+                    if (data.success) {
+                        this.discountAmount = parseFloat(data.discount);
                     } else {
-                        this.discountAmount = 0.00;
-                        this.couponMessage = data.message;
-                        this.couponSuccess = false;
-                        this.calculateGrandTotal();
+                        this.discountAmount = 0;
                     }
-                })
-                .catch(err => {
-                    this.couponMessage = 'Server error verifying coupon.';
-                    this.couponSuccess = false;
                 });
             },
+
             submitOrder() {
                 if (!this.selectedAddressId) {
                     alert('Please select or add a delivery address.');
                     return;
                 }
-                this.loading = true;
-
+                this.isPlacing = true;
+                
                 fetch('{{ route("checkout.place") }}', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
                     body: JSON.stringify({
                         address_id: this.selectedAddressId,
                         shipping_method_id: this.selectedShippingId,
-                        payment_method: this.paymentMethod,
+                        payment_method: 'cod',
                         coupon_code: this.couponCode
                     })
                 })
                 .then(res => res.json())
                 .then(data => {
-                    if (!data.success) {
-                        alert(data.message || 'Order creation failed.');
-                        this.loading = false;
-                        return;
-                    }
-
-                    if (data.is_online_payment) {
-                        const options = {
-                            "key": data.payment_data.key,
-                            "amount": data.payment_data.amount,
-                            "currency": "GBP",
-                            "name": "Desi Foods Hounslow",
-                            "description": "Order #" + data.payment_data.order_number,
-                            "handler": (response) => {
-                                fetch('{{ route("checkout.payment.verify") }}', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                                    body: JSON.stringify({
-                                        order_number: data.payment_data.order_number,
-                                        razorpay_payment_id: response.razorpay_payment_id || 'pay_mock_' + Date.now(),
-                                        razorpay_order_id: response.razorpay_order_id || data.payment_data.razorpay_order_id,
-                                        razorpay_signature: response.razorpay_signature || 'sig_verified'
-                                    })
-                                }).then(res => res.json()).then(ver => {
-                                    window.location.href = ver.redirect_url;
-                                });
-                            },
-                            "prefill": {
-                                "name": data.payment_data.customer_name,
-                                "email": data.payment_data.customer_email,
-                                "contact": data.payment_data.customer_phone
-                            },
-                            "theme": { "color": "#890F14" }
-                        };
-
-                        if (typeof Razorpay !== 'undefined') {
-                            const rzp = new Razorpay(options);
-                            rzp.open();
-                        } else {
-                            options.handler({
-                                razorpay_payment_id: 'pay_simulated_' + Date.now(),
-                                razorpay_order_id: data.payment_data.razorpay_order_id
-                            });
-                        }
-                    } else {
+                    if (data.success) {
                         window.location.href = data.redirect_url;
+                    } else {
+                        alert(data.message || 'Could not place order.');
+                        this.isPlacing = false;
                     }
                 })
-                .catch(err => {
-                    alert('Server error occurred during checkout.');
-                    this.loading = false;
+                .catch(() => {
+                    alert('Order placement failed.');
+                    this.isPlacing = false;
                 });
             }
         }

@@ -3,75 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', "Desi Foods — Hounslow's Finest Indian Grocery & Produce")</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.svg') }}">
+    <title>@yield('title', 'Desi Foods Hounslow - Finest Indian Grocery Store')</title>
 
-    <!-- Google Fonts & FontAwesome CDN -->
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Authentic Indian Grocery Store in Hounslow. Buy fresh vegetables, spices, Basmati rice, pulses, ghee, frozen parathas, and sweets online with fast doorstep delivery across London TW3 & UK.">
+    <meta name="keywords" content="Desi Foods Hounslow, Indian Grocery London, Basmati Rice, MDH Spices, Haldirams Sweets, Fresh Okra, Frozen Samosas">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Google Fonts: Playfair Display & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="stylesheet" href="{{ asset('css/theme.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Alpine.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Store CSS Token System -->
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+
     @yield('styles')
 </head>
-<body x-data="{ mobileMenuOpen: false }">
+<body>
 
-    <!-- Top Announcement Bar -->
-    <div class="top-bar">
-        <span><i class="fa-solid fa-star" style="color: var(--gold-light); margin-right: 6px;"></i> Authentic Desi Groceries & Fresh Produce | Free Parking at Whitton Road | Use Code: <strong>DESIFOOD10</strong> for 10% OFF</span>
-    </div>
-
-    <!-- Header Navbar -->
-    <header class="site-header">
-        <div class="nav-container">
-            <!-- Brand Logo -->
-            <a href="{{ route('home') }}" class="brand-logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Hounslow Logo" style="height: 52px; width: auto; object-fit: contain;">
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            
+            <!-- Logo Section -->
+            <a href="{{ route('home') }}" class="logo-link">
+                <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" class="brand-logo">
+                <div>
+                    <span class="brand-name">Desi Foods</span>
+                    <span class="brand-tagline">Hounslow's Finest Indian Grocery</span>
+                </div>
             </a>
 
-            <!-- Search Form with Live Auto-Suggest -->
-            <form action="{{ route('products.index') }}" method="GET" class="search-form" x-data="liveSearch()">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" name="search" class="search-input" placeholder="Search 4,000+ groceries, spices, basmati rice, parathas..." 
-                       x-model="query" @input.debounce.300ms="fetchResults()" autocomplete="off">
+            <!-- Search Bar -->
+            <div style="flex: 1; max-width: 460px; margin: 0 32px; position: relative;" x-data="liveSearch()">
+                <div style="position: relative;">
+                    <input type="text" x-model="query" @input.debounce.300ms="fetchResults()" placeholder="Search spices, Basmati rice, snacks, flour..." 
+                           style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 30px; border: 1px solid var(--cream-dark); outline: none; background-color: var(--cream); font-size: 0.9rem;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.95rem;"></i>
+                </div>
 
-                <!-- Search Suggestions Dropdown -->
-                <div x-show="results.length > 0" @click.away="results = []" 
-                     style="position: absolute; top: 110%; left: 0; right: 0; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 16px; box-shadow: var(--shadow-md); z-index: 1000; overflow: hidden;" x-cloak>
+                <!-- Live Search Dropdown -->
+                <div x-show="results.length > 0" @click.away="results = []" class="search-dropdown" x-cloak>
                     <template x-for="item in results" :key="item.slug">
-                        <a :href="item.url" style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); transition: background 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='var(--white)'">
-                            <img :src="item.image || 'https://via.placeholder.com/40'" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px;">
+                        <a :href="item.url" class="search-item">
+                            <img :src="item.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=100'" style="width: 36px; height: 36px; object-fit: cover; border-radius: 6px;">
                             <div>
-                                <div style="font-weight: 600; font-size: 0.92rem; color: var(--maroon);" x-text="item.name"></div>
-                                <div style="font-size: 0.85rem; color: var(--saffron-deep); font-weight: 700;" x-text="item.price"></div>
+                                <div style="font-weight: 600; color: var(--maroon);" x-text="item.name"></div>
+                                <div style="font-size: 0.78rem; color: var(--saffron-deep);" x-text="item.category + ' • ' + item.price"></div>
                             </div>
                         </a>
                     </template>
                 </div>
-            </form>
+            </div>
 
-            <!-- Nav Actions (Wishlist, Cart, Account) -->
-            <div class="nav-actions">
+            <!-- Action Controls -->
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <a href="{{ route('categories.index') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-layer-group"></i> All Categories
+                </a>
+
                 @auth
-                    <a href="{{ route('account.wishlist') }}" class="icon-btn" title="Wishlist">
-                        <i class="fa-regular fa-heart" style="font-size: 1.25rem;"></i>
+                    <!-- Wishlist Icon -->
+                    <a href="{{ route('account.wishlist') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none;" title="Wishlist">
+                        <i class="fa-regular fa-heart"></i>
                     </a>
-                    <a href="{{ route('cart.index') }}" class="icon-btn" title="Cart" style="position: relative;">
-                        <i class="fa-solid fa-basket-shopping" style="font-size: 1.2rem;"></i>
+
+                    <!-- Cart Icon with Dynamic Counter -->
+                    <a href="{{ route('cart.index') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none;" title="Shopping Cart">
+                        <i class="fa-solid fa-basket-shopping"></i>
                         @php
-                            $cartCount = \App\Models\CartItem::whereHas('cart', function($q) {
-                                $q->where('user_id', auth()->id());
-                            })->sum('quantity');
+                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->first()?->items()->sum('quantity') ?? 0;
                         @endphp
-                        @if($cartCount > 0)
-                            <span class="cart-badge">{{ $cartCount }}</span>
-                        @endif
+                        <span class="cart-badge" id="globalCartCountBadge" style="display: {{ $cartCount > 0 ? 'inline-flex' : 'none' }};">{{ $cartCount }}</span>
                     </a>
                     
                     <div style="position: relative;" x-data="{ open: false }">
@@ -115,47 +125,58 @@
         @yield('content')
     </main>
 
+    <!-- Toast Notification Overlay -->
+    <div id="globalToast" style="position: fixed; bottom: 30px; right: 30px; z-index: 999999; background: var(--maroon); color: var(--white); padding: 14px 22px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); font-weight: 600; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; pointer-events: none;">
+        <i id="toastIcon" class="fa-solid fa-circle-check" style="color: var(--saffron); font-size: 1.2rem;"></i>
+        <span id="toastMessage">Item added to cart</span>
+    </div>
+
     <!-- Footer -->
     <footer style="background-color: var(--charcoal); color: var(--white); padding: 70px 0 30px; margin-top: 80px; border-top: 4px solid var(--saffron);">
         <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px;">
             <div>
-                <img src="{{ asset('images/logo-light.svg') }}" alt="Desi Foods Hounslow Logo" style="height: 56px; width: auto; object-fit: contain; margin-bottom: 16px;">
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.7; margin-bottom: 20px;">
-                    Hounslow's premier destination for authentic Indian groceries since 2010. Bringing the taste of home to your kitchen with 4,000+ products, fresh produce daily, and beloved brands.
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 42px;">
+                    <span style="font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--saffron);">Desi Foods</span>
+                </div>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
+                    Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, and traditional sweets.
                 </p>
-                <div style="display: flex; gap: 10px;">
-                    <a href="#" style="width: 38px; height: 38px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none;"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" style="width: 38px; height: 38px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none;"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" style="width: 38px; height: 38px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none;"><i class="fa-brands fa-whatsapp"></i></a>
+                <div style="color: rgba(255,255,255,0.8); font-size: 0.88rem; display: flex; flex-direction: column; gap: 8px;">
+                    <div><i class="fa-solid fa-location-dot me-2" style="color: var(--saffron);"></i> 3-4 Green Parade, Whitton Rd, Hounslow TW3 2EN</div>
+                    <div><i class="fa-solid fa-phone me-2" style="color: var(--saffron);"></i> +44 (0)20 8570 1234</div>
                 </div>
             </div>
 
             <div>
-                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 20px;">Quick Links</h4>
-                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.95rem; color: rgba(255,255,255,0.7);">
-                    <li><a href="{{ route('home') }}#about" style="transition: color 0.3s; text-decoration: none; color: inherit;" onmouseover="this.style.color='var(--saffron)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; margin-right: 6px; color: var(--saffron);"></i> Our Story</a></li>
-                    <li><a href="{{ route('products.index') }}" style="transition: color 0.3s; text-decoration: none; color: inherit;" onmouseover="this.style.color='var(--saffron)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; margin-right: 6px; color: var(--saffron);"></i> All Groceries</a></li>
-                    <li><a href="{{ route('blog.index') }}" style="transition: color 0.3s; text-decoration: none; color: inherit;" onmouseover="this.style.color='var(--saffron)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; margin-right: 6px; color: var(--saffron);"></i> Desi Cooking Blog</a></li>
-                    <li><a href="{{ route('cart.index') }}" style="transition: color 0.3s; text-decoration: none; color: inherit;" onmouseover="this.style.color='var(--saffron)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; margin-right: 6px; color: var(--saffron);"></i> Shopping Cart</a></li>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px;">Food Categories</h4>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                    <li><a href="{{ route('products.index', ['category' => 'spices-masalas']) }}" style="color: inherit;">Spices & Masalas</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'rice-grains']) }}" style="color: inherit;">Rice & Basmati</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'lentils-pulses']) }}" style="color: inherit;">Lentils & Pulses</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'frozen-foods']) }}" style="color: inherit;">Frozen Parathas & Foods</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'sweets-snacks']) }}" style="color: inherit;">Sweets & Snacks</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 20px;">Categories</h4>
-                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.95rem; color: rgba(255,255,255,0.7);">
-                    <li><a href="{{ route('products.index', ['category' => 'spices-masalas']) }}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-pepper-hot" style="margin-right: 6px; color: var(--saffron);"></i> Spices & Masalas</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'rice-grains']) }}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-bowl-rice" style="margin-right: 6px; color: var(--saffron);"></i> Rice & Basmati</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'frozen-foods']) }}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-snowflake" style="margin-right: 6px; color: var(--saffron);"></i> Frozen Parathas & Meals</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'sweets-snacks']) }}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-cookie-bite" style="margin-right: 6px; color: var(--saffron);"></i> Indian Sweets & Mithai</a></li>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px;">Quick Links</h4>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                    <li><a href="{{ route('categories.index') }}" style="color: inherit;">All Food Categories</a></li>
+                    <li><a href="{{ route('products.index') }}" style="color: inherit;">Full Food Catalog</a></li>
+                    <li><a href="{{ route('blog.index') }}" style="color: inherit;">Indian Recipes & Blog</a></li>
+                    <li><a href="{{ route('account.orders') }}" style="color: inherit;">Track Your Order</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 20px;">Visit Our Store</h4>
-                <div style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.8;">
-                    <div style="margin-bottom: 6px;"><i class="fa-solid fa-location-dot" style="color: var(--saffron); margin-right: 8px;"></i> 3-4 Green Parade, Whitton Road, Hounslow, TW3 2EN</div>
-                    <div style="margin-bottom: 6px;"><i class="fa-solid fa-phone" style="color: var(--saffron); margin-right: 8px;"></i> 020 8570 8899</div>
-                    <div><i class="fa-regular fa-clock" style="color: var(--saffron); margin-right: 8px;"></i> Mon - Sat: 8am - 9pm | Sun: 9am - 7pm</div>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px;">Store Opening Hours</h4>
+                <div style="font-size: 0.88rem; color: rgba(255,255,255,0.7); display: flex; flex-direction: column; gap: 8px;">
+                    <div><strong>Monday - Saturday:</strong> 8:00 AM - 9:00 PM</div>
+                    <div><strong>Sunday:</strong> 9:00 AM - 8:00 PM</div>
+                    <div style="margin-top: 10px; background: rgba(230,126,34,0.15); border: 1px solid var(--saffron); padding: 10px 14px; border-radius: 10px; color: var(--saffron); font-weight: 600;">
+                        <i class="fa-solid fa-truck-fast me-1"></i> Same Day Express Hounslow Delivery
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,6 +208,67 @@
                 }
             }
         }
+
+        window.showToast = function(msg, type = 'success') {
+            const toast = document.getElementById('globalToast');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+            if (!toast || !msgEl) return;
+            
+            msgEl.textContent = msg;
+            if (type === 'error') {
+                toast.style.background = '#C0392B';
+                iconEl.className = 'fa-solid fa-circle-exclamation';
+                iconEl.style.color = '#FFF';
+            } else {
+                toast.style.background = 'var(--maroon)';
+                iconEl.className = 'fa-solid fa-circle-check';
+                iconEl.style.color = 'var(--saffron)';
+            }
+
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+            }, 3000);
+        };
+
+        window.addToCartAjax = function(productId, quantity = 1, event = null) {
+            if (event) event.preventDefault();
+            fetch("{{ route('cart.add') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ product_id: productId, quantity: quantity })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+                if (data.success) {
+                    const badge = document.getElementById('globalCartCountBadge');
+                    if (badge) {
+                        badge.textContent = data.cart_count;
+                        badge.style.display = 'inline-flex';
+                    }
+                    showToast(data.message || 'Added to cart!');
+                } else {
+                    showToast(data.message || 'Could not add to cart.', 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('Please login to add items to cart.', 'error');
+            });
+        };
     </script>
     @yield('scripts')
 </body>
