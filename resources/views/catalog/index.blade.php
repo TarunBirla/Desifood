@@ -18,7 +18,9 @@
                     <input type="hidden" name="search" value="{{ request('search') }}">
                 @endif
 
-                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--maroon); margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 10px;">Filter Groceries</h3>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--maroon); margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-filter" style="font-size: 1rem; color: var(--saffron);"></i> Filter Groceries
+                </h3>
 
                 <!-- Categories -->
                 <div style="margin-bottom: 24px;">
@@ -116,21 +118,25 @@
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <button type="submit" class="btn-wishlist" title="{{ $inWishlist ? 'Remove Wishlist' : 'Add Wishlist' }}">
-                                    {{ $inWishlist ? '♥' : '♡' }}
+                                    <i class="{{ $inWishlist ? 'fa-solid' : 'fa-regular' }} fa-heart" style="{{ $inWishlist ? 'color: #e74c3c;' : '' }}"></i>
                                 </button>
                             </form>
 
-                            <div class="media-wrapper">
+                            <a href="{{ route('products.show', $product->slug) }}" class="media-wrapper" style="display: block;">
                                 <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }}" alt="{{ $product->name }}">
-                            </div>
+                            </a>
 
                             <div class="content">
                                 <span class="category-name">{{ $product->brand ? $product->brand->name : ($product->category ? $product->category->name : 'Desi Foods') }}</span>
                                 <a href="{{ route('products.show', $product->slug) }}" class="title">{{ $product->name }}</a>
                                 
-                                <div class="rating-stars" style="margin-bottom: 10px;">
-                                    <span>★★★★★</span>
-                                    <span style="color: var(--muted); font-size: 0.8rem;">({{ $product->reviews_count }})</span>
+                                <div class="rating-stars" style="margin-bottom: 10px; color: var(--gold); font-size: 0.85rem;">
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <span style="color: var(--muted); font-size: 0.8rem; margin-left: 4px;">({{ $product->reviews_count }})</span>
                                 </div>
 
                                 <div class="price-row">
@@ -140,20 +146,27 @@
                                     @endif
                                 </div>
 
-                                @if($inCart)
-                                    <a href="{{ route('cart.index') }}" class="btn btn-outline btn-sm btn-block" style="margin-top: 14px; color: var(--maroon); border-color: var(--saffron); background: rgba(230,126,34,0.1);">
-                                        ✓ Added in Cart
+                                <!-- Dual Action Buttons: View Details & Add to Cart -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;">
+                                    <a href="{{ route('products.show', $product->slug) }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-color: var(--cream-dark); color: var(--maroon);">
+                                        <i class="fa-solid fa-eye"></i> View
                                     </a>
-                                @else
-                                    <form action="{{ route('cart.add') }}" method="POST" style="margin-top: 14px;">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn btn-primary btn-sm btn-block">
-                                            + Add to Cart
-                                        </button>
-                                    </form>
-                                @endif
+
+                                    @if($inCart)
+                                        <a href="{{ route('cart.index') }}" class="btn btn-outline btn-sm" style="color: var(--maroon); border-color: var(--saffron); background: rgba(230,126,34,0.1); display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;">
+                                            <i class="fa-solid fa-check"></i> Added
+                                        </a>
+                                    @else
+                                        <form action="{{ route('cart.add') }}" method="POST" style="margin: 0;">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;">
+                                                <i class="fa-solid fa-plus"></i> Add
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @endforeach

@@ -81,6 +81,18 @@ class ProductCatalogController extends Controller
         return view('catalog.index', compact('products', 'categories', 'brands', 'attributes'));
     }
 
+    public function allCategories()
+    {
+        $categories = Category::whereNull('parent_id')
+            ->where('status', true)
+            ->with(['children', 'products'])
+            ->withCount('products')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('categories.index', compact('categories'));
+    }
+
     public function show(string $slug)
     {
         $product = Product::with(['images', 'category', 'brand', 'variants', 'reviews.user'])

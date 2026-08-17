@@ -72,12 +72,14 @@
                 @endphp
 
                 @if($neededForFreeShipping > 0)
-                    <div style="background: rgba(230,126,34,0.1); color: var(--saffron-deep); padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 18px;">
-                        🚚 Add £{{ number_format($neededForFreeShipping, 2) }} more for FREE Doorstep Delivery!
+                    <div style="background: rgba(230,126,34,0.1); color: var(--saffron-deep); padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span>Add £{{ number_format($neededForFreeShipping, 2) }} more for FREE Doorstep Delivery!</span>
                     </div>
                 @else
-                    <div style="background: rgba(46, 125, 50, 0.1); color: #2E7D32; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 18px;">
-                        ✓ You qualify for FREE Delivery across Hounslow & UK!
+                    <div style="background: rgba(46, 125, 50, 0.1); color: #2E7D32; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>You qualify for FREE Delivery across Hounslow & UK!</span>
                     </div>
                 @endif
 
@@ -99,14 +101,16 @@
                     <span style="font-size: 1.8rem; font-weight: 700; color: var(--maroon);">£{{ number_format($subtotal, 2) }}</span>
                 </div>
 
-                <a href="{{ route('checkout.index') }}" class="btn btn-primary btn-block" style="padding: 14px 24px; font-size: 1.05rem;">
-                    Proceed to Checkout
+                <a href="{{ route('checkout.index') }}" class="btn btn-primary btn-block" style="padding: 14px 24px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>Proceed to Checkout</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
         </div>
     @else
         <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 60px; text-align: center; border-radius: 20px; box-shadow: var(--shadow-sm);">
-            <div style="font-size: 4rem; margin-bottom: 12px;">🛒</div>
+            <div style="font-size: 3.5rem; color: var(--saffron); margin-bottom: 16px;">
+                <i class="fa-solid fa-basket-shopping"></i>
+            </div>
             <h3 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--maroon); margin-bottom: 12px;">Your Cart is Empty</h3>
             <p style="color: var(--charcoal-light); margin-bottom: 24px;">Explore our 4,000+ authentic Indian spices, Basmati rice, and snacks to add items.</p>
             <a href="{{ route('products.index') }}" class="btn btn-primary">Start Shopping</a>

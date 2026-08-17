@@ -17,6 +17,14 @@ class AdminSettingController extends Controller
     public function update(Request $request)
     {
         $data = $request->except('_token');
+        
+        if (isset($data['story_slider_images']) && !empty($data['story_slider_images'])) {
+            $lines = array_filter(array_map('trim', explode("\n", $data['story_slider_images'])));
+            if (!empty($lines)) {
+                $data['story_slider_images'] = json_encode(array_values($lines));
+            }
+        }
+
         foreach ($data as $key => $value) {
             Setting::set($key, $value);
         }

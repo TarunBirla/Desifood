@@ -35,9 +35,9 @@
                                     </button>
                                 </form>
 
-                                <div class="media-wrapper">
+                                <a href="{{ route('products.show', $product->slug) }}" class="media-wrapper" style="display: block;">
                                     <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }}" alt="{{ $product->name }}">
-                                </div>
+                                </a>
 
                                 <div class="content">
                                     <span class="category-name">{{ $product->brand ? $product->brand->name : 'Desi Foods' }}</span>
@@ -47,14 +47,21 @@
                                         <span class="price">£{{ number_format($product->effective_price, 2) }}</span>
                                     </div>
 
-                                    <form action="{{ route('cart.add') }}" method="POST" style="margin-top: 14px;">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn btn-primary btn-sm btn-block">
-                                            + Add to Cart
-                                        </button>
-                                    </form>
+                                    <!-- Dual Action Buttons: View Details & Add to Cart -->
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;">
+                                        <a href="{{ route('products.show', $product->slug) }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-color: var(--cream-dark); color: var(--maroon);">
+                                            <i class="fa-solid fa-eye"></i> View Details
+                                        </a>
+
+                                        <form action="{{ route('cart.add') }}" method="POST" style="margin: 0;">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;">
+                                                <i class="fa-solid fa-plus"></i> Add
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         @endif

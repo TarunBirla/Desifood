@@ -91,7 +91,7 @@
                                :style="paymentMethod === 'razorpay' ? 'border-color: var(--saffron); background: rgba(230,126,34,0.06);' : ''">
                             <input type="radio" name="payment_method" value="razorpay" x-model="paymentMethod">
                             <div>
-                                <div style="font-weight: 700; color: var(--maroon);">💳 Online Payment (Credit / Debit Card, Apple Pay, Google Pay)</div>
+                                <div style="font-weight: 700; color: var(--maroon);"><i class="fa-solid fa-credit-card me-2"></i> Online Payment (Credit / Debit Card, Apple Pay, Google Pay)</div>
                                 <div style="font-size: 0.85rem; color: var(--charcoal-light); margin-top: 2px;">Instant 256-bit SSL encrypted secure payment</div>
                             </div>
                         </label>
@@ -100,7 +100,7 @@
                                :style="paymentMethod === 'cod' ? 'border-color: var(--saffron); background: rgba(230,126,34,0.06);' : ''">
                             <input type="radio" name="payment_method" value="cod" x-model="paymentMethod">
                             <div>
-                                <div style="font-weight: 700; color: var(--maroon);">💵 Cash on Delivery / Pay at Store Collection</div>
+                                <div style="font-weight: 700; color: var(--maroon);"><i class="fa-solid fa-money-bill-wave me-2"></i> Cash on Delivery / Pay at Store Collection</div>
                                 <div style="font-size: 0.85rem; color: var(--charcoal-light); margin-top: 2px;">Pay in cash or card upon delivery or store pickup</div>
                             </div>
                         </label>
@@ -127,7 +127,7 @@
 
                     <!-- Coupon Code Input -->
                     <div style="background: var(--cream); border: 1px solid var(--cream-dark); border-radius: 14px; padding: 16px; margin-bottom: 20px;">
-                        <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 8px; color: var(--maroon);">🎟️ Apply Discount Coupon</label>
+                        <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 8px; color: var(--maroon);"><i class="fa-solid fa-ticket me-2"></i> Apply Discount Coupon</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" x-model="couponCode" placeholder="Enter DESIFOOD10" style="flex: 1; padding: 10px 14px; border: 1px solid var(--cream-dark); border-radius: 8px; font-size: 0.9rem; text-transform: uppercase; font-weight: 600; font-family: 'Inter', sans-serif;">
                             <button type="button" @click="applyCoupon()" class="btn btn-primary btn-sm" style="padding: 10px 18px;">Apply</button>

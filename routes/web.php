@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 // Homepage & Catalog
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/categories', [ProductCatalogController::class, 'allCategories'])->name('categories.index');
 Route::get('/products', [ProductCatalogController::class, 'index'])->name('products.index');
 Route::get('/products/search', [ProductCatalogController::class, 'liveSearch'])->name('products.search');
 Route::get('/products/{slug}', [ProductCatalogController::class, 'show'])->name('products.show');
@@ -67,45 +68,42 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/addresses', [CustomerAccountController::class, 'addresses'])->name('account.addresses');
     Route::post('/account/addresses', [CustomerAccountController::class, 'storeAddress'])->name('account.addresses.store');
     Route::post('/account/addresses/{id}/delete', [CustomerAccountController::class, 'deleteAddress'])->name('account.addresses.delete');
-    
-    // Wishlist & Reviews
     Route::get('/account/wishlist', [CartWishlistController::class, 'viewWishlist'])->name('account.wishlist');
     Route::post('/account/wishlist/toggle', [CartWishlistController::class, 'toggleWishlist'])->name('account.wishlist.toggle');
     Route::post('/account/review', [CustomerAccountController::class, 'submitReview'])->name('account.review.submit');
 });
 
-// Admin Panel Protected Routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+// Admin Protected Routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // Orders Management
+    // Admin Products & Inventory
+    Route::resource('products', AdminProductController::class);
+    Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory/adjust', [AdminInventoryController::class, 'adjust'])->name('inventory.adjust');
+
+    // Admin Orders & Status Management
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 
-    // Products Management
-    Route::resource('products', AdminProductController::class);
-
-    // Reviews Moderation
+    // Admin Reviews Moderation
     Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
     Route::post('/reviews/{id}/update-status', [AdminReviewController::class, 'updateStatus'])->name('reviews.update-status');
     Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 
-    // Blogs CMS
-    Route::resource('blogs', AdminBlogController::class);
+    // Admin Coupons & Discounts
+    Route::get('/coupons', [AdminCouponController::class, 'index'])->name('coupons.index');
+    Route::post('/coupons', [AdminCouponController::class, 'store'])->name('coupons.store');
+    Route::delete('/coupons/{coupon}', [AdminCouponController::class, 'destroy'])->name('coupons.destroy');
 
-    // Inventory Audit
-    Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
-    Route::post('/inventory/adjust', [AdminInventoryController::class, 'adjust'])->name('inventory.adjust');
-
-    // Coupons
-    Route::resource('coupons', AdminCouponController::class)->only(['index', 'store', 'destroy']);
-
-    // Customers
+    // Admin Customers & Settings
     Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
     Route::post('/customers/{id}/block', [AdminCustomerController::class, 'toggleBlock'])->name('customers.block');
 
-    // Settings
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Admin Blogs
+    Route::resource('blogs', AdminBlogController::class);
 });

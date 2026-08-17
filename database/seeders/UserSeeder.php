@@ -16,8 +16,8 @@ class UserSeeder extends Seeder
         $staffRole = Role::where('name', 'staff')->first();
         $customerRole = Role::where('name', 'customer')->first();
 
-        // 1. Admin User
-        $admin = User::firstOrCreate(['email' => 'admin@desifoods.com'], [
+        // 1. Admin Users
+        User::updateOrCreate(['email' => 'admin@desifoods.com'], [
             'name' => 'Desi Foods Admin',
             'phone' => '020 8570 8899',
             'password' => Hash::make('password123'),
@@ -26,8 +26,17 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // 2. Staff User
-        $staff = User::firstOrCreate(['email' => 'staff@desifoods.com'], [
+        User::updateOrCreate(['email' => 'admin@eccommers.com'], [
+            'name' => 'Eccommers Admin',
+            'phone' => '020 8570 8898',
+            'password' => Hash::make('password123'),
+            'role_id' => $adminRole ? $adminRole->id : null,
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        // 2. Staff Users
+        User::updateOrCreate(['email' => 'staff@desifoods.com'], [
             'name' => 'Store Manager',
             'phone' => '020 8570 8890',
             'password' => Hash::make('password123'),
@@ -36,8 +45,17 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // 3. Demo Customer User
-        $customer = User::firstOrCreate(['email' => 'customer@desifoods.com'], [
+        User::updateOrCreate(['email' => 'staff@eccommers.com'], [
+            'name' => 'Eccommers Staff',
+            'phone' => '020 8570 8891',
+            'password' => Hash::make('password123'),
+            'role_id' => $staffRole ? $staffRole->id : null,
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        // 3. Customer Users
+        $customer1 = User::updateOrCreate(['email' => 'customer@desifoods.com'], [
             'name' => 'Jyoshna Patel',
             'phone' => '07700 900123',
             'password' => Hash::make('password123'),
@@ -46,8 +64,17 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Create sample addresses for customer
-        Address::firstOrCreate(['user_id' => $customer->id, 'name' => 'Jyoshna Patel (Home)'], [
+        $customer2 = User::updateOrCreate(['email' => 'customer@eccommers.com'], [
+            'name' => 'Jyoshna Patel',
+            'phone' => '07700 900456',
+            'password' => Hash::make('password123'),
+            'role_id' => $customerRole ? $customerRole->id : null,
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        // Sample address
+        Address::firstOrCreate(['user_id' => $customer1->id, 'name' => 'Jyoshna Patel (Home)'], [
             'phone' => '07700 900123',
             'address_line_1' => '14 Whitton Road',
             'address_line_2' => 'Green Parade',
