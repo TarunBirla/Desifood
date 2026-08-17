@@ -9,18 +9,6 @@
     $inWishlist = in_array($product->id, $userWishlistProductIds ?? []);
     
     $primaryImg = $product->primaryImage ? $product->primaryImage->image_path : ($product->images->first() ? $product->images->first()->image_path : 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800');
-    
-    $galleryImages = $product->images->pluck('image_path')->toArray();
-    if ($product->primaryImage && !in_array($product->primaryImage->image_path, $galleryImages)) {
-        array_unshift($galleryImages, $product->primaryImage->image_path);
-    }
-    if (empty($galleryImages)) {
-        $galleryImages = [
-            $primaryImg,
-            'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800',
-            'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800'
-        ];
-    }
 @endphp
 
 <div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="productDetail()">
@@ -33,20 +21,10 @@
 
     <!-- Product Main Grid -->
     <div class="product-details-grid" style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 24px; padding: 36px; box-shadow: var(--shadow-sm); margin-bottom: 48px;">
-        <!-- Images Gallery -->
+        <!-- Single Featured Product Image -->
         <div>
-            <div style="height: 440px; background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%); border-radius: 20px; overflow: hidden; margin-bottom: 16px; position: relative; border: 1px solid var(--cream-dark);">
-                <img :src="activeImage" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-
-            <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px;">
-                @foreach($galleryImages as $imgSrc)
-                    <div @click="activeImage = '{{ $imgSrc }}'" 
-                          style="width: 80px; height: 80px; border-radius: 12px; overflow: hidden; border: 2px solid var(--cream-dark); cursor: pointer;"
-                          :style="activeImage === '{{ $imgSrc }}' ? 'border-color: var(--saffron); border-width: 3px;' : ''">
-                        <img src="{{ $imgSrc }}" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                @endforeach
+            <div style="height: 480px; background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%); border-radius: 20px; overflow: hidden; position: relative; border: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm);">
+                <img src="{{ $primaryImg }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
         </div>
 
