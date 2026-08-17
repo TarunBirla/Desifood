@@ -23,7 +23,7 @@
                     <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span style="background: var(--maroon); color: var(--white); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700;">1</span>
-                            <span>Delivery Address</span>
+                            <span>Take way Address</span>
                         </div>
                         <button type="button" @click="showAddressModal = true" class="btn btn-outline btn-sm" style="font-size: 0.88rem; color: var(--saffron-deep); font-weight: 600;">
                             <i class="fa-solid fa-plus me-1"></i> Add New Address
@@ -49,8 +49,8 @@
                         </div>
                     @else
                         <div style="background: var(--cream); padding: 20px; border-radius: 16px; text-align: center;">
-                            <p style="color: var(--charcoal-light); margin-bottom: 12px;">No delivery address found in your account.</p>
-                            <button type="button" @click="showAddressModal = true" class="btn btn-primary btn-sm">+ Add Delivery Address</button>
+                            <p style="color: var(--charcoal-light); margin-bottom: 12px;">No Take way address found in your account.</p>
+                            <button type="button" @click="showAddressModal = true" class="btn btn-primary btn-sm">+ Add Take way Address</button>
                         </div>
                     @endif
                 </div>
@@ -59,7 +59,7 @@
                 <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
                     <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                         <span style="background: var(--maroon); color: var(--white); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700;">2</span>
-                        <span>Delivery Option</span>
+                        <span>Take way Option</span>
                     </h3>
 
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -70,7 +70,7 @@
                                     <input type="radio" name="shipping_method_id" value="{{ $method->id }}" x-model="selectedShippingId" @change="recalculateTotals({{ $method->cost }})">
                                     <div>
                                         <div style="font-weight: 700; color: var(--maroon);">{{ $method->name }}</div>
-                                        <div style="font-size: 0.82rem; color: var(--charcoal-light);">Est. Delivery: <strong>{{ $method->estimated_days }}</strong></div>
+                                        <div style="font-size: 0.82rem; color: var(--charcoal-light);">Est. Take way: <strong>{{ $method->estimated_days }}</strong></div>
                                     </div>
                                 </div>
                                 <span style="font-weight: 700; color: var(--maroon); font-size: 1.05rem;">
@@ -172,7 +172,7 @@
             
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 12px;">
                 <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin: 0; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-map-location-dot" style="color: var(--saffron-deep);"></i> Add Delivery Address
+                    <i class="fa-solid fa-map-location-dot" style="color: var(--saffron-deep);"></i> Add Take way Address
                 </h3>
                 <button type="button" @click="showAddressModal = false" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--maroon); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--cream);">
                     <i class="fa-solid fa-xmark"></i>
@@ -287,7 +287,7 @@
 
             submitOrder() {
                 if (!this.selectedAddressId) {
-                    alert('Please select or add a delivery address.');
+                    alert('Please select or add a Take way address.');
                     return;
                 }
                 this.isPlacing = true;

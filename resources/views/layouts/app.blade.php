@@ -6,7 +6,7 @@
     <title>@yield('title', 'Desi Foods Hounslow - Finest Indian Grocery Store')</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Authentic Indian Grocery Store in Hounslow. Buy fresh vegetables, spices, Basmati rice, pulses, ghee, frozen parathas, and sweets online with fast doorstep delivery across London TW3 & UK.">
+    <meta name="description" content="Authentic Indian Grocery Store in Hounslow. Buy fresh vegetables, spices, Basmati rice, pulses, ghee, frozen parathas, and sweets online with fast doorstep Take way across London TW3 & UK.">
     <meta name="keywords" content="Desi Foods Hounslow, Indian Grocery London, Basmati Rice, MDH Spices, Haldirams Sweets, Fresh Okra, Frozen Samosas">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -154,7 +154,7 @@
                 <div style="display: flex; align-items: center; gap: 14px;">
                     <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(230,126,34,0.15); color: var(--saffron); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;"><i class="fa-solid fa-truck-fast"></i></div>
                     <div>
-                        <div style="font-weight: 700; color: var(--saffron); font-size: 0.95rem;">Free UK Delivery</div>
+                        <div style="font-weight: 700; color: var(--saffron); font-size: 0.95rem;">Free UK Take way</div>
                         <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">On orders above £35</div>
                     </div>
                 </div>
@@ -226,12 +226,12 @@
             </div>
 
             <div>
-                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px; border-bottom: 2px solid rgba(230,126,34,0.3); padding-bottom: 8px;">Store Hours & Express Delivery</h4>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px; border-bottom: 2px solid rgba(230,126,34,0.3); padding-bottom: 8px;">Store Hours & Express Take way</h4>
                 <div style="font-size: 0.88rem; color: rgba(255,255,255,0.75); display: flex; flex-direction: column; gap: 8px;">
                     <div><strong>Monday - Saturday:</strong> 8:00 AM - 9:00 PM</div>
                     <div><strong>Sunday:</strong> 9:00 AM - 8:00 PM</div>
                     <div style="margin-top: 12px; background: rgba(230,126,34,0.15); border: 1px solid var(--saffron); padding: 12px 16px; border-radius: 12px; color: var(--saffron); font-weight: 600;">
-                        <i class="fa-solid fa-truck-fast me-1"></i> Same Day Express Hounslow Delivery Available!
+                        <i class="fa-solid fa-truck-fast me-1"></i> Same Day Express Hounslow Take way Available!
                     </div>
                 </div>
             </div>
