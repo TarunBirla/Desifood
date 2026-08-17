@@ -21,9 +21,9 @@
 
         <!-- Wishlist Grid -->
         <div>
-            @if($wishlist && $wishlist->items->count() > 0)
+            @if(isset($wishlists) && $wishlists->count() > 0)
                 <div class="product-grid">
-                    @foreach($wishlist->items as $item)
+                    @foreach($wishlists as $item)
                         @php $product = $item->product; @endphp
                         @if($product)
                             <div class="product-card">
@@ -31,7 +31,7 @@
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <button type="submit" class="btn-wishlist" title="Remove from Wishlist">
-                                        ✕
+                                        <i class="fa-solid fa-heart" style="color: #e74c3c;"></i>
                                     </button>
                                 </form>
 
@@ -50,7 +50,7 @@
                                     <!-- Dual Action Buttons: View Details & Add to Cart -->
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;">
                                         <a href="{{ route('products.show', $product->slug) }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-color: var(--cream-dark); color: var(--maroon);">
-                                            <i class="fa-solid fa-eye"></i> View Details
+                                            <i class="fa-solid fa-eye"></i> View
                                         </a>
 
                                         <form action="{{ route('cart.add') }}" method="POST" style="margin: 0;">
@@ -68,8 +68,10 @@
                     @endforeach
                 </div>
             @else
-                <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 40px; text-align: center; border-radius: 16px;">
-                    <p style="color: var(--charcoal-light); margin-bottom: 16px;">Your wishlist is currently empty.</p>
+                <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 50px; text-align: center; border-radius: 20px; box-shadow: var(--shadow-sm);">
+                    <i class="fa-regular fa-heart" style="font-size: 3rem; color: var(--saffron); margin-bottom: 14px; display: block;"></i>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--maroon); margin-bottom: 8px;">Your Wishlist is Empty</h3>
+                    <p style="color: var(--charcoal-light); margin-bottom: 20px;">Explore our catalog and click the heart icon on any product to save it here.</p>
                     <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm">Explore Food Catalog</a>
                 </div>
             @endif

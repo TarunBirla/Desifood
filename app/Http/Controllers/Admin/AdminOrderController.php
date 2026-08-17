@@ -19,6 +19,10 @@ class AdminOrderController extends Controller
             $query->where('order_status', $request->status);
         }
 
+        if ($request->has('payment_status') && $request->payment_status) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
         if ($request->has('search') && $request->search) {
             $query->where('order_number', 'like', "%{$request->search}%");
         }
@@ -38,6 +42,7 @@ class AdminOrderController extends Controller
         $order = Order::findOrFail($id);
         $request->validate([
             'order_status' => 'required|string',
+            'payment_status' => 'nullable|string',
             'notes' => 'nullable|string',
             'tracking_number' => 'nullable|string',
             'delivery_partner' => 'nullable|string',
@@ -47,6 +52,11 @@ class AdminOrderController extends Controller
         $newStatus = $request->order_status;
 
         $updateData = ['order_status' => $newStatus];
+
+        if ($request->filled('payment_status')) {
+            $updateData['payment_status'] = $request->payment_status;
+        }
+
         if ($request->filled('tracking_number')) {
             $updateData['tracking_number'] = $request->tracking_number;
         }
@@ -65,10 +75,10 @@ class AdminOrderController extends Controller
         OrderStatusHistory::create([
             'order_id' => $order->id,
             'status' => $newStatus,
-            'notes' => $request->notes ?: "Order status updated from {$oldStatus} to {$newStatus}.",
+            'notes' => $request->notes ?: "Order status updated to {$newStatus} (Payment: " . strtoupper($order->payment_status) . ").",
             'changed_by' => Auth::id(),
         ]);
 
-        return back()->with('success', "Order #{$order->order_number} status updated to " . ucfirst($newStatus) . ".");
+        return back()->with('success', "Order #{$order->order_number} status updated successfully.");
     }
 }

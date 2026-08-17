@@ -38,13 +38,27 @@
                             <tr>
                                 <td style="font-weight: 700; color: var(--maroon);">{{ $order->order_number }}</td>
                                 <td>{{ $order->created_at->format('d M Y') }}</td>
-                                <td><span class="badge-status badge-info">{{ ucfirst($order->order_status) }}</span></td>
+                                <td>
+                                    @switch($order->order_status)
+                                        @case('return_requested')
+                                            <span class="badge-status badge-warning" style="background: #F39C12; color: #fff;">Return Requested</span>
+                                            @break
+                                        @case('returned')
+                                            <span class="badge-status badge-danger">Returned</span>
+                                            @break
+                                        @case('delivered')
+                                            <span class="badge-status badge-success">Delivered</span>
+                                            @break
+                                        @default
+                                            <span class="badge-status badge-info">{{ ucfirst($order->order_status) }}</span>
+                                    @endswitch
+                                </td>
                                 <td><span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}">{{ strtoupper($order->payment_status) }}</span></td>
                                 <td style="font-weight: 700; color: var(--maroon);">£{{ number_format($order->grand_total, 2) }}</td>
                                 <td>
                                     <div style="display: flex; gap: 6px;">
-                                        <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm" style="padding: 4px 10px;">
-                                            Track & Details
+                                        <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm" style="padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-eye"></i> Track & Details
                                         </a>
                                     </div>
                                 </td>

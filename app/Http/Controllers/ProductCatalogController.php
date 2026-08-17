@@ -95,7 +95,7 @@ class ProductCatalogController extends Controller
 
     public function show(string $slug)
     {
-        $product = Product::with(['images', 'category', 'brand', 'variants', 'reviews.user'])
+        $product = Product::with(['primaryImage', 'images', 'category', 'brand', 'variants', 'reviews.user'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
