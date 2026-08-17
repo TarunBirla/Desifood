@@ -41,14 +41,16 @@
                 
             </a>
 
-            <!-- Search Bar -->
-            <div style="flex: 1; max-width: 480px; position: relative;" x-data="liveSearch()">
+            <!-- Search Bar Form -->
+            <form action="{{ route('products.index') }}" method="GET" style="flex: 1; max-width: 480px; position: relative;" x-data="liveSearch()">
                 <div style="position: relative;">
-                    <input type="text" x-model="query" @input.debounce.300ms="fetchResults()" placeholder="Search Basmati rice, MDH masalas, frozen parathas, sweets..." 
+                    <input type="text" name="search" x-model="query" @input.debounce.300ms="fetchResults()" placeholder="Search Basmati rice, MDH masalas, frozen parathas, sweets..." value="{{ request('search') }}"
                            style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 30px; border: 1.5px solid var(--cream-dark); outline: none; background-color: var(--white); font-size: 0.9rem; color: var(--charcoal); transition: all 0.3s ease;"
                            onfocus="this.style.borderColor='var(--saffron)'; this.style.boxShadow='0 0 0 3px rgba(230, 126, 34, 0.15)';"
                            onblur="this.style.borderColor='var(--cream-dark)'; this.style.boxShadow='none';">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--saffron-deep); font-size: 0.95rem;"></i>
+                    <button type="submit" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--saffron-deep); font-size: 0.95rem;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
 
                 <!-- Live Search Dropdown -->
@@ -65,7 +67,7 @@
                         </a>
                     </template>
                 </div>
-            </div>
+            </form>
 
             <!-- Action Controls -->
             <div style="display: flex; align-items: center; gap: 16px;">
@@ -129,7 +131,7 @@
             </div>
         </div>
 
-       
+        
     </header>
 
     <!-- Main Content -->
@@ -183,10 +185,12 @@
             </div>
         </div>
 
+        <!-- Main Footer Links Grid -->
         <div style="max-width: 1320px; margin: 0 auto; padding: 60px 24px 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
             <div>
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                     <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 44px;">
+                    <span style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--saffron);">Desi Foods</span>
                 </div>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
                     Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, frozen parathas, and traditional sweets.
@@ -306,8 +310,15 @@
                 },
                 body: JSON.stringify({ product_id: productId, quantity: quantity })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status === 401) {
+                    window.location.href = "{{ route('login') }}";
+                    return null;
+                }
+                return res.json();
+            })
             .then(data => {
+                if (!data) return;
                 if (data.redirect) {
                     window.location.href = data.redirect;
                     return;
@@ -329,8 +340,10 @@
             })
             .catch(err => {
                 console.error(err);
-                showToast('Please login to add items to cart.', 'error');
+                window.location.href = "{{ route('login') }}";
             });
+        };
+
         window.toggleWishlistAjax = function(productId, event = null) {
             let btn = null;
             if (event) {
@@ -350,8 +363,15 @@
                 },
                 body: JSON.stringify({ product_id: productId })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status === 401) {
+                    window.location.href = "{{ route('login') }}";
+                    return null;
+                }
+                return res.json();
+            })
             .then(data => {
+                if (!data) return;
                 if (data.redirect) {
                     window.location.href = data.redirect;
                     return;
@@ -381,7 +401,7 @@
             })
             .catch(err => {
                 console.error(err);
-                showToast('Please login to update wishlist.', 'error');
+                window.location.href = "{{ route('login') }}";
             });
         };
     </script>

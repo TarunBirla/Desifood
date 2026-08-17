@@ -5,7 +5,7 @@
 @section('content')
 
 <!-- Hero Section -->
-<section style="min-height: 85vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(135deg, #5C0A0D 0%, #890F14 50%, #5C0A0D 100%); color: var(--white); padding: 80px 24px;">
+<section style="min-height: 65vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(135deg, #5C0A0D 0%, #890F14 50%, #5C0A0D 100%); color: var(--white); padding: 30px 24px;">
     <!-- Ambient Radial Glows -->
     <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(230,126,34,0.2) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(201,162,39,0.15) 0%, transparent 50%); pointer-events: none;"></div>
     
@@ -41,7 +41,7 @@
         </div>
 
         <!-- Stats Overlay -->
-        <div style="display: flex; justify-content: center; gap: 48px; margin-top: 60px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.12); flex-wrap: wrap;">
+        <div style="display: flex; justify-content: center; gap: 48px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.12); flex-wrap: wrap;">
             <div style="text-align: center;">
                 <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1;">4,000+</div>
                 <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px;">Products</div>
