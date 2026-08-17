@@ -276,9 +276,15 @@
                             <i class="fa-solid fa-eye"></i> View
                         </a>
 
-                        <button type="button" onclick="addToCartAjax({{ $product->id }}, 1, event)" class="btn btn-primary btn-sm" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;">
-                            <i class="fa-solid fa-plus"></i> Add
-                        </button>
+                        @if($inCart)
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline btn-sm" style="color: var(--maroon); border-color: var(--saffron); background: rgba(230,126,34,0.1); width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;">
+                                <i class="fa-solid fa-check"></i> Added
+                            </a>
+                        @else
+                            <button type="button" onclick="addToCartAjax({{ $product->id }}, 1, event)" class="btn btn-primary btn-sm" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>

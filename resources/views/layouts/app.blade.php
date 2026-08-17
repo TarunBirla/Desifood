@@ -286,7 +286,14 @@
         };
 
         window.addToCartAjax = function(productId, quantity = 1, event = null) {
-            if (event) event.preventDefault();
+            let targetBtn = null;
+            if (event) {
+                event.preventDefault();
+                targetBtn = event.currentTarget || event.target;
+                if (targetBtn && targetBtn.tagName !== 'BUTTON' && targetBtn.closest('button')) {
+                    targetBtn = targetBtn.closest('button');
+                }
+            }
             fetch("{{ route('cart.add') }}", {
                 method: 'POST',
                 headers: {
@@ -310,6 +317,10 @@
                         badge.style.display = 'inline-flex';
                     }
                     showToast(data.message || 'Added to cart!');
+                    
+                    if (targetBtn) {
+                        targetBtn.outerHTML = `<a href="{{ route('cart.index') }}" class="btn btn-outline btn-sm" style="color: var(--maroon); border-color: var(--saffron); background: rgba(230,126,34,0.1); width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 10px;"><i class="fa-solid fa-check"></i> Added</a>`;
+                    }
                 } else {
                     showToast(data.message || 'Could not add to cart.', 'error');
                 }

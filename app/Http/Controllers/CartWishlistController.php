@@ -89,7 +89,7 @@ class CartWishlistController extends Controller
         }
 
         $cart = $cart->fresh('items');
-        $totalItems = $cart->items()->sum('quantity');
+        $totalItems = $cart->items()->count();
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
@@ -121,7 +121,7 @@ class CartWishlistController extends Controller
         $cart = $cartItem->cart->fresh('items');
         $itemSubtotal = $cartItem->unit_price * $cartItem->quantity;
         $cartSubtotal = $cart->items->sum(fn($i) => $i->unit_price * $i->quantity);
-        $cartCount = $cart->items->sum('quantity');
+        $cartCount = $cart->items()->count();
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
@@ -145,7 +145,7 @@ class CartWishlistController extends Controller
             $cartItem->delete();
             $cart = $cart->fresh('items');
             $cartSubtotal = $cart->items->sum(fn($i) => $i->unit_price * $i->quantity);
-            $cartCount = $cart->items->sum('quantity');
+            $cartCount = $cart->items()->count();
 
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
@@ -167,7 +167,10 @@ class CartWishlistController extends Controller
             return redirect()->route('login')->with('error', 'Please login to view your wishlist.');
         }
         $wishlists = Wishlist::with('product.primaryImage')->where('user_id', Auth::id())->get();
-        return view('account.wishlist', compact('wishlists'));
+        $cart = Cart::where('user_id', Auth::id())->first();
+        $userCartProductIds = $cart ? $cart->items->pluck('product_id')->toArray() : [];
+
+        return view('account.wishlist', compact('wishlists', 'userCartProductIds'));
     }
 
     public function toggleWishlist(Request $request)
