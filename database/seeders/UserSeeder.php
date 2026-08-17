@@ -17,9 +17,9 @@ class UserSeeder extends Seeder
         $customerRole = Role::where('name', 'customer')->first();
 
         // 1. Admin User
-        $admin = User::firstOrCreate(['email' => 'admin@eccommers.com'], [
-            'name' => 'Hariom Admin',
-            'phone' => '+91 9876543210',
+        $admin = User::firstOrCreate(['email' => 'admin@desifoods.com'], [
+            'name' => 'Desi Foods Admin',
+            'phone' => '020 8570 8899',
             'password' => Hash::make('password123'),
             'role_id' => $adminRole ? $adminRole->id : null,
             'status' => 'active',
@@ -27,9 +27,9 @@ class UserSeeder extends Seeder
         ]);
 
         // 2. Staff User
-        $staff = User::firstOrCreate(['email' => 'staff@eccommers.com'], [
-            'name' => 'Support Manager',
-            'phone' => '+91 9876543211',
+        $staff = User::firstOrCreate(['email' => 'staff@desifoods.com'], [
+            'name' => 'Store Manager',
+            'phone' => '020 8570 8890',
             'password' => Hash::make('password123'),
             'role_id' => $staffRole ? $staffRole->id : null,
             'status' => 'active',
@@ -37,9 +37,9 @@ class UserSeeder extends Seeder
         ]);
 
         // 3. Demo Customer User
-        $customer = User::firstOrCreate(['email' => 'customer@eccommers.com'], [
-            'name' => 'Phil Andreson',
-            'phone' => '+91 9876543212',
+        $customer = User::firstOrCreate(['email' => 'customer@desifoods.com'], [
+            'name' => 'Jyoshna Patel',
+            'phone' => '07700 900123',
             'password' => Hash::make('password123'),
             'role_id' => $customerRole ? $customerRole->id : null,
             'status' => 'active',
@@ -47,30 +47,17 @@ class UserSeeder extends Seeder
         ]);
 
         // Create sample addresses for customer
-        Address::firstOrCreate(['user_id' => $customer->id, 'name' => 'Phil Andreson (Home)'], [
-            'phone' => '+91 9876543212',
-            'address_line_1' => 'Flat 402, Green Valley Heights',
-            'address_line_2' => 'MG Road, Sector 14',
-            'apartment' => 'Building B',
-            'city' => 'Mumbai',
-            'state' => 'Maharashtra',
-            'country' => 'India',
-            'pincode' => '400001',
-            'landmark' => 'Near Central Park',
+        Address::firstOrCreate(['user_id' => $customer->id, 'name' => 'Jyoshna Patel (Home)'], [
+            'phone' => '07700 900123',
+            'address_line_1' => '14 Whitton Road',
+            'address_line_2' => 'Green Parade',
+            'city' => 'Hounslow',
+            'state' => 'Greater London',
+            'country' => 'United Kingdom',
+            'pincode' => 'TW3 2EN',
+            'landmark' => 'Near Hounslow Station',
             'address_type' => 'home',
             'is_default' => true,
-        ]);
-
-        Address::firstOrCreate(['user_id' => $customer->id, 'name' => 'Phil Andreson (Office)'], [
-            'phone' => '+91 9876543212',
-            'address_line_1' => 'Tech Tower, 7th Floor',
-            'address_line_2' => 'Cyber City',
-            'city' => 'Gurugram',
-            'state' => 'Haryana',
-            'country' => 'India',
-            'pincode' => '122002',
-            'address_type' => 'work',
-            'is_default' => false,
         ]);
     }
 }

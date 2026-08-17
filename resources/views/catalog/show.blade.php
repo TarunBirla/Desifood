@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $product->name . ' | Eccommers Web')
+@section('title', $product->name . ' | Desi Foods Hounslow')
 
 @section('content')
 
@@ -14,129 +14,111 @@
     <div style="font-size: 0.88rem; color: var(--muted); margin-bottom: 24px;">
         <a href="{{ route('home') }}">Home</a> &nbsp;/&nbsp; 
         <a href="{{ route('products.index') }}">Catalog</a> &nbsp;/&nbsp; 
-        <span style="color: var(--ink); font-weight: 600;">{{ $product->name }}</span>
+        <span style="color: var(--maroon); font-weight: 600;">{{ $product->name }}</span>
     </div>
 
     <!-- Product Main Grid -->
-    <div class="product-details-grid" style="background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow-sm); margin-bottom: 48px;">
+    <div class="product-details-grid" style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 24px; padding: 36px; box-shadow: var(--shadow-sm); margin-bottom: 48px;">
         <!-- Images Gallery -->
         <div>
-            <div style="height: 480px; background-color: var(--paper-2); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; position: relative;">
+            <div style="height: 440px; background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%); border-radius: 20px; overflow: hidden; margin-bottom: 16px; position: relative; border: 1px solid var(--cream-dark);">
                 <img :src="activeImage" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
 
             <div style="display: flex; gap: 12px; overflow-x: auto;">
                 @foreach($product->images as $img)
                     <div @click="activeImage = '{{ $img->image_path }}'" 
-                          style="width: 80px; height: 80px; border-radius: var(--radius); overflow: hidden; border: 2px solid var(--line); cursor: pointer;"
-                          :style="activeImage === '{{ $img->image_path }}' ? 'border-color: var(--green);' : ''">
+                          style="width: 80px; height: 80px; border-radius: 12px; overflow: hidden; border: 2px solid var(--cream-dark); cursor: pointer;"
+                          :style="activeImage === '{{ $img->image_path }}' ? 'border-color: var(--saffron);' : ''">
                         <img src="{{ $img->image_path }}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                 @endforeach
             </div>
         </div>
 
-        <!-- Product Details & Variant Picker -->
+        <!-- Product Details -->
         <div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div style="font-size: 0.85rem; color: var(--brass); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px;">
-                    {{ $product->brand ? $product->brand->name : 'Eccommers Exclusive' }}
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div style="font-size: 0.85rem; color: var(--saffron-deep); text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
+                    {{ $product->brand ? $product->brand->name : ($product->category ? $product->category->name : 'Desi Foods') }}
                 </div>
 
                 <!-- Wishlist Toggle -->
                 <form action="{{ route('account.wishlist.toggle') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" class="btn btn-outline btn-sm" style="{{ $inWishlist ? 'color: var(--clay); border-color: var(--clay);' : '' }}">
+                    <button type="submit" class="btn btn-outline btn-sm" style="{{ $inWishlist ? 'color: var(--maroon); border-color: var(--maroon); background: rgba(137, 15, 20, 0.08);' : '' }}">
                         {{ $inWishlist ? '♥ Wishlisted' : '♡ Add to Wishlist' }}
                     </button>
                 </form>
             </div>
 
-            <h1 style="font-size: 2.2rem; line-height: 1.2; margin-bottom: 12px;">{{ $product->name }}</h1>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); line-height: 1.25; margin-bottom: 14px;">{{ $product->name }}</h1>
             
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
                 <div class="rating-stars">
-                    <span>★</span> <span>{{ number_format($product->rating_avg, 1) }}</span>
-                    <span style="color: var(--muted); font-size: 0.85rem;">({{ $product->reviews_count }} Verified Reviews)</span>
+                    <span>★★★★★</span> <span>{{ number_format($product->rating_avg, 1) }}</span>
+                    <span style="color: var(--muted); font-size: 0.85rem;">({{ $product->reviews_count }} Customer Reviews)</span>
                 </div>
                 <span style="font-size: 0.85rem; color: var(--muted);">| SKU: <strong x-text="sku"></strong></span>
             </div>
 
             <!-- Price Container -->
-            <div style="background-color: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: baseline; gap: 16px;">
-                <span style="font-size: 2.2rem; font-weight: 700; color: var(--green);" x-text="'£' + Number(price).toLocaleString('en-IN')"></span>
-                <span x-show="salePrice && salePrice < price" style="font-size: 1.2rem; color: var(--muted); text-decoration: line-through;" x-text="'£' + Number(price).toLocaleString('en-IN')"></span>
-                <span style="font-size: 0.85rem; color: var(--muted);">Inclusive of 18% GST</span>
+            <div style="background-color: var(--cream); border: 1px solid var(--cream-dark); border-radius: 16px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: baseline; gap: 16px;">
+                <span style="font-size: 2.2rem; font-weight: 700; color: var(--maroon);" x-text="'£' + Number(price).toFixed(2)"></span>
+                <span x-show="salePrice && salePrice < price" style="font-size: 1.2rem; color: var(--muted); text-decoration: line-through;" x-text="'£' + Number(price).toFixed(2)"></span>
+                <span style="font-size: 0.85rem; color: var(--saffron-deep); font-weight: 600;">✓ 100% Authentic Indian Grocery</span>
             </div>
 
-            <p style="color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.7;">
+            <p style="color: var(--charcoal-light); font-size: 1rem; margin-bottom: 24px; line-height: 1.7;">
                 {{ $product->description }}
             </p>
 
-            <!-- Variants Selector -->
-            @if($product->has_variants && $product->variants->count() > 0)
-                <div style="margin-bottom: 24px;">
-                    <label style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 10px;">Select Variant:</label>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        @foreach($product->variants as $variant)
-                            <button type="button" class="btn btn-outline btn-sm"
-                                    @click="selectVariant({{ json_encode($variant) }})"
-                                    :style="selectedVariantId === {{ $variant->id }} ? 'background: var(--green-dim2); border-color: var(--green); color: var(--green); font-weight: 700;' : ''">
-                                {{ $variant->variant_name }}
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
             <!-- Stock Availability -->
             <div style="margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
-                <span style="font-weight: 600; font-size: 0.9rem;">Availability:</span>
+                <span style="font-weight: 600; font-size: 0.9rem; color: var(--maroon);">Stock Status:</span>
                 <template x-if="stock > 0">
-                    <span class="badge-status badge-success">In Stock (<span x-text="stock"></span> units available)</span>
+                    <span class="badge-status badge-success">In Stock (<span x-text="stock"></span> available at Whitton Rd)</span>
                 </template>
                 <template x-if="stock <= 0">
                     <span class="badge-status badge-danger">Out of Stock</span>
                 </template>
             </div>
 
-            <!-- Single Add to Cart / Added in Cart Button -->
+            <!-- Add to Cart / Added in Cart Button -->
             @if($inCart)
-                <a href="{{ route('cart.index') }}" class="btn btn-outline btn-block" style="color: var(--green); border-color: var(--green); background: var(--green-dim); font-size: 1.05rem; padding: 14px 24px; margin-bottom: 32px; text-align: center;">
-                    ✓ Added in Cart (View Shopping Cart)
+                <a href="{{ route('cart.index') }}" class="btn btn-outline btn-block" style="color: var(--maroon); border-color: var(--saffron); background: rgba(230,126,34,0.1); font-size: 1.05rem; padding: 14px 24px; margin-bottom: 32px; text-align: center;">
+                    ✓ Item Added to Cart (Click to View Shopping Cart)
                 </a>
             @else
                 <form action="{{ route('cart.add') }}" method="POST" style="display: flex; gap: 16px; margin-bottom: 32px;">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <input type="hidden" name="variant_id" :value="selectedVariantId">
                     <input type="hidden" name="quantity" value="1">
 
-                    <button type="submit" class="btn btn-primary" style="flex: 1; padding: 14px 24px;" :disabled="stock <= 0">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                        <span>Add to Shopping Cart</span>
+                    <button type="submit" class="btn btn-primary" style="flex: 1; padding: 14px 24px; font-size: 1.05rem;" :disabled="stock <= 0">
+                        <span>+ Add to Shopping Cart</span>
                     </button>
                 </form>
             @endif
 
             <!-- Policy Assurances -->
-            <div style="border-top: 1px solid var(--line-soft); padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.85rem; color: var(--muted);">
-                <div>🛡️ {{ $product->warranty_info ?: 'Manufacturer Guarantee Included' }}</div>
-                <div>🚚 {{ $product->return_policy_info ?: '7-day easy return policy' }}</div>
+            <div style="border-top: 1px solid var(--cream-dark); padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.88rem; color: var(--charcoal-light);">
+                <div>🌿 100% Genuine Indian Brand</div>
+                <div>🚗 Free Parking at Store (Whitton Rd)</div>
             </div>
         </div>
     </div>
 
     <!-- Product Specifications & Customer Reviews -->
-    <div style="background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow-sm);">
-        <h2 style="font-size: 1.6rem; margin-bottom: 20px;">Technical Specifications</h2>
+    <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 24px; padding: 36px; box-shadow: var(--shadow-sm);">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--maroon); margin-bottom: 20px;">Food Product Specifications</h2>
         @if($product->specifications)
             <table class="custom-table" style="margin-bottom: 40px;">
                 <tbody>
                     @foreach($product->specifications as $key => $val)
                         <tr>
-                            <td style="width: 30%; font-weight: 600; background: var(--paper);">{{ $key }}</td>
+                            <td style="width: 30%; font-weight: 600; background: var(--cream); color: var(--maroon);">{{ $key }}</td>
                             <td>{{ $val }}</td>
                         </tr>
                     @endforeach
@@ -144,33 +126,33 @@
             </table>
         @endif
 
-        <h2 style="font-size: 1.6rem; margin-bottom: 20px;">Customer Reviews & Ratings</h2>
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--maroon); margin-bottom: 20px;">Customer Reviews & Ratings</h2>
         
         <!-- Review Submission Form for Logged in Users -->
         @auth
-            <form action="{{ route('account.review.submit') }}" method="POST" style="background: var(--paper); border: 1px solid var(--line); padding: 24px; border-radius: var(--radius); margin-bottom: 32px;">
+            <form action="{{ route('account.review.submit') }}" method="POST" style="background: var(--cream); border: 1px solid var(--cream-dark); padding: 24px; border-radius: 16px; margin-bottom: 32px;">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
-                <h4 style="margin-bottom: 12px;">Write a Verified Review</h4>
+                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--maroon); margin-bottom: 12px;">Write a Customer Review</h4>
                 
                 <div style="display: flex; gap: 16px; margin-bottom: 16px;">
                     <div>
-                        <label style="font-size: 0.85rem; font-weight: 600;">Rating (1-5 Stars)</label>
-                        <select name="rating" style="padding: 8px; border: 1px solid var(--line); border-radius: var(--radius);">
-                            <option value="5">5 - Outstanding</option>
-                            <option value="4">4 - Good</option>
-                            <option value="3">3 - Average</option>
-                            <option value="2">2 - Poor</option>
-                            <option value="1">1 - Terrible</option>
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon);">Rating (1-5 Stars)</label>
+                        <select name="rating" style="padding: 8px 12px; border: 1px solid var(--cream-dark); border-radius: 8px; font-family: 'Inter', sans-serif;">
+                            <option value="5">★★★★★ 5 - Excellent</option>
+                            <option value="4">★★★★☆ 4 - Good</option>
+                            <option value="3">★★★☆☆ 3 - Average</option>
+                            <option value="2">★★☆☆☆ 2 - Poor</option>
+                            <option value="1">★☆☆☆☆ 1 - Very Poor</option>
                         </select>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                    <textarea name="comment" rows="3" placeholder="Share your experience regarding sound quality, stitching, or pressure handling..." required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 0.9rem;"></textarea>
+                    <textarea name="comment" rows="3" placeholder="Share your experience regarding freshness, taste, or packaging..." required style="width: 100%; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.95rem; font-family: 'Inter', sans-serif;"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-brass btn-sm">Submit Review</button>
+                <button type="submit" class="btn btn-primary btn-sm">Submit Verified Review</button>
             </form>
         @endauth
 
@@ -180,19 +162,19 @@
                 @foreach($product->reviews as $rev)
                     <div style="border-bottom: 1px solid var(--line-soft); padding-bottom: 16px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                            <div style="font-weight: 600; color: var(--ink);">{{ $rev->user ? $rev->user->name : 'Anonymous Customer' }}</div>
+                            <div style="font-weight: 600; color: var(--maroon);">{{ $rev->user ? $rev->user->name : 'Hounslow Shopper' }}</div>
                             <span style="font-size: 0.8rem; color: var(--muted);">{{ $rev->created_at->format('d M Y') }}</span>
                         </div>
                         <div class="rating-stars" style="margin-bottom: 8px;">
                             @for($i=0; $i<$rev->rating; $i++) ★ @endfor
-                            <span style="color: var(--green); font-size: 0.78rem; font-weight: 600; margin-left: 8px;">✓ Verified Purchase</span>
+                            <span style="color: var(--saffron-deep); font-size: 0.78rem; font-weight: 600; margin-left: 8px;">✓ Verified Customer</span>
                         </div>
-                        <p style="font-size: 0.92rem; color: var(--ink-soft);">{{ $rev->comment }}</p>
+                        <p style="font-size: 0.95rem; color: var(--charcoal-light);">{{ $rev->comment }}</p>
                     </div>
                 @endforeach
             </div>
         @else
-            <p style="color: var(--muted);">No reviews written yet for this product. Be the first to leave a review!</p>
+            <p style="color: var(--muted);">No reviews written yet for this item. Be the first to write a review!</p>
         @endif
     </div>
 </div>
@@ -203,22 +185,12 @@
 <script>
     function productDetail() {
         return {
-            activeImage: '{{ $product->primaryImage ? $product->primaryImage->image_path : "https://via.placeholder.com/400" }}',
+            activeImage: '{{ $product->primaryImage ? $product->primaryImage->image_path : "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800" }}',
             sku: '{{ $product->sku }}',
             price: {{ $product->effective_price }},
             salePrice: {{ $product->sale_price ?: 0 }},
             stock: {{ $product->stock }},
-            selectedVariantId: null,
-            quantity: 1,
-            selectVariant(v) {
-                this.selectedVariantId = v.id;
-                this.sku = v.sku;
-                this.price = v.sale_price ? v.sale_price : v.price;
-                this.stock = v.stock;
-                if (v.image) {
-                    this.activeImage = v.image;
-                }
-            }
+            quantity: 1
         }
     }
 </script>

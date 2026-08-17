@@ -1,42 +1,70 @@
 @extends('layouts.app')
 
-@section('title', 'My Wishlist | Eccommers Web')
+@section('title', 'My Wishlist | Desi Foods Hounslow')
 
 @section('content')
 
 <div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;">
-    <h1 style="font-size: 2.2rem; margin-bottom: 32px;">Saved Wishlist</h1>
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">My Wishlist</h1>
 
-    <div style="display: grid; grid-template-columns: 260px 1fr; gap: 36px;">
-        <div style="background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; height: fit-content;">
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px;">
-                <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">Dashboard</a></li>
-                <li><a href="{{ route('account.orders') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">My Orders</a></li>
-                <li><a href="{{ route('account.profile') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">Profile Info</a></li>
-                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">Saved Addresses</a></li>
-                <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 10px 14px; font-weight: 700; color: var(--green); background: var(--green-dim); border-radius: var(--radius);">Wishlist</a></li>
+    <div class="catalog-layout">
+        <!-- Sidebar -->
+        <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 20px; height: fit-content; box-shadow: var(--shadow-sm);">
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;">
+                <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Dashboard</a></li>
+                <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
+                <li><a href="{{ route('account.profile') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Profile Details</a></li>
+                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Saved Delivery Addresses</a></li>
+                <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Wishlist</a></li>
             </ul>
         </div>
 
+        <!-- Wishlist Grid -->
         <div>
-            @if($wishlists->count() > 0)
+            @if($wishlist && $wishlist->items->count() > 0)
                 <div class="product-grid">
-                    @foreach($wishlists as $w)
-                        @php $product = $w->product; @endphp
-                        <div class="product-card">
-                            <div class="media-wrapper">
-                                <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://via.placeholder.com/400' }}" alt="{{ $product->name }}">
+                    @foreach($wishlist->items as $item)
+                        @php $product = $item->product; @endphp
+                        @if($product)
+                            <div class="product-card">
+                                <form action="{{ route('account.wishlist.toggle') }}" method="POST" style="position: absolute; top: 12px; right: 12px; z-index: 5;">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <button type="submit" class="btn-wishlist" title="Remove from Wishlist">
+                                        ✕
+                                    </button>
+                                </form>
+
+                                <div class="media-wrapper">
+                                    <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }}" alt="{{ $product->name }}">
+                                </div>
+
+                                <div class="content">
+                                    <span class="category-name">{{ $product->brand ? $product->brand->name : 'Desi Foods' }}</span>
+                                    <a href="{{ route('products.show', $product->slug) }}" class="title">{{ $product->name }}</a>
+                                    
+                                    <div class="price-row">
+                                        <span class="price">£{{ number_format($product->effective_price, 2) }}</span>
+                                    </div>
+
+                                    <form action="{{ route('cart.add') }}" method="POST" style="margin-top: 14px;">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btn-sm btn-block">
+                                            + Add to Cart
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="content">
-                                <a href="{{ route('products.show', $product->slug) }}" class="title">{{ $product->name }}</a>
-                                <div class="price" style="margin-bottom: 14px;">£{{ number_format($product->effective_price, 2) }}</div>
-                                <a href="{{ route('products.show', $product->slug) }}" class="btn btn-primary btn-sm btn-block">View Product</a>
-                            </div>
-                        </div>
+                        @endif
                     @endforeach
                 </div>
             @else
-                <p style="color: var(--muted);">Your wishlist is empty.</p>
+                <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 40px; text-align: center; border-radius: 16px;">
+                    <p style="color: var(--charcoal-light); margin-bottom: 16px;">Your wishlist is currently empty.</p>
+                    <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm">Explore Food Catalog</a>
+                </div>
             @endif
         </div>
     </div>

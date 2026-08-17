@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'My Account Dashboard | Eccommers Web')
+@section('title', 'My Customer Account | Desi Foods Hounslow')
 
 @section('content')
 
 <div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;">
-    <h1 style="font-size: 2.2rem; margin-bottom: 32px;">My Account</h1>
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">My Customer Account</h1>
 
-    <div style="display: grid; grid-template-columns: 260px 1fr; gap: 36px;">
+    <div class="catalog-layout">
         <!-- Account Sidebar -->
-        <div style="background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; height: fit-content;">
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px;">
-                <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 10px 14px; font-weight: 700; color: var(--green); background: var(--green-dim); border-radius: var(--radius);">Dashboard</a></li>
-                <li><a href="{{ route('account.orders') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">My Orders</a></li>
-                <li><a href="{{ route('account.profile') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">Profile Info</a></li>
-                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">Saved Addresses</a></li>
-                <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 10px 14px; color: var(--ink-soft);">Wishlist</a></li>
+        <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 20px; height: fit-content; box-shadow: var(--shadow-sm);">
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;">
+                <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Dashboard</a></li>
+                <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
+                <li><a href="{{ route('account.profile') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Profile Details</a></li>
+                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Saved Delivery Addresses</a></li>
+                <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Wishlist</a></li>
             </ul>
         </div>
 
@@ -24,7 +24,7 @@
             <!-- Stats -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
                 <div class="stat-card">
-                    <span class="label">Total Orders</span>
+                    <span class="label">Total Orders Placed</span>
                     <div class="value">{{ $totalOrdersCount }}</div>
                 </div>
                 <div class="stat-card">
@@ -34,9 +34,10 @@
             </div>
 
             <!-- Recent Orders -->
-            <h3 style="font-size: 1.4rem; margin-bottom: 20px;">Recent Orders</h3>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--maroon); margin-bottom: 20px;">Recent Grocery Orders</h3>
             @if($recentOrders->count() > 0)
-                <table class="custom-table">
+                <div class="table-responsive">
+                    <table class="custom-table">
                     <thead>
                         <tr>
                             <th>Order #</th>
@@ -50,11 +51,11 @@
                     <tbody>
                         @foreach($recentOrders as $order)
                             <tr>
-                                <td style="font-weight: 700; color: var(--green);">{{ $order->order_number }}</td>
+                                <td style="font-weight: 700; color: var(--maroon);">{{ $order->order_number }}</td>
                                 <td>{{ $order->created_at->format('d M Y') }}</td>
                                 <td><span class="badge-status badge-info">{{ ucfirst($order->order_status) }}</span></td>
                                 <td><span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}">{{ strtoupper($order->payment_status) }}</span></td>
-                                <td style="font-weight: 700;">£{{ number_format($order->grand_total, 2) }}</td>
+                                <td style="font-weight: 700; color: var(--maroon);">£{{ number_format($order->grand_total, 2) }}</td>
                                 <td>
                                     <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm">View Details</a>
                                 </td>
@@ -62,8 +63,12 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             @else
-                <p style="color: var(--muted);">You haven't placed any orders yet.</p>
+                <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 40px; text-align: center; border-radius: 16px;">
+                    <p style="color: var(--charcoal-light); margin-bottom: 16px;">You haven't placed any grocery orders yet.</p>
+                    <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm">Start Shopping</a>
+                </div>
             @endif
         </div>
     </div>
