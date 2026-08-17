@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -90,7 +89,20 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone' => ['required', 'string', 'max:20', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+                'confirmed'
+            ],
+        ], [
+            'password.min' => 'Password minimum 8 characters ka hona zaroori hai.',
+            'password.regex' => 'Password me kam se kam 1 Capital letter (A-Z), 1 Small letter (a-z), 1 Number (0-9), aur 1 Special symbol (@, $, !, %, *, #, ?, &) hona zaroori hai.',
+            'password.confirmed' => 'Password aur Confirm Password match nahi kar rahe hain.',
         ]);
 
         $customerRole = Role::where('name', 'customer')->first();
@@ -109,7 +121,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home')->with('success', 'Account created successfully! Welcome to Eccommers Web.');
+        return redirect()->route('home')->with('success', 'Account created successfully! Welcome to Desi Foods Hounslow.');
     }
 
     public function logout(Request $request)
