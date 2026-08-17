@@ -29,32 +29,54 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header class="navbar">
-        <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <!-- Top Announcement Bar -->
+    <div style="background: var(--maroon-dark); color: var(--cream-warm); font-size: 0.82rem; padding: 7px 24px; border-bottom: 1px solid rgba(230, 126, 34, 0.25);">
+        <div style="max-width: 1320px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <span><i class="fa-solid fa-truck-fast me-1" style="color: var(--saffron);"></i> FREE Express Delivery on orders over £35 across Hounslow & UK!</span>
+                <span style="opacity: 0.5;">|</span>
+                <span><i class="fa-solid fa-location-dot me-1" style="color: var(--saffron);"></i> 3-4 Green Parade, Whitton Rd, TW3 2EN</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="tel:02085701234" style="color: var(--saffron); font-weight: 600;"><i class="fa-solid fa-phone me-1"></i> +44 (0)20 8570 1234</a>
+                <span><i class="fa-solid fa-clock me-1" style="color: var(--saffron);"></i> Open Today: 8am - 9pm</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Main Header Navigation -->
+    <header style="position: sticky; top: 0; z-index: 9999; background-color: rgba(255, 248, 240, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
+        <div style="max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 20px;">
             
             <!-- Logo Section -->
-            <a href="{{ route('home') }}" class="logo-link">
-                <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" class="brand-logo">
-               
+            <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 48px; width: auto;">
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: var(--maroon); line-height: 1.1;">Desi Foods</span>
+                    <span style="font-size: 0.72rem; color: var(--saffron-deep); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Hounslow's Finest</span>
+                </div>
             </a>
 
             <!-- Search Bar -->
-            <div style="flex: 1; max-width: 460px; margin: 0 32px; position: relative;" x-data="liveSearch()">
+            <div style="flex: 1; max-width: 480px; position: relative;" x-data="liveSearch()">
                 <div style="position: relative;">
-                    <input type="text" x-model="query" @input.debounce.300ms="fetchResults()" placeholder="Search spices, Basmati rice, snacks, flour..." 
-                           style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 30px; border: 1px solid var(--cream-dark); outline: none; background-color: var(--cream); font-size: 0.9rem;">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.95rem;"></i>
+                    <input type="text" x-model="query" @input.debounce.300ms="fetchResults()" placeholder="Search Basmati rice, MDH masalas, frozen parathas, sweets..." 
+                           style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 30px; border: 1.5px solid var(--cream-dark); outline: none; background-color: var(--white); font-size: 0.9rem; color: var(--charcoal); transition: all 0.3s ease;"
+                           onfocus="this.style.borderColor='var(--saffron)'; this.style.boxShadow='0 0 0 3px rgba(230, 126, 34, 0.15)';"
+                           onblur="this.style.borderColor='var(--cream-dark)'; this.style.boxShadow='none';">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--saffron-deep); font-size: 0.95rem;"></i>
                 </div>
 
                 <!-- Live Search Dropdown -->
-                <div x-show="results.length > 0" @click.away="results = []" class="search-dropdown" x-cloak>
+                <div x-show="results.length > 0" @click.away="results = []" 
+                     style="position: absolute; top: 110%; left: 0; right: 0; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 16px; box-shadow: var(--shadow-md); overflow: hidden; z-index: 10000;" x-cloak>
                     <template x-for="item in results" :key="item.slug">
-                        <a :href="item.url" class="search-item">
-                            <img :src="item.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=100'" style="width: 36px; height: 36px; object-fit: cover; border-radius: 6px;">
+                        <a :href="item.url" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--cream-dark); text-decoration: none; transition: background 0.2s;"
+                           onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
+                            <img :src="item.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=100'" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
                             <div>
-                                <div style="font-weight: 600; color: var(--maroon);" x-text="item.name"></div>
-                                <div style="font-size: 0.78rem; color: var(--saffron-deep);" x-text="item.category + ' • ' + item.price"></div>
+                                <div style="font-weight: 600; color: var(--maroon); font-size: 0.92rem;" x-text="item.name"></div>
+                                <div style="font-size: 0.78rem; color: var(--saffron-deep); font-weight: 500;" x-text="item.category + ' • ' + item.price"></div>
                             </div>
                         </a>
                     </template>
@@ -62,34 +84,36 @@
             </div>
 
             <!-- Action Controls -->
-            <div style="display: flex; align-items: center; gap: 18px;">
-                <a href="{{ route('categories.index') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-layer-group"></i> All Categories
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="{{ route('categories.index') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; padding: 8px 16px;">
+                    <i class="fa-solid fa-layer-group" style="color: var(--saffron);"></i> Categories
                 </a>
 
                 @auth
                     <!-- Wishlist Icon -->
-                    <a href="{{ route('account.wishlist') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none;" title="Wishlist">
+                    <a href="{{ route('account.wishlist') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Wishlist"
+                       onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-regular fa-heart"></i>
                     </a>
 
                     <!-- Cart Icon with Dynamic Counter -->
-                    <a href="{{ route('cart.index') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none;" title="Shopping Cart">
+                    <a href="{{ route('cart.index') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Shopping Cart"
+                       onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-solid fa-basket-shopping"></i>
                         @php
                             $cartCount = \App\Models\Cart::where('user_id', auth()->id())->first()?->items()->sum('quantity') ?? 0;
                         @endphp
-                        <span class="cart-badge" id="globalCartCountBadge" style="display: {{ $cartCount > 0 ? 'inline-flex' : 'none' }};">{{ $cartCount }}</span>
+                        <span class="cart-badge" id="globalCartCountBadge" style="display: {{ $cartCount > 0 ? 'inline-flex' : 'none' }}; position: absolute; top: -4px; right: -4px; background: var(--saffron-deep); color: #FFF; font-size: 0.72rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; align-items: center; justify-content: center; border: 2px solid #FFF;">{{ $cartCount }}</span>
                     </a>
                     
                     <div style="position: relative;" x-data="{ open: false }">
                         <button @click="open = !open" class="btn btn-outline btn-sm" style="padding: 8px 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-                            <i class="fa-regular fa-user"></i>
+                            <i class="fa-regular fa-user" style="color: var(--saffron);"></i>
                             <span>{{ auth()->user()->name }}</span>
                             <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
                         </button>
                         <div x-show="open" @click.away="open = false" 
-                             style="position: absolute; right: 0; top: 120%; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 12px; box-shadow: var(--shadow-md); width: 200px; padding: 8px 0; z-index: 1000;" x-cloak>
+                             style="position: absolute; right: 0; top: 120%; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 14px; box-shadow: var(--shadow-md); width: 210px; padding: 8px 0; z-index: 1000;" x-cloak>
                             <a href="{{ route('account.dashboard') }}" style="display: block; padding: 10px 18px; color: var(--charcoal-light); font-size: 0.9rem; font-weight: 500;">
                                 <i class="fa-solid fa-gauge-high me-2" style="color: var(--saffron);"></i> My Account
                             </a>
@@ -116,6 +140,20 @@
                 @endauth
             </div>
         </div>
+
+        <!-- Sub-Category Links Quick Navigation Bar -->
+        <div style="background-color: var(--white); border-top: 1px solid var(--cream-dark); overflow-x: auto; white-space: nowrap;">
+            <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; gap: 24px; font-size: 0.88rem; font-weight: 600;">
+                <a href="{{ route('products.index') }}" style="padding: 10px 0; color: var(--maroon); text-decoration: none; border-bottom: 2px solid var(--maroon);"><i class="fa-solid fa-border-all me-1"></i> All Groceries</a>
+                <a href="{{ route('products.index', ['category' => 'spices-masalas']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Spices & Masalas</a>
+                <a href="{{ route('products.index', ['category' => 'rice-grains']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Basmati Rice & Grains</a>
+                <a href="{{ route('products.index', ['category' => 'lentils-pulses']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Lentils & Pulses</a>
+                <a href="{{ route('products.index', ['category' => 'frozen-foods']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Frozen Parathas & Foods</a>
+                <a href="{{ route('products.index', ['category' => 'sweets-snacks']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Sweets & Namkeen</a>
+                <a href="{{ route('products.index', ['category' => 'flours-atta']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Atta & Flours</a>
+                <a href="{{ route('products.index', ['category' => 'oils-ghee']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Ghee & Cooking Oils</a>
+            </div>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -129,59 +167,101 @@
         <span id="toastMessage">Item added to cart</span>
     </div>
 
-    <!-- Footer -->
-    <footer style="background-color: var(--charcoal); color: var(--white); padding: 70px 0 30px; margin-top: 80px; border-top: 4px solid var(--saffron);">
-        <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 42px;">
-                    <span style="font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--saffron);">Desi Foods</span>
+    <!-- Enhanced Premium Footer -->
+    <footer style="background-color: var(--charcoal); color: var(--white); margin-top: 80px; border-top: 4px solid var(--saffron);">
+        
+        <!-- Top Feature Highlights Banner -->
+        <div style="background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 32px 0;">
+            <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(230,126,34,0.15); color: var(--saffron); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--saffron); font-size: 0.95rem;">Free UK Delivery</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">On orders above £35</div>
+                    </div>
                 </div>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
-                    Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, and traditional sweets.
-                </p>
-                <div style="color: rgba(255,255,255,0.8); font-size: 0.88rem; display: flex; flex-direction: column; gap: 8px;">
-                    <div><i class="fa-solid fa-location-dot me-2" style="color: var(--saffron);"></i> 3-4 Green Parade, Whitton Rd, Hounslow TW3 2EN</div>
-                    <div><i class="fa-solid fa-phone me-2" style="color: var(--saffron);"></i> +44 (0)20 8570 1234</div>
+
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(230,126,34,0.15); color: var(--saffron); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;"><i class="fa-solid fa-leaf"></i></div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--saffron); font-size: 0.95rem;">100% Genuine Brands</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Directly imported Indian products</div>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px;">Food Categories</h4>
-                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
-                    <li><a href="{{ route('products.index', ['category' => 'spices-masalas']) }}" style="color: inherit;">Spices & Masalas</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'rice-grains']) }}" style="color: inherit;">Rice & Basmati</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'lentils-pulses']) }}" style="color: inherit;">Lentils & Pulses</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'frozen-foods']) }}" style="color: inherit;">Frozen Parathas & Foods</a></li>
-                    <li><a href="{{ route('products.index', ['category' => 'sweets-snacks']) }}" style="color: inherit;">Sweets & Snacks</a></li>
-                </ul>
-            </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(230,126,34,0.15); color: var(--saffron); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;"><i class="fa-solid fa-square-parking"></i></div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--saffron); font-size: 0.95rem;">Free Store Parking</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Whitton Road Store, TW3 2EN</div>
+                    </div>
+                </div>
 
-            <div>
-                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px;">Quick Links</h4>
-                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
-                    <li><a href="{{ route('categories.index') }}" style="color: inherit;">All Food Categories</a></li>
-                    <li><a href="{{ route('products.index') }}" style="color: inherit;">Full Food Catalog</a></li>
-                    <li><a href="{{ route('blog.index') }}" style="color: inherit;">Indian Recipes & Blog</a></li>
-                    <li><a href="{{ route('account.orders') }}" style="color: inherit;">Track Your Order</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px;">Store Opening Hours</h4>
-                <div style="font-size: 0.88rem; color: rgba(255,255,255,0.7); display: flex; flex-direction: column; gap: 8px;">
-                    <div><strong>Monday - Saturday:</strong> 8:00 AM - 9:00 PM</div>
-                    <div><strong>Sunday:</strong> 9:00 AM - 8:00 PM</div>
-                    <div style="margin-top: 10px; background: rgba(230,126,34,0.15); border: 1px solid var(--saffron); padding: 10px 14px; border-radius: 10px; color: var(--saffron); font-weight: 600;">
-                        <i class="fa-solid fa-truck-fast me-1"></i> Same Day Express Hounslow Delivery
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(230,126,34,0.15); color: var(--saffron); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;"><i class="fa-solid fa-headset"></i></div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--saffron); font-size: 0.95rem;">Store Assistance</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">+44 (0)20 8570 1234</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="max-width: 1320px; margin: 40px auto 0; padding: 24px 24px 0; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; color: rgba(255,255,255,0.5); font-size: 0.88rem;">
-            <div>© {{ date('Y') }} Desi Foods Hounslow. All rights reserved. Authentic Indian Grocery Store.</div>
-            <div style="display: flex; gap: 14px; font-size: 1.6rem; color: rgba(255,255,255,0.7);">
+        <!-- Main Footer Links Grid -->
+        <div style="max-width: 1320px; margin: 0 auto; padding: 60px 24px 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 44px;">
+                    <span style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--saffron);">Desi Foods</span>
+                </div>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
+                    Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, frozen parathas, and traditional sweets.
+                </p>
+                <div style="color: rgba(255,255,255,0.8); font-size: 0.88rem; display: flex; flex-direction: column; gap: 10px;">
+                    <div><i class="fa-solid fa-location-dot me-2" style="color: var(--saffron);"></i> 3-4 Green Parade, Whitton Rd, Hounslow TW3 2EN</div>
+                    <div><i class="fa-solid fa-phone me-2" style="color: var(--saffron);"></i> +44 (0)20 8570 1234</div>
+                    <div><i class="fa-solid fa-envelope me-2" style="color: var(--saffron);"></i> support@desifoods.com</div>
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">VAT Reg #: GB 987 6543 21</div>
+                </div>
+            </div>
+
+            <div>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px; border-bottom: 2px solid rgba(230,126,34,0.3); padding-bottom: 8px;">Food Categories</h4>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.75);">
+                    <li><a href="{{ route('products.index', ['category' => 'spices-masalas']) }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Spices & Masalas</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'rice-grains']) }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Basmati Rice & Grains</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'lentils-pulses']) }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Lentils & Pulses</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'frozen-foods']) }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Frozen Parathas & Foods</a></li>
+                    <li><a href="{{ route('products.index', ['category' => 'sweets-snacks']) }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Sweets & Snacks</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px; border-bottom: 2px solid rgba(230,126,34,0.3); padding-bottom: 8px;">Quick Links</h4>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.75);">
+                    <li><a href="{{ route('categories.index') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> All Food Categories</a></li>
+                    <li><a href="{{ route('products.index') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Full Grocery Catalog</a></li>
+                    <li><a href="{{ route('blog.index') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Indian Recipes & Blog</a></li>
+                    <li><a href="{{ route('account.orders') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Track Your Order</a></li>
+                    <li><a href="{{ route('account.wishlist') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Saved Wishlist</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="font-family: 'Playfair Display', serif; color: var(--saffron); font-size: 1.15rem; margin-bottom: 20px; border-bottom: 2px solid rgba(230,126,34,0.3); padding-bottom: 8px;">Store Hours & Express Delivery</h4>
+                <div style="font-size: 0.88rem; color: rgba(255,255,255,0.75); display: flex; flex-direction: column; gap: 8px;">
+                    <div><strong>Monday - Saturday:</strong> 8:00 AM - 9:00 PM</div>
+                    <div><strong>Sunday:</strong> 9:00 AM - 8:00 PM</div>
+                    <div style="margin-top: 12px; background: rgba(230,126,34,0.15); border: 1px solid var(--saffron); padding: 12px 16px; border-radius: 12px; color: var(--saffron); font-weight: 600;">
+                        <i class="fa-solid fa-truck-fast me-1"></i> Same Day Express Hounslow Delivery Available!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="max-width: 1320px; margin: 20px auto 0; padding: 24px 24px 30px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; color: rgba(255,255,255,0.5); font-size: 0.88rem;">
+            <div>© {{ date('Y') }} Desi Foods Hounslow. All rights reserved. Authentic Indian Grocery Store in London TW3.</div>
+            <div style="display: flex; gap: 16px; font-size: 1.8rem; color: rgba(255,255,255,0.75);">
                 <i class="fa-brands fa-cc-visa" title="Visa"></i>
                 <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
                 <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
