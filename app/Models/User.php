@@ -76,6 +76,11 @@ class User extends Authenticatable
         return $this->role && in_array($this->role->name, ['admin', 'staff']);
     }
 
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role && $this->role->name === $roleName;
+    }
+
     public function hasPermission(string $permissionName): bool
     {
         if ($this->isAdmin()) {

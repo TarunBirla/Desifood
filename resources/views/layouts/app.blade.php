@@ -88,7 +88,7 @@
                             <a href="{{ route('account.orders') }}" style="display: block; padding: 10px 18px; color: var(--charcoal-light); font-size: 0.9rem; font-weight: 500;">
                                 <i class="fa-solid fa-box me-2" style="color: var(--saffron);"></i> Order History
                             </a>
-                            @if(auth()->user()->hasRole('admin'))
+                            @if(auth()->user()->isStaff())
                                 <a href="{{ route('admin.dashboard') }}" style="display: block; padding: 10px 18px; color: var(--maroon); font-size: 0.9rem; font-weight: 700; background: rgba(137,15,20,0.06);">
                                     <i class="fa-solid fa-user-shield me-2"></i> Admin Panel
                                 </a>
