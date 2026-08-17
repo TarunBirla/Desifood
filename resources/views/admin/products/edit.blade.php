@@ -55,23 +55,13 @@
                 </select>
             </div>
 
-            <!-- Image Upload Section -->
+            <!-- Image File Upload Section -->
             <div style="grid-column: span 2; background: var(--cream); border: 2px dashed var(--saffron); border-radius: 16px; padding: 20px;">
                 <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-camera" style="color: var(--saffron-deep);"></i> Change Product Photo
                 </h4>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
-                    <div>
-                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Option A: Upload New Photo from Phone Gallery / Device</label>
-                        <input type="file" name="image_file" accept="image/*" style="width: 100%; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.88rem;">
-                    </div>
-
-                    <div>
-                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Option B: Or Paste Image URL</label>
-                        <input type="url" name="image_url" value="{{ old('image_url', $product->primaryImage ? $product->primaryImage->image_path : '') }}" placeholder="https://images.unsplash.com/..." style="width: 100%; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.88rem;">
-                    </div>
-                </div>
+                <label style="font-weight: 600; font-size: 0.88rem; color: var(--maroon); display: block; margin-bottom: 6px;">Upload New Photo from Phone Gallery / Device</label>
+                <input type="file" name="image_file" accept="image/*" style="width: 100%; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.92rem; margin-bottom: 12px;">
 
                 @if($product->primaryImage)
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -103,7 +93,7 @@
         </div>
 
         <div style="display: flex; gap: 14px;">
-            <button type="submit" class="btn btn-primary" style="padding: 14px 28px; display: inline-flex; align-items: gap: 8px;">
+            <button type="submit" class="btn btn-primary" style="padding: 14px 28px; display: inline-flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-floppy-disk"></i> Update Product
             </button>
             <a href="{{ route('admin.products.index') }}" class="btn btn-outline" style="padding: 14px 28px;">Cancel</a>

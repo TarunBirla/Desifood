@@ -54,23 +54,13 @@
                 </select>
             </div>
 
-            <!-- Image Upload Options -->
+            <!-- Image File Upload -->
             <div style="grid-column: span 2; background: var(--cream); border: 2px dashed var(--saffron); border-radius: 16px; padding: 20px;">
                 <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-camera" style="color: var(--saffron-deep);"></i> Product Photo / Image
+                    <i class="fa-solid fa-camera" style="color: var(--saffron-deep);"></i> Upload Product Photo
                 </h4>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div>
-                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Option A: Upload Photo from Device / Phone</label>
-                        <input type="file" name="image_file" accept="image/*" style="width: 100%; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.88rem;">
-                    </div>
-
-                    <div>
-                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Option B: Or Paste Image URL</label>
-                        <input type="url" name="image_url" placeholder="https://images.unsplash.com/..." style="width: 100%; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.88rem;">
-                    </div>
-                </div>
+                <label style="font-weight: 600; font-size: 0.88rem; color: var(--maroon); display: block; margin-bottom: 6px;">Select Photo from Device / Phone Gallery</label>
+                <input type="file" name="image_file" accept="image/*" style="width: 100%; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.92rem;">
             </div>
 
             <div style="grid-column: span 2;">

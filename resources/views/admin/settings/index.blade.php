@@ -56,7 +56,7 @@
             <span style="font-size: 0.85rem; font-family: 'Inter', sans-serif; color: var(--saffron-deep); font-weight: 600;" x-text="images.length + ' Active Slides'"></span>
         </h3>
         <p style="font-size: 0.88rem; color: var(--charcoal-light); margin-bottom: 20px;">
-            Upload photo files directly from your phone gallery/device, or paste image URLs for the homepage auto-slider.
+            Upload photo files directly from your phone gallery or laptop storage for the homepage auto-slider.
         </p>
 
         <!-- Hidden Input sent with form -->
@@ -84,30 +84,14 @@
             </template>
         </div>
 
-        <!-- Add / Upload New Image Section -->
+        <!-- Upload New Image Section -->
         <div style="background: var(--cream); border: 2px dashed var(--saffron); border-radius: 18px; padding: 20px; margin-bottom: 36px;">
-            <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-camera" style="color: var(--saffron-deep);"></i> Add / Upload New Slider Photos
+            <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-camera" style="color: var(--saffron-deep);"></i> Upload New Slider Photos
             </h4>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div>
-                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Upload Photos from Device / Phone Gallery</label>
-                    <input type="file" name="slider_files[]" multiple accept="image/*" style="width: 100%; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.88rem;">
-                    <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Select 1 or multiple photos from phone. They will be uploaded on saving.</span>
-                </div>
-
-                <div>
-                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Or Paste Image URL</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="url" x-model="newImageUrl" placeholder="https://images.unsplash.com/..." 
-                               style="flex: 1; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.88rem; outline: none; background: var(--white);">
-                        <button type="button" @click="addImage()" class="btn btn-primary btn-sm" style="padding: 10px 16px; white-space: nowrap;">
-                            + Add URL
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <label style="font-weight: 600; font-size: 0.88rem; color: var(--maroon); display: block; margin-bottom: 6px;">Upload Photos from Device / Phone Gallery</label>
+            <input type="file" name="slider_files[]" multiple accept="image/*" style="width: 100%; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.92rem;">
+            <span style="font-size: 0.78rem; color: var(--muted); display: block; margin-top: 6px;">Select 1 or multiple photos from your phone gallery. Photos will be uploaded when saving settings.</span>
         </div>
 
         <!-- Payment Gateway Settings -->
@@ -126,7 +110,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary" style="padding: 14px 36px; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-floppy-disk"></i> Save Settings & Upload Slider Photos
+            <i class="fa-solid fa-floppy-disk"></i> Save Settings & Upload Photos
         </button>
     </form>
 </div>
@@ -138,15 +122,6 @@
     function sliderManager(initialImages) {
         return {
             images: initialImages || [],
-            newImageUrl: '',
-            addImage() {
-                if (!this.newImageUrl.trim()) {
-                    alert('Please enter a valid Image URL.');
-                    return;
-                }
-                this.images.push(this.newImageUrl.trim());
-                this.newImageUrl = '';
-            },
             removeImage(index) {
                 if (confirm('Are you sure you want to delete this slide image?')) {
                     this.images.splice(index, 1);
