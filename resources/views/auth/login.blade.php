@@ -71,17 +71,7 @@
             </button>
         </form>
 
-        <!-- Quick Credentials Info Box -->
-        <div style="background: var(--cream); border: 1px dashed var(--saffron); border-radius: 12px; padding: 12px 14px; margin-top: 20px; font-size: 0.82rem; color: var(--charcoal-light);">
-            <div style="font-weight: 700; color: var(--maroon); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-key" style="color: var(--saffron);"></i> Ready Demo Accounts:
-            </div>
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
-                <div><strong>Admin:</strong> <code>admin@desifoods.com</code></div>
-                <div><strong>Customer:</strong> <code>customer@desifoods.com</code></div>
-                <div><strong>Pass:</strong> <code>password123</code></div>
-            </div>
-        </div>
+       
 
         <div style="text-align: center; margin-top: 18px; font-size: 0.88rem; color: var(--muted);">
             New customer in Hounslow? <a href="{{ route('register') }}" style="color: var(--saffron-deep); font-weight: 700; text-decoration: underline;">Create New Account</a>
