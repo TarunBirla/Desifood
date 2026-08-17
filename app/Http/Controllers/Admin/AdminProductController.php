@@ -87,7 +87,7 @@ class AdminProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::with(['images', 'variants'])->findOrFail($id);
+        $product = Product::with(['images', 'variants', 'primaryImage'])->findOrFail($id);
         $categories = Category::all();
         $brands = Brand::all();
 
@@ -101,6 +101,8 @@ class AdminProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'image_url' => 'nullable|url',
         ]);
 
         $product->update([
@@ -113,7 +115,22 @@ class AdminProductController extends Controller
             'description' => $request->description,
             'is_active' => $request->has('is_active'),
             'is_featured' => $request->has('is_featured'),
+            'is_trending' => $request->has('is_trending'),
+            'is_new_arrival' => $request->has('is_new_arrival'),
         ]);
+
+        if ($request->filled('image_url')) {
+            $primaryImg = ProductImage::where('product_id', $product->id)->where('is_primary', true)->first();
+            if ($primaryImg) {
+                $primaryImg->update(['image_path' => $request->image_url]);
+            } else {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $request->image_url,
+                    'is_primary' => true,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
