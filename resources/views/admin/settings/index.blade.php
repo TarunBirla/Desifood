@@ -32,7 +32,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.settings.update') }}" method="POST">
+    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <!-- General Store Info -->
@@ -56,7 +56,7 @@
             <span style="font-size: 0.85rem; font-family: 'Inter', sans-serif; color: var(--saffron-deep); font-weight: 600;" x-text="images.length + ' Active Slides'"></span>
         </h3>
         <p style="font-size: 0.88rem; color: var(--charcoal-light); margin-bottom: 20px;">
-            Add, delete, or reorder food & store images for the homepage auto-slider. Changes reflect immediately on the website home page.
+            Upload photo files directly from your phone gallery/device, or paste image URLs for the homepage auto-slider.
         </p>
 
         <!-- Hidden Input sent with form -->
@@ -84,20 +84,30 @@
             </template>
         </div>
 
-        <!-- Add New Image Section -->
+        <!-- Add / Upload New Image Section -->
         <div style="background: var(--cream); border: 2px dashed var(--saffron); border-radius: 18px; padding: 20px; margin-bottom: 36px;">
-            <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-plus-circle" style="color: var(--saffron-deep);"></i> Add New Slider Image
+            <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-camera" style="color: var(--saffron-deep);"></i> Add / Upload New Slider Photos
             </h4>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <input type="url" x-model="newImageUrl" placeholder="Paste image URL (e.g. https://images.unsplash.com/...)" 
-                       style="flex: 1; min-width: 280px; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.92rem; outline: none; background: var(--white);">
-                
-                <button type="button" @click="addImage()" class="btn btn-primary btn-sm" style="padding: 12px 24px; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                    <i class="fa-solid fa-plus"></i> Add to Slider
-                </button>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Upload Photos from Device / Phone Gallery</label>
+                    <input type="file" name="slider_files[]" multiple accept="image/*" style="width: 100%; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; background: var(--white); font-size: 0.88rem;">
+                    <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Select 1 or multiple photos from phone. They will be uploaded on saving.</span>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--maroon); display: block; margin-bottom: 6px;">Or Paste Image URL</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="url" x-model="newImageUrl" placeholder="https://images.unsplash.com/..." 
+                               style="flex: 1; padding: 10px; border: 1px solid var(--cream-dark); border-radius: 10px; font-size: 0.88rem; outline: none; background: var(--white);">
+                        <button type="button" @click="addImage()" class="btn btn-primary btn-sm" style="padding: 10px 16px; white-space: nowrap;">
+                            + Add URL
+                        </button>
+                    </div>
+                </div>
             </div>
-            <span style="font-size: 0.78rem; color: var(--muted); display: block; margin-top: 6px;">Tip: High resolution food images (1200x800) work best for the homepage slider.</span>
         </div>
 
         <!-- Payment Gateway Settings -->
@@ -116,7 +126,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary" style="padding: 14px 36px; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-floppy-disk"></i> Save Settings & Slider Images
+            <i class="fa-solid fa-floppy-disk"></i> Save Settings & Upload Slider Photos
         </button>
     </form>
 </div>

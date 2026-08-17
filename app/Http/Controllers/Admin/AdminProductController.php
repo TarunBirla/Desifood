@@ -53,7 +53,8 @@ class AdminProductController extends Controller
             'sale_price' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'description' => 'nullable|string',
-            'image_url' => 'nullable|url',
+            'image_url' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         $product = Product::create([
@@ -72,10 +73,23 @@ class AdminProductController extends Controller
             'is_new_arrival' => $request->has('is_new_arrival'),
         ]);
 
-        if ($request->filled('image_url')) {
+        $imagePath = null;
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('uploads/products'))) {
+                mkdir(public_path('uploads/products'), 0777, true);
+            }
+            $file->move(public_path('uploads/products'), $filename);
+            $imagePath = '/uploads/products/' . $filename;
+        } elseif ($request->filled('image_url')) {
+            $imagePath = $request->image_url;
+        }
+
+        if ($imagePath) {
             ProductImage::create([
                 'product_id' => $product->id,
-                'image_path' => $request->image_url,
+                'image_path' => $imagePath,
                 'is_primary' => true,
             ]);
         }
@@ -102,7 +116,8 @@ class AdminProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
-            'image_url' => 'nullable|url',
+            'image_url' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         $product->update([
@@ -119,14 +134,27 @@ class AdminProductController extends Controller
             'is_new_arrival' => $request->has('is_new_arrival'),
         ]);
 
-        if ($request->filled('image_url')) {
+        $imagePath = null;
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('uploads/products'))) {
+                mkdir(public_path('uploads/products'), 0777, true);
+            }
+            $file->move(public_path('uploads/products'), $filename);
+            $imagePath = '/uploads/products/' . $filename;
+        } elseif ($request->filled('image_url')) {
+            $imagePath = $request->image_url;
+        }
+
+        if ($imagePath) {
             $primaryImg = ProductImage::where('product_id', $product->id)->where('is_primary', true)->first();
             if ($primaryImg) {
-                $primaryImg->update(['image_path' => $request->image_url]);
+                $primaryImg->update(['image_path' => $imagePath]);
             } else {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image_path' => $request->image_url,
+                    'image_path' => $imagePath,
                     'is_primary' => true,
                 ]);
             }
