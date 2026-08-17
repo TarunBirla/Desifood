@@ -29,20 +29,7 @@
 </head>
 <body>
 
-    <!-- Top Announcement Bar -->
-    <div style="background: var(--maroon-dark); color: var(--cream-warm); font-size: 0.82rem; padding: 7px 24px; border-bottom: 1px solid rgba(230, 126, 34, 0.25);">
-        <div style="max-width: 1320px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div style="display: flex; align-items: center; gap: 18px;">
-                <span><i class="fa-solid fa-truck-fast me-1" style="color: var(--saffron);"></i> FREE Express Delivery on orders over £35 across Hounslow & UK!</span>
-                <span style="opacity: 0.5;">|</span>
-                <span><i class="fa-solid fa-location-dot me-1" style="color: var(--saffron);"></i> 3-4 Green Parade, Whitton Rd, TW3 2EN</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="tel:02085701234" style="color: var(--saffron); font-weight: 600;"><i class="fa-solid fa-phone me-1"></i> +44 (0)20 8570 1234</a>
-                <span><i class="fa-solid fa-clock me-1" style="color: var(--saffron);"></i> Open Today: 8am - 9pm</span>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- Sticky Main Header Navigation -->
     <header style="position: sticky; top: 0; z-index: 9999; background-color: rgba(255, 248, 240, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
@@ -51,10 +38,7 @@
             <!-- Logo Section -->
             <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
                 <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 48px; width: auto;">
-                <div style="display: flex; flex-direction: column;">
-                    <span style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: var(--maroon); line-height: 1.1;">Desi Foods</span>
-                    <span style="font-size: 0.72rem; color: var(--saffron-deep); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Hounslow's Finest</span>
-                </div>
+                
             </a>
 
             <!-- Search Bar -->
@@ -141,19 +125,7 @@
             </div>
         </div>
 
-        <!-- Sub-Category Links Quick Navigation Bar -->
-        <div style="background-color: var(--white); border-top: 1px solid var(--cream-dark); overflow-x: auto; white-space: nowrap;">
-            <div style="max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; gap: 24px; font-size: 0.88rem; font-weight: 600;">
-                <a href="{{ route('products.index') }}" style="padding: 10px 0; color: var(--maroon); text-decoration: none; border-bottom: 2px solid var(--maroon);"><i class="fa-solid fa-border-all me-1"></i> All Groceries</a>
-                <a href="{{ route('products.index', ['category' => 'spices-masalas']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Spices & Masalas</a>
-                <a href="{{ route('products.index', ['category' => 'rice-grains']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Basmati Rice & Grains</a>
-                <a href="{{ route('products.index', ['category' => 'lentils-pulses']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Lentils & Pulses</a>
-                <a href="{{ route('products.index', ['category' => 'frozen-foods']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Frozen Parathas & Foods</a>
-                <a href="{{ route('products.index', ['category' => 'sweets-snacks']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Sweets & Namkeen</a>
-                <a href="{{ route('products.index', ['category' => 'flours-atta']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Atta & Flours</a>
-                <a href="{{ route('products.index', ['category' => 'oils-ghee']) }}" style="padding: 10px 0; color: var(--charcoal-light); text-decoration: none;">Ghee & Cooking Oils</a>
-            </div>
-        </div>
+       
     </header>
 
     <!-- Main Content -->
