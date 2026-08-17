@@ -36,10 +36,7 @@
             <!-- Logo Section -->
             <a href="{{ route('home') }}" class="logo-link">
                 <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" class="brand-logo">
-                <div>
-                    <span class="brand-name">Desi Foods</span>
-                    <span class="brand-tagline">Hounslow's Finest Indian Grocery</span>
-                </div>
+               
             </a>
 
             <!-- Search Bar -->
