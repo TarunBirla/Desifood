@@ -14,7 +14,7 @@
                 <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Dashboard</a></li>
                 <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
                 <li><a href="{{ route('account.profile') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Profile Details</a></li>
-                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Saved Delivery Addresses</a></li>
+                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Saved Take way Addresses</a></li>
                 <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Wishlist</a></li>
             </ul>
         </div>

@@ -43,7 +43,7 @@
         if ($currentStatusKey === false) $currentStatusKey = 1;
     @endphp
     <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 32px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 24px;">Delivery Tracking Timeline</h3>
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 24px;">Take way Tracking Timeline</h3>
         <div style="display: flex; justify-content: space-between; position: relative;">
             @php $idx = 0; @endphp
             @foreach($statuses as $stKey => $stLabel)
@@ -59,7 +59,7 @@
 
         @if($order->tracking_number)
             <div style="background: var(--cream); border: 1px solid var(--cream-dark); border-radius: 12px; padding: 14px 20px; margin-top: 24px; display: flex; justify-content: space-between; font-size: 0.9rem;">
-                <span>Delivery Option: <strong>{{ $order->delivery_partner ?: 'Local Hounslow Doorstep Express' }}</strong></span>
+                <span>Take way Option: <strong>{{ $order->delivery_partner ?: 'Local Hounslow Doorstep Express' }}</strong></span>
                 <span>Tracking Ref #: <strong style="color: var(--maroon);">{{ $order->tracking_number }}</strong></span>
             </div>
         @endif

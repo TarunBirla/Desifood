@@ -6,7 +6,7 @@
 
 <div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="{ showModal: false }">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-        <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon);">Saved Delivery Addresses</h1>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon);">Saved Take way Addresses</h1>
         <button type="button" @click="showModal = true" class="btn btn-primary btn-sm">+ Add New Address</button>
     </div>
 
@@ -17,7 +17,7 @@
                 <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Dashboard</a></li>
                 <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
                 <li><a href="{{ route('account.profile') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Profile Details</a></li>
-                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Saved Delivery Addresses</a></li>
+                <li><a href="{{ route('account.addresses') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Saved Take way Addresses</a></li>
                 <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Wishlist</a></li>
             </ul>
         </div>
@@ -50,8 +50,8 @@
                 </div>
             @else
                 <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 40px; text-align: center; border-radius: 16px;">
-                    <p style="color: var(--charcoal-light); margin-bottom: 16px;">No saved delivery addresses found.</p>
-                    <button type="button" @click="showModal = true" class="btn btn-primary btn-sm">+ Add Delivery Address</button>
+                    <p style="color: var(--charcoal-light); margin-bottom: 16px;">No saved Take way addresses found.</p>
+                    <button type="button" @click="showModal = true" class="btn btn-primary btn-sm">+ Add Take way Address</button>
                 </div>
             @endif
         </div>
@@ -73,7 +73,7 @@
                  style="background: var(--white); border-radius: 24px; padding: 32px; width: 100%; max-width: 540px; box-shadow: 0 25px 60px rgba(0,0,0,0.35); border: 1px solid var(--cream-dark); margin: auto; max-height: 85vh; overflow-y: auto;">
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 12px;">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin: 0;">Add Delivery Address</h3>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin: 0;">Add Take way Address</h3>
                     <button type="button" @click="showModal = false" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--maroon); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--cream);">&times;</button>
                 </div>
                 
