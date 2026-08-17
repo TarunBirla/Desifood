@@ -140,14 +140,10 @@
                             $inCart = in_array($product->id, $userCartProductIds ?? []);
                         @endphp
                         <div class="product-card">
-                            <!-- Wishlist Form -->
-                            <form action="{{ route('account.wishlist.toggle') }}" method="POST" style="position: absolute; top: 12px; right: 12px; z-index: 5;">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="btn-wishlist" title="{{ $inWishlist ? 'Remove Wishlist' : 'Add Wishlist' }}">
-                                    <i class="{{ $inWishlist ? 'fa-solid' : 'fa-regular' }} fa-heart" style="{{ $inWishlist ? 'color: #e74c3c;' : '' }}"></i>
-                                </button>
-                            </form>
+                            <!-- Wishlist Toggle Button -->
+                            <button type="button" onclick="toggleWishlistAjax({{ $product->id }}, event)" class="btn-wishlist" style="position: absolute; top: 12px; right: 12px; z-index: 5;" title="{{ $inWishlist ? 'Remove Wishlist' : 'Add Wishlist' }}">
+                                <i class="{{ $inWishlist ? 'fa-solid' : 'fa-regular' }} fa-heart" style="{{ $inWishlist ? 'color: #e74c3c;' : '' }}"></i>
+                            </button>
 
                             <a href="{{ route('products.show', $product->slug) }}" class="media-wrapper" style="display: block;">
                                 <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }}" alt="{{ $product->name }}">

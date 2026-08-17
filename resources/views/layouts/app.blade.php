@@ -74,10 +74,14 @@
                 </a>
 
                 @auth
-                    <!-- Wishlist Icon -->
+                    <!-- Wishlist Icon with Dynamic Badge Counter -->
                     <a href="{{ route('account.wishlist') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Wishlist"
                        onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-regular fa-heart"></i>
+                        @php
+                            $wishlistCount = \App\Models\Wishlist::where('user_id', auth()->id())->count();
+                        @endphp
+                        <span class="cart-badge" id="globalWishlistCountBadge" style="display: {{ $wishlistCount > 0 ? 'inline-flex' : 'none' }}; position: absolute; top: -4px; right: -4px; background: var(--maroon); color: #FFF; font-size: 0.72rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; align-items: center; justify-content: center; border: 2px solid #FFF;">{{ $wishlistCount }}</span>
                     </a>
 
                     <!-- Cart Icon with Dynamic Counter -->
@@ -85,7 +89,7 @@
                        onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-solid fa-basket-shopping"></i>
                         @php
-                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->first()?->items()->sum('quantity') ?? 0;
+                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->first()?->items()->count() ?? 0;
                         @endphp
                         <span class="cart-badge" id="globalCartCountBadge" style="display: {{ $cartCount > 0 ? 'inline-flex' : 'none' }}; position: absolute; top: -4px; right: -4px; background: var(--saffron-deep); color: #FFF; font-size: 0.72rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; align-items: center; justify-content: center; border: 2px solid #FFF;">{{ $cartCount }}</span>
                     </a>
@@ -184,7 +188,6 @@
             <div>
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                     <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 44px;">
-                    <span style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--saffron);">Desi Foods</span>
                 </div>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
                     Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, frozen parathas, and traditional sweets.
@@ -328,6 +331,58 @@
             .catch(err => {
                 console.error(err);
                 showToast('Please login to add items to cart.', 'error');
+            });
+        window.toggleWishlistAjax = function(productId, event = null) {
+            let btn = null;
+            if (event) {
+                event.preventDefault();
+                btn = event.currentTarget || event.target;
+                if (btn && btn.tagName !== 'BUTTON' && btn.closest('button')) {
+                    btn = btn.closest('button');
+                }
+            }
+            fetch("{{ route('account.wishlist.toggle') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+                if (data.success) {
+                    const badge = document.getElementById('globalWishlistCountBadge');
+                    if (badge) {
+                        badge.textContent = data.count;
+                        badge.style.display = data.count > 0 ? 'inline-flex' : 'none';
+                    }
+                    if (btn) {
+                        const icon = btn.querySelector('i');
+                        if (icon) {
+                            if (data.added) {
+                                icon.className = 'fa-solid fa-heart';
+                                icon.style.color = '#e74c3c';
+                            } else {
+                                icon.className = 'fa-regular fa-heart';
+                                icon.style.color = '';
+                            }
+                        }
+                    }
+                    showToast(data.message || (data.added ? 'Added to wishlist!' : 'Removed from wishlist.'));
+                } else {
+                    showToast(data.message || 'Could not update wishlist.', 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('Please login to update wishlist.', 'error');
             });
         };
     </script>
