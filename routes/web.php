@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Admin Protected Routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Admin Products & Inventory
