@@ -23,7 +23,60 @@
 @endphp
 
 <div class="site-container" style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="shoppingCartApp({{ json_encode($cartItems) }})">
-    <h1 class="site-page-title" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">Your Shopping Cart</h1>
+    <!-- Live Product Quick Search Box -->
+    <div x-data="quickCartSearch()" style="position: relative; margin-bottom: 32px; width: 100%;">
+        <div style="position: relative; width: 100%;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--saffron); font-size: 1.1rem;"></i>
+            <input type="text" 
+                   x-model="query" 
+                   @input.debounce.300ms="fetchSuggestions()" 
+                   @keydown.escape="showDropdown = false"
+                   placeholder="🔍 Quick Search & Add items directly (e.g. Basmati Rice, Garam Masala, Samosas)..." 
+                   style="width: 100%; box-sizing: border-box; padding: 14px 18px 14px 48px; border-radius: 50px; border: 2px solid var(--cream-dark); background: var(--white); font-size: 0.98rem; outline: none; box-shadow: var(--shadow-sm); transition: border-color 0.2s;"
+                   onfocus="this.style.borderColor='var(--saffron)'"
+                   onblur="this.style.borderColor='var(--cream-dark)'">
+            
+            <template x-if="loading">
+                <i class="fa-solid fa-spinner fa-spin" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--saffron);"></i>
+            </template>
+        </div>
+
+        <!-- Suggestions Floating Dropdown -->
+        <div x-show="showDropdown && results.length > 0" 
+             @click.away="showDropdown = false"
+             style="position: absolute; top: 115%; left: 0; right: 0; background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 20px; box-shadow: 0 12px 36px rgba(0,0,0,0.15); z-index: 9999; max-height: 380px; overflow-y: auto; padding: 8px 0;"
+             x-cloak>
+            <template x-for="prod in results" :key="prod.id">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--cream-dark); gap: 14px; transition: background 0.15s ease;"
+                     onmouseover="this.style.background='rgba(230,126,34,0.06)'"
+                     onmouseout="this.style.background='transparent'">
+                    
+                    <!-- Product Image & Details -->
+                    <div style="display: flex; align-items: center; gap: 14px; flex: 1;">
+                        <img :src="prod.image" style="width: 52px; height: 52px; object-fit: cover; border-radius: 12px; border: 1px solid var(--cream-dark); flex-shrink: 0;">
+                        <div>
+                            <a :href="prod.url" target="_blank" style="font-weight: 700; color: var(--maroon); font-size: 0.95rem; text-decoration: none; display: block; line-height: 1.3;" x-text="prod.name"></a>
+                            <div style="font-size: 0.78rem; color: var(--saffron-deep); font-weight: 600;" x-text="prod.brand"></div>
+                            <span style="font-weight: 800; color: var(--maroon); font-size: 0.98rem;" x-text="prod.price"></span>
+                        </div>
+                    </div>
+
+                    <!-- Quick + Add Button -->
+                    <button type="button" 
+                            @click="addDirectlyToCart(prod)" 
+                            :disabled="addingId === prod.id"
+                            style="background: var(--maroon); color: var(--white); border: none; padding: 8px 18px; border-radius: 30px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(137,15,20,0.2); flex-shrink: 0;">
+                        <template x-if="addingId === prod.id">
+                            <span><i class="fa-solid fa-spinner fa-spin me-1"></i> Adding...</span>
+                        </template>
+                        <template x-if="addingId !== prod.id">
+                            <span><i class="fa-solid fa-plus me-1"></i> Add to Cart</span>
+                        </template>
+                    </button>
+                </div>
+            </template>
+        </div>
+    </div>
 
     <template x-if="items.length > 0">
         <div class="cart-layout">
@@ -287,6 +340,66 @@
                     event.target.checked = !checked;
                     item.is_recurring = !checked;
                     showToast('Error updating recurring order preference.', 'error');
+                });
+            }
+        }
+    }
+
+    function quickCartSearch() {
+        return {
+            query: '',
+            results: [],
+            loading: false,
+            showDropdown: false,
+            addingId: null,
+
+            fetchSuggestions() {
+                if (this.query.trim().length < 2) {
+                    this.results = [];
+                    this.showDropdown = false;
+                    return;
+                }
+                this.loading = true;
+                fetch('/api/products/search?q=' + encodeURIComponent(this.query))
+                    .then(res => res.json())
+                    .then(data => {
+                        this.results = data;
+                        this.loading = false;
+                        this.showDropdown = data.length > 0;
+                    })
+                    .catch(err => {
+                        this.loading = false;
+                        this.showDropdown = false;
+                    });
+            },
+
+            addDirectlyToCart(product) {
+                this.addingId = product.id;
+                fetch("{{ route('cart.add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        product_id: product.id,
+                        quantity: 1
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.addingId = null;
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        showToast(data.message || 'Error adding product to cart.', 'error');
+                    }
+                })
+                .catch(err => {
+                    this.addingId = null;
+                    showToast('Server error adding product to cart.', 'error');
                 });
             }
         }

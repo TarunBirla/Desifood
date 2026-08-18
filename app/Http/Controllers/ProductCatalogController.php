@@ -117,20 +117,30 @@ class ProductCatalogController extends Controller
             return response()->json([]);
         }
 
-        $products = Product::with(['primaryImage', 'category'])
+        $products = Product::with(['primaryImage', 'category', 'brand'])
             ->where('is_active', true)
             ->where(function ($q) use ($term) {
                 $q->where('name', 'like', "%{$term}%")
                   ->orWhere('sku', 'like', "%{$term}%");
             })
-            ->take(6)
+            ->take(8)
             ->get()
             ->map(function ($p) {
+                $imgPath = asset('images/placeholder.jpg');
+                if ($p->primaryImage && $p->primaryImage->image_path) {
+                    $imgPath = str_starts_with($p->primaryImage->image_path, 'http')
+                        ? $p->primaryImage->image_path
+                        : asset('storage/' . $p->primaryImage->image_path);
+                }
                 return [
+                    'id' => $p->id,
                     'name' => $p->name,
                     'slug' => $p->slug,
+                    'brand' => $p->brand ? $p->brand->name : 'Desi Foods',
                     'price' => '£' . number_format($p->effective_price, 2),
-                    'image' => $p->primaryImage ? $p->primaryImage->image_path : null,
+                    'raw_price' => (float)$p->effective_price,
+                    'stock' => $p->stock,
+                    'image' => $imgPath,
                     'category' => $p->category ? $p->category->name : '',
                     'url' => route('products.show', $p->slug)
                 ];

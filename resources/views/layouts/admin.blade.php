@@ -102,6 +102,20 @@
                         <span>Admin Profile</span>
                     </a>
                 </li>
+                @php
+                    $unreadNotiCount = \App\Models\AdminNotification::where('is_read', false)->count();
+                @endphp
+                <li class="admin-menu-item {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.notifications.index') }}" style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-bell" style="font-size: 1.1rem; width: 22px;"></i>
+                            <span>Notifications</span>
+                        </span>
+                        @if($unreadNotiCount > 0)
+                            <span class="badge-status badge-danger" style="font-size: 0.72rem; padding: 2px 7px; border-radius: 10px;">{{ $unreadNotiCount }}</span>
+                        @endif
+                    </a>
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
                     <a href="{{ route('admin.settings.index') }}">
                         <i class="fa-solid fa-gear" style="font-size: 1.1rem; width: 22px;"></i>
@@ -131,18 +145,29 @@
                     <h2 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--maroon); margin: 0;">@yield('page-title', 'Overview & Revenue Analytics')</h2>
                 </div>
                 
-                <!-- Admin Profile Dropdown Navigation (Far Right Side) -->
-                <div style="position: relative; margin-left: auto;" x-data="{ open: false }">
-                    <button @click="open = !open" style="background: var(--white); border: 1.5px solid var(--cream-dark); padding: 6px 16px; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-sm); outline: none;" onmouseover="this.style.borderColor='var(--saffron)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--maroon); color: var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem;">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                        <div style="text-align: left; display: flex; flex-direction: column;">
-                            <span style="font-weight: 700; font-size: 0.9rem; color: var(--maroon); line-height: 1.2;">{{ auth()->user()->name }}</span>
-                            <span style="font-size: 0.72rem; color: var(--saffron-deep); font-weight: 600;">Administrator</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--muted); margin-left: 6px;"></i>
-                    </button>
+                <div style="display: flex; align-items: center; gap: 14px; margin-left: auto;">
+                    <!-- Notification Bell Button -->
+                    <a href="{{ route('admin.notifications.index') }}" style="position: relative; width: 42px; height: 42px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--cream-dark); display: flex; align-items: center; justify-content: center; color: var(--maroon); font-size: 1.1rem; text-decoration: none; box-shadow: var(--shadow-sm); transition: all 0.2s;" title="Admin Order Notifications">
+                        <i class="fa-solid fa-bell"></i>
+                        @if($unreadNotiCount > 0)
+                            <span style="position: absolute; top: -4px; right: -4px; background: #C0392B; color: #FFF; font-size: 0.7rem; font-weight: 800; border-radius: 50%; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid #FFF;">
+                                {{ $unreadNotiCount > 99 ? '99+' : $unreadNotiCount }}
+                            </span>
+                        @endif
+                    </a>
+
+                    <!-- Admin Profile Dropdown Navigation -->
+                    <div style="position: relative;" x-data="{ open: false }">
+                        <button @click="open = !open" style="background: var(--white); border: 1.5px solid var(--cream-dark); padding: 6px 16px; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-sm); outline: none;" onmouseover="this.style.borderColor='var(--saffron)'" onmouseout="this.style.borderColor='var(--cream-dark)'">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--maroon); color: var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem;">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </div>
+                            <div style="text-align: left; display: flex; flex-direction: column;">
+                                <span style="font-weight: 700; font-size: 0.9rem; color: var(--maroon); line-height: 1.2;">{{ auth()->user()->name }}</span>
+                                <span style="font-size: 0.72rem; color: var(--saffron-deep); font-weight: 600;">Administrator</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--muted); margin-left: 6px;"></i>
+                        </button>
 
                     <div x-show="open" @click.away="open = false" 
                          style="position: absolute; right: 0; top: 120%; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 230px; padding: 8px 0; z-index: 10000;" x-cloak>

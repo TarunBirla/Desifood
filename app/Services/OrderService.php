@@ -189,7 +189,24 @@ class OrderService
                 'changed_by' => $user->id,
             ]);
 
-            // 12. Clear Cart
+            // 12. Create In-App Admin Notification Record
+            try {
+                \App\Models\AdminNotification::create([
+                    'type' => 'new_order',
+                    'title' => "New Order #{$order->order_number} Placed",
+                    'message' => "Customer {$user->name} ({$user->email}) placed a new grocery order for £" . number_format($order->grand_total, 2) . ".",
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'grand_total' => $order->grand_total,
+                    'is_read' => false,
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Admin Notification Error: ' . $e->getMessage());
+            }
+
+            // 13. Clear Cart
             $cart->items()->delete();
 
             return $order;
