@@ -70,7 +70,7 @@
             </form>
 
             <!-- Action Controls -->
-            <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="header-action-controls" style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
                 
 
                 @auth
@@ -101,10 +101,10 @@
                     </a>
                     
                     <div style="position: relative;" x-data="{ open: false }">
-                        <button @click="open = !open" class="btn btn-outline btn-sm" style="padding: 8px 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                        <button @click="open = !open" class="btn btn-outline btn-sm user-dropdown-btn" style="padding: 8px 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
                             <i class="fa-regular fa-user" style="color: var(--saffron);"></i>
-                            <span>{{ auth()->user()->name }}</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
+                            <span class="header-user-name">{{ auth()->user()->name }}</span>
+                            <i class="fa-solid fa-chevron-down header-chevron" style="font-size: 0.75rem;"></i>
                         </button>
                         <div x-show="open" @click.away="open = false" 
                              style="position: absolute; right: 0; top: 120%; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 14px; box-shadow: var(--shadow-md); width: 210px; padding: 8px 0; z-index: 1000;" x-cloak>

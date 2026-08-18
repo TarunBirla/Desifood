@@ -864,11 +864,31 @@ a {
     .header-main-row {
         flex-wrap: nowrap !important;
         justify-content: space-between !important;
-        gap: 10px !important;
-        padding: 8px 14px !important;
+        gap: 8px !important;
+        padding: 8px 12px !important;
     }
     .header-search-wrap {
         display: none !important; /* Hide search bar on mobile screens as requested */
+    }
+    .header-action-controls {
+        gap: 6px !important;
+    }
+    .header-action-controls a {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1.05rem !important;
+    }
+    .user-dropdown-btn {
+        padding: 0 !important;
+        width: 35px !important;
+        height: 35px !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .header-user-name, .header-chevron {
+        display: none !important;
     }
 
     .newsletter-form {
