@@ -49,4 +49,23 @@ class AdminCustomerController extends Controller
         $subscriber->delete();
         return back()->with('success', 'Subscriber deleted successfully.');
     }
+
+    public function sendNotification(Request $request, $id)
+    {
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(
+                new \App\Mail\AdminUserNotificationMail($user, $request->subject, $request->message)
+            );
+            return back()->with('success', "Notification email sent successfully to {$user->name} ({$user->email})!");
+        } catch (\Exception $e) {
+            return back()->with('error', "Failed to send email to {$user->email}: " . $e->getMessage());
+        }
+    }
 }

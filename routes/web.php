@@ -109,6 +109,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Admin Customers, Subscribers & Settings
     Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
     Route::post('/customers/{id}/block', [AdminCustomerController::class, 'toggleBlock'])->name('customers.block');
+    Route::post('/customers/{id}/send-notification', [AdminCustomerController::class, 'sendNotification'])->name('customers.notify');
 
     Route::get('/subscribers', [AdminCustomerController::class, 'subscribers'])->name('subscribers.index');
     Route::delete('/subscribers/{id}', [AdminCustomerController::class, 'deleteSubscriber'])->name('subscribers.destroy');

@@ -73,35 +73,31 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-            'shipping_method_id' => 'required|exists:shipping_methods,id',
-            'payment_method' => 'required|in:razorpay,cod',
-            'coupon_code' => 'nullable|string',
+            'pickup_date' => 'required|date|after_or_equal:today',
+            'pickup_time_slot' => 'required|string',
             'customer_note' => 'nullable|string',
+            'coupon_code' => 'nullable|string',
         ]);
 
         try {
             $user = Auth::user();
+
+            $shippingMethod = ShippingMethod::where('is_active', true)->first();
+            $shippingMethodId = $shippingMethod ? $shippingMethod->id : 1;
+
+            $pickupDetailsNote = "Takeaway Store Pickup on {$request->pickup_date} ({$request->pickup_time_slot}). " . ($request->customer_note ?? '');
+
             $order = $this->orderService->createOrder(
                 $user,
-                $request->address_id,
-                $request->shipping_method_id,
+                null,
+                $shippingMethodId,
                 $request->coupon_code,
-                $request->payment_method,
-                $request->customer_note
+                'cod',
+                $pickupDetailsNote,
+                $request->pickup_date,
+                $request->pickup_time_slot
             );
 
-            if ($request->payment_method === 'razorpay') {
-                $paymentPayload = $this->paymentService->createPaymentIntent($order);
-                return response()->json([
-                    'success' => true,
-                    'is_online_payment' => true,
-                    'payment_data' => $paymentPayload,
-                    'redirect_url' => route('checkout.confirmation', $order->order_number)
-                ]);
-            }
-
-            // For Cash on Delivery
             return response()->json([
                 'success' => true,
                 'is_online_payment' => false,

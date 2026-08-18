@@ -94,22 +94,7 @@
             <span style="font-size: 0.78rem; color: var(--muted); display: block; margin-top: 6px;">Select 1 or multiple photos from your phone gallery. Photos will be uploaded when saving settings.</span>
         </div>
 
-        <!-- Payment Gateway Settings -->
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--maroon); margin-bottom: 16px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-credit-card" style="color: var(--saffron);"></i> Online Payment Gateway Settings
-        </h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
-            <div>
-                <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 6px;">Razorpay / Payment Key ID</label>
-                <input type="text" name="razorpay_key_id" value="{{ $settings['razorpay_key_id'] ?? 'rzp_test_samplekey123' }}" style="width: 100%; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 12px; font-size: 0.95rem; background: var(--cream);">
-            </div>
-            <div>
-                <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); display: block; margin-bottom: 6px;">Razorpay Key Secret</label>
-                <input type="password" name="razorpay_key_secret" value="{{ $settings['razorpay_key_secret'] ?? 'sample_razorpay_secret_456' }}" style="width: 100%; padding: 12px; border: 1px solid var(--cream-dark); border-radius: 12px; font-size: 0.95rem; background: var(--cream);">
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="padding: 14px 36px; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 10px;">
+        <button type="submit" class="btn btn-primary" style="padding: 14px 36px; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px;">
             <i class="fa-solid fa-floppy-disk"></i> Save Settings & Upload Photos
         </button>
     </form>

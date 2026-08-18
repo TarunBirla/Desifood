@@ -93,6 +93,12 @@
                         @endphp
                         <span class="cart-badge" id="globalCartCountBadge" style="display: {{ $cartCount > 0 ? 'inline-flex' : 'none' }}; position: absolute; top: -4px; right: -4px; background: var(--saffron-deep); color: #FFF; font-size: 0.72rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; align-items: center; justify-content: center; border: 2px solid #FFF;">{{ $cartCount }}</span>
                     </a>
+
+                    <!-- Order History Direct Icon -->
+                    <a href="{{ route('account.orders') }}" style="position: relative; color: var(--maroon); font-size: 1.25rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Order History"
+                       onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
+                        <i class="fa-solid fa-box"></i>
+                    </a>
                     
                     <div style="position: relative;" x-data="{ open: false }">
                         <button @click="open = !open" class="btn btn-outline btn-sm" style="padding: 8px 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">

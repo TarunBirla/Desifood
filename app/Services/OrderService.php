@@ -29,12 +29,25 @@ class OrderService
     /**
      * Create Order with server-side validation and DB transaction
      */
-    public function createOrder(User $user, int $addressId, int $shippingMethodId, ?string $couponCode = null, string $paymentMethod = 'razorpay', ?string $customerNote = null): Order
+    public function createOrder(User $user, ?int $addressId = null, int $shippingMethodId = 1, ?string $couponCode = null, string $paymentMethod = 'cod', ?string $customerNote = null, ?string $pickupDate = null, ?string $pickupTimeSlot = null): Order
     {
-        return DB::transaction(function () use ($user, $addressId, $shippingMethodId, $couponCode, $paymentMethod, $customerNote) {
-            // 1. Get Address
-            $address = Address::where('id', $addressId)->where('user_id', $user->id)->firstOrFail();
-            $addressSnapshot = $address->toArray();
+        return DB::transaction(function () use ($user, $addressId, $shippingMethodId, $couponCode, $paymentMethod, $customerNote, $pickupDate, $pickupTimeSlot) {
+            // 1. Get Address Snapshot (Takeaway Store Pickup Snapshot)
+            if ($addressId && $address = Address::where('id', $addressId)->where('user_id', $user->id)->first()) {
+                $addressSnapshot = $address->toArray();
+            } else {
+                $addressSnapshot = [
+                    'name' => $user->name,
+                    'phone' => $user->phone ?? 'N/A',
+                    'address_type' => 'takeaway',
+                    'address_line_1' => 'Takeaway Store Pickup: 3-4 Green Parade, Whitton Road',
+                    'city' => 'Hounslow',
+                    'state' => 'London',
+                    'pincode' => 'TW3 2EN',
+                    'pickup_date' => $pickupDate ?? date('Y-m-d'),
+                    'pickup_time_slot' => $pickupTimeSlot ?? 'Store Opening Hours',
+                ];
+            }
 
             // 2. Get Cart & Items
             $cart = Cart::with('items.product', 'items.variant')->where('user_id', $user->id)->first();
@@ -117,7 +130,7 @@ class OrderService
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => $user->id,
-                'shipping_address_id' => $address->id,
+                'shipping_address_id' => isset($address) ? $address->id : null,
                 'shipping_address_json' => $addressSnapshot,
                 'order_status' => 'pending',
                 'payment_status' => 'unpaid',
