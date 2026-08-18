@@ -22,8 +22,8 @@
     })->values() : collect([]);
 @endphp
 
-<div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="shoppingCartApp({{ json_encode($cartItems) }})">
-    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">Your Shopping Cart</h1>
+<div class="site-container" style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="shoppingCartApp({{ json_encode($cartItems) }})">
+    <h1 class="site-page-title" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">Your Shopping Cart</h1>
 
     <template x-if="items.length > 0">
         <div class="cart-layout">
@@ -44,7 +44,7 @@
                         <template x-for="(item, index) in items" :key="item.id">
                             <tr>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
                                         <img :src="item.image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 1px solid var(--cream-dark);">
                                         <div>
                                             <a :href="'/products/' + item.slug" style="font-weight: 600; color: var(--maroon);" x-text="item.name"></a>
@@ -85,7 +85,7 @@
             </div>
 
             <!-- Summary Box -->
-            <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); height: fit-content;">
+            <div class="cart-summary-box" style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); height: fit-content;">
                 <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 10px;">Order Summary</h3>
                 
                 <template x-if="subtotal < 35">

@@ -11,7 +11,7 @@
     $primaryImg = $product->primaryImage ? $product->primaryImage->image_path : ($product->images->first() ? $product->images->first()->image_path : 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800');
 @endphp
 
-<div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="productDetail()">
+<div class="site-container" style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="productDetail()">
     <!-- Breadcrumb -->
     <div style="font-size: 0.88rem; color: var(--muted); margin-bottom: 24px;">
         <a href="{{ route('home') }}">Home</a> &nbsp;/&nbsp; 
@@ -23,7 +23,7 @@
     <div class="product-details-grid" style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 24px; padding: 36px; box-shadow: var(--shadow-sm); margin-bottom: 48px;">
         <!-- Single Featured Product Image -->
         <div>
-            <div style="height: 480px; background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%); border-radius: 20px; overflow: hidden; position: relative; border: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm);">
+            <div class="product-single-image-box" style="height: 480px; background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%); border-radius: 20px; overflow: hidden; position: relative; border: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm);">
                 <img src="{{ $primaryImg }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
         </div>
@@ -46,9 +46,9 @@
                 </form>
             </div>
 
-            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); line-height: 1.25; margin-bottom: 14px;">{{ $product->name }}</h1>
+            <h1 class="product-single-title" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); line-height: 1.25; margin-bottom: 14px;">{{ $product->name }}</h1>
             
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
                 <div class="rating-stars" style="color: var(--gold); font-size: 0.9rem;">
                     <i class="fa-solid fa-star"></i>
                     <i class="fa-solid fa-star"></i>
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Price Container -->
-            <div style="background-color: var(--cream); border: 1px solid var(--cream-dark); border-radius: 16px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;">
+            <div class="product-price-box" style="background-color: var(--cream); border: 1px solid var(--cream-dark); border-radius: 16px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;">
                 <span style="font-size: 2.2rem; font-weight: 700; color: var(--maroon);" x-text="'£' + Number(price).toFixed(2)"></span>
                 <span x-show="salePrice && salePrice < price" style="font-size: 1.2rem; color: var(--muted); text-decoration: line-through;" x-text="'£' + Number(price).toFixed(2)"></span>
                 <span style="font-size: 0.85rem; color: #2E7D32; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
@@ -86,8 +86,8 @@
             </div>
 
             <!-- Quantity Selector & AJAX Add to Cart Button -->
-            <div style="display: flex; gap: 16px; margin-bottom: 32px; align-items: center; flex-wrap: wrap;" x-data="{ itemQty: 1 }">
-                <div style="display: inline-flex; align-items: center; border: 1px solid var(--cream-dark); border-radius: 14px; background: var(--cream); overflow: hidden; height: 50px;">
+            <div class="product-action-row" style="display: flex; gap: 16px; margin-bottom: 32px; align-items: center; flex-wrap: wrap;" x-data="{ itemQty: 1 }">
+                <div class="stepper-box" style="display: inline-flex; align-items: center; border: 1px solid var(--cream-dark); border-radius: 14px; background: var(--cream); overflow: hidden; height: 50px;">
                     <button type="button" @click="if (itemQty > 1) itemQty--" style="width: 44px; height: 100%; border: none; background: none; font-weight: 700; color: var(--maroon); cursor: pointer; font-size: 1.1rem;">
                         <i class="fa-solid fa-minus"></i>
                     </button>
@@ -97,7 +97,7 @@
                     </button>
                 </div>
 
-                <button type="button" @click="addToCartAjax({{ $product->id }}, itemQty, $event)" class="btn btn-primary" style="flex: 1; min-width: 220px; height: 50px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;" :disabled="stock <= 0">
+                <button type="button" @click="addToCartAjax({{ $product->id }}, itemQty, $event)" class="btn btn-primary btn-add-cart" style="flex: 1; min-width: 220px; height: 50px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;" :disabled="stock <= 0">
                     <i class="fa-solid fa-plus"></i> <span>Add to Shopping Cart</span>
                 </button>
             </div>

@@ -4,12 +4,12 @@
 
 @section('content')
 
-<div style="max-width: 1320px; margin: 40px auto; padding: 0 24px;">
-    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">My Customer Account</h1>
+<div class="site-container" style="max-width: 1320px; margin: 40px auto; padding: 0 24px;">
+    <h1 class="site-page-title" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">My Customer Account</h1>
 
     <div class="catalog-layout">
         <!-- Account Sidebar -->
-        <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 20px; height: fit-content; box-shadow: var(--shadow-sm);">
+        <div class="account-sidebar-box" style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 20px; height: fit-content; box-shadow: var(--shadow-sm);">
             <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;" class="account-sidebar-menu">
                 <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Dashboard</a></li>
                 <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
