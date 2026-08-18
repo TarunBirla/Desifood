@@ -187,7 +187,6 @@
             <div>
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                     <img src="{{ asset('images/logo.svg') }}" alt="Desi Foods Logo" style="height: 44px;">
-                    <span style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--saffron);">Desi Foods</span>
                 </div>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
                     Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, frozen parathas, and traditional sweets.
