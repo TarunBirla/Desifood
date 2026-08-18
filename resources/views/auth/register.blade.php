@@ -10,7 +10,7 @@
     <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 24px; padding: 32px 40px; box-shadow: var(--shadow-md);">
         
         <div style="text-align: center; margin-bottom: 24px;">
-            <img src="{{ asset('images/logo.png') }}" alt="Desi Foods Logo" style="height: 48px; margin-bottom: 8px;">
+            <img src="{{ asset('images/logo.jpeg') }}" alt="Desi Foods Logo" style="height: 48px; margin-bottom: 8px;">
             <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--maroon); margin-bottom: 4px;">Create New Account</h2>
             <p style="color: var(--charcoal-light); font-size: 0.88rem;">Join Desi Foods Hounslow for special offers & fast doorstep express delivery</p>
         </div>
