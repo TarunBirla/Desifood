@@ -8,15 +8,23 @@
     <h1 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 32px;">Profile Details</h1>
 
     <div class="catalog-layout">
-        <!-- Sidebar -->
-        <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 20px; height: fit-content; box-shadow: var(--shadow-sm);">
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;" class="account-sidebar-menu">
-                <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Dashboard</a></li>
-                <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
-                <li><a href="{{ route('account.recurring') }}" style="display: block; padding: 12px 16px; color: var(--saffron-deep); font-weight: 600;"><i class="fa-solid fa-repeat me-1"></i> Next-Month Orders</a></li>
-                <li><a href="{{ route('account.profile') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Profile Details</a></li>
-                <li><a href="{{ route('account.wishlist') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">Wishlist</a></li>
-            </ul>
+        <!-- Account Sidebar Navigation -->
+        <div class="account-nav-wrapper">
+            <a href="{{ route('account.dashboard') }}" class="account-nav-pill">
+                <i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span>
+            </a>
+            <a href="{{ route('account.orders') }}" class="account-nav-pill">
+                <i class="fa-solid fa-box"></i> <span>My Grocery Orders</span>
+            </a>
+            <a href="{{ route('account.recurring') }}" class="account-nav-pill">
+                <i class="fa-solid fa-repeat"></i> <span>Next-Month Orders</span>
+            </a>
+            <a href="{{ route('account.profile') }}" class="account-nav-pill active">
+                <i class="fa-solid fa-user-gear"></i> <span>Profile Details</span>
+            </a>
+            <a href="{{ route('account.wishlist') }}" class="account-nav-pill">
+                <i class="fa-solid fa-heart"></i> <span>Wishlist</span>
+            </a>
         </div>
 
         <!-- Form -->
