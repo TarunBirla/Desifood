@@ -166,7 +166,13 @@ class AdminReportController extends Controller
             ->orderBy('total_spent', 'desc')
             ->paginate(20);
 
-        return view('admin.reports.top_customers', compact('topCustomers'));
+        // Prepare Top 10 chart arrays
+        $topTen = $topCustomers->slice(0, 10);
+        $chartLabels = $topTen->pluck('name')->map(function($name) { return Str::limit($name, 16); })->toArray();
+        $chartSpentData = $topTen->pluck('total_spent')->toArray();
+        $chartOrdersData = $topTen->pluck('total_orders')->toArray();
+
+        return view('admin.reports.top_customers', compact('topCustomers', 'chartLabels', 'chartSpentData', 'chartOrdersData'));
     }
 
     public function exportCsv(Request $request)
