@@ -41,6 +41,7 @@ Route::get('/cart', [CartWishlistController::class, 'viewCart'])->name('cart.ind
 Route::post('/cart/add', [CartWishlistController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/update/{id}', [CartWishlistController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/remove/{id}', [CartWishlistController::class, 'removeCartItem'])->name('cart.remove');
+Route::post('/cart/recurring-toggle', [CartWishlistController::class, 'toggleRecurringPreference'])->name('cart.recurring.toggle');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -62,6 +63,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account', [CustomerAccountController::class, 'dashboard'])->name('account.dashboard');
     Route::get('/account/orders', [CustomerAccountController::class, 'orders'])->name('account.orders');
     Route::get('/account/orders/{order_number}', [CustomerAccountController::class, 'orderDetails'])->name('account.orders.details');
+    Route::post('/account/orders/{order_number}/repeat', [CustomerAccountController::class, 'repeatOrder'])->name('account.orders.repeat');
+    Route::get('/account/recurring', [CustomerAccountController::class, 'recurringOrders'])->name('account.recurring');
+    Route::post('/account/recurring/{id}/update', [CustomerAccountController::class, 'updateRecurringOrder'])->name('account.recurring.update');
+    Route::delete('/account/recurring/{id}', [CustomerAccountController::class, 'deleteRecurringOrder'])->name('account.recurring.delete');
+    Route::post('/account/recurring/checkout', [CustomerAccountController::class, 'checkoutRecurringOrder'])->name('account.recurring.checkout');
     Route::post('/account/orders/{order_number}/return', [CustomerAccountController::class, 'requestReturn'])->name('account.orders.return');
     Route::get('/account/invoice/{order_number}', [CustomerAccountController::class, 'downloadInvoice'])->name('account.invoice.download');
     Route::get('/account/profile', [CustomerAccountController::class, 'profile'])->name('account.profile');
@@ -106,6 +112,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/subscribers', [AdminCustomerController::class, 'subscribers'])->name('subscribers.index');
     Route::delete('/subscribers/{id}', [AdminCustomerController::class, 'deleteSubscriber'])->name('subscribers.destroy');
+
+    // Admin Reports & Analytics Suite
+    Route::get('/reports', [\App\Http\Controllers\Admin\AdminReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/top-products', [\App\Http\Controllers\Admin\AdminReportController::class, 'topProducts'])->name('reports.top-products');
+    Route::get('/reports/top-customers', [\App\Http\Controllers\Admin\AdminReportController::class, 'topCustomers'])->name('reports.top-customers');
+    Route::get('/reports/export', [\App\Http\Controllers\Admin\AdminReportController::class, 'exportCsv'])->name('reports.export');
 
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');

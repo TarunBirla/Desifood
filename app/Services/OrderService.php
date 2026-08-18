@@ -109,7 +109,11 @@ class OrderService
             // 7. Generate Unique Order Number
             $orderNumber = 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(5));
 
-            // 8. Create Order Record
+            // 8. Determine Order Type from Session
+            $orderType = session('order_type', 'normal');
+            $parentOrderId = session('repeat_parent_order_id', null);
+
+            // 9. Create Order Record
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => $user->id,
@@ -118,6 +122,8 @@ class OrderService
                 'order_status' => 'pending',
                 'payment_status' => 'unpaid',
                 'payment_method' => $paymentMethod,
+                'order_type' => $orderType,
+                'parent_order_id' => $parentOrderId,
                 'subtotal' => $subtotal,
                 'discount_amount' => $discountAmount,
                 'coupon_code' => $appliedCoupon ? $appliedCoupon->code : null,
@@ -126,6 +132,14 @@ class OrderService
                 'grand_total' => $grandTotal,
                 'customer_note' => $customerNote,
             ]);
+
+            if ($orderType === 'recurring') {
+                \App\Models\RecurringOrder::where('user_id', $user->id)
+                    ->where('status', 'active')
+                    ->update(['completed_order_id' => $order->id]);
+            }
+
+            session()->forget(['order_type', 'repeat_parent_order_id']);
 
             // 9. Create Order Items & Deduct Stock
             foreach ($itemsToProcess as $itemData) {

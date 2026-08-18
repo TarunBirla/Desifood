@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\RecurringOrder;
 use App\Models\ReturnRequest;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -138,5 +143,146 @@ class CustomerAccountController extends Controller
         $order->update(['order_status' => 'return_requested']);
 
         return back()->with('success', 'Return request submitted. Our team will contact you shortly.');
+    }
+
+    public function repeatOrder(string $orderNumber)
+    {
+        $order = Order::with('items.product', 'items.variant')->where('order_number', $orderNumber)->where('user_id', Auth::id())->firstOrFail();
+        
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        
+        $addedCount = 0;
+        $outOfStockItems = [];
+
+        foreach ($order->items as $item) {
+            $product = $item->product;
+            if (!$product || !$product->is_active) {
+                $outOfStockItems[] = ($item->product_name ?? 'Product') . ' (Discontinued)';
+                continue;
+            }
+
+            $variant = $item->variant_id ? ProductVariant::find($item->variant_id) : null;
+            $stock = $variant ? $variant->stock : $product->stock;
+
+            if ($stock < 1) {
+                $outOfStockItems[] = $product->name . ' (Out of stock)';
+                continue;
+            }
+
+            $qtyToAdd = min($item->quantity, $stock);
+            $unitPrice = $variant ? $variant->effective_price : $product->effective_price;
+
+            $cartItem = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->where('variant_id', $item->variant_id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity = $qtyToAdd;
+                $cartItem->unit_price = $unitPrice;
+                $cartItem->save();
+            } else {
+                CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'variant_id' => $item->variant_id,
+                    'quantity' => $qtyToAdd,
+                    'unit_price' => $unitPrice,
+                ]);
+            }
+
+            $addedCount++;
+        }
+
+        session(['order_type' => 'repeat', 'repeat_parent_order_id' => $order->id]);
+
+        $message = "{$addedCount} item(s) from Order #{$order->order_number} added to your cart for Repeat Order!";
+        if (!empty($outOfStockItems)) {
+            $message .= " Note: Some items were skipped: " . implode(', ', $outOfStockItems);
+        }
+
+        return redirect()->route('cart.index')->with('success', $message);
+    }
+
+    public function recurringOrders()
+    {
+        $user = Auth::user();
+        $targetMonth = date('Y-m', strtotime('+1 month'));
+        $targetMonthName = date('F Y', strtotime('+1 month'));
+
+        $recurringOrders = RecurringOrder::with(['product.primaryImage', 'variant'])
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('account.recurring', compact('user', 'recurringOrders', 'targetMonth', 'targetMonthName'));
+    }
+
+    public function updateRecurringOrder(Request $request, $id)
+    {
+        $request->validate(['quantity' => 'required|integer|min:1']);
+        
+        $recurring = RecurringOrder::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $recurring->update(['quantity' => $request->quantity]);
+
+        return back()->with('success', 'Next-month recurring quantity updated.');
+    }
+
+    public function deleteRecurringOrder($id)
+    {
+        $recurring = RecurringOrder::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $recurring->update(['status' => 'cancelled']);
+
+        return back()->with('success', 'Item removed from your next-month recurring order selection.');
+    }
+
+    public function checkoutRecurringOrder(Request $request)
+    {
+        $user = Auth::user();
+
+        $recurringItems = RecurringOrder::with('product', 'variant')
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->get();
+
+        if ($recurringItems->isEmpty()) {
+            return redirect()->route('account.recurring')->with('error', 'No next-month recurring items found.');
+        }
+
+        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+        $addedCount = 0;
+
+        foreach ($recurringItems as $item) {
+            $product = $item->product;
+            if (!$product || !$product->is_active) continue;
+
+            $variant = $item->variant;
+            $unitPrice = $variant ? $variant->effective_price : $product->effective_price;
+
+            $cartItem = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->where('variant_id', $item->variant_id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity = $item->quantity;
+                $cartItem->unit_price = $unitPrice;
+                $cartItem->save();
+            } else {
+                CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'variant_id' => $item->variant_id,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $unitPrice,
+                ]);
+            }
+            $addedCount++;
+        }
+
+        session(['order_type' => 'recurring']);
+
+        return redirect()->route('cart.index')->with('success', "{$addedCount} recurring product(s) added to your cart for Next-Month Checkout!");
     }
 }

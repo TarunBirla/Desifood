@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\RecurringOrder;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,73 @@ class CartWishlistController extends Controller
             return redirect()->route('login')->with('error', 'Please login to view your shopping cart.');
         }
         $cart = $this->getCart($request)->load('items.product.primaryImage', 'items.variant');
-        return view('cart.index', compact('cart'));
+        
+        $targetMonth = date('Y-m', strtotime('+1 month'));
+        $targetMonthName = date('F Y', strtotime('+1 month'));
+        $userRecurringProductIds = RecurringOrder::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->pluck('product_id')
+            ->toArray();
+
+        return view('cart.index', compact('cart', 'userRecurringProductIds', 'targetMonth', 'targetMonthName'));
+    }
+
+    public function toggleRecurringPreference(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Please login to manage recurring order preferences.'], 401);
+        }
+
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'variant_id' => 'nullable|exists:product_variants,id',
+            'recurring' => 'required|boolean',
+            'quantity' => 'nullable|integer|min:1'
+        ]);
+
+        $userId = Auth::id();
+        $productId = $request->product_id;
+        $variantId = $request->variant_id;
+        $isRecurring = $request->recurring;
+        $qty = $request->quantity ?? 1;
+
+        $currentMonth = date('Y-m');
+        $targetMonth = date('Y-m', strtotime('+1 month'));
+
+        $product = Product::findOrFail($productId);
+        $variant = $variantId ? ProductVariant::find($variantId) : null;
+        $unitPrice = $variant ? $variant->effective_price : $product->effective_price;
+
+        if ($isRecurring) {
+            RecurringOrder::updateOrCreate(
+                [
+                    'user_id' => $userId,
+                    'product_id' => $productId,
+                ],
+                [
+                    'variant_id' => $variantId,
+                    'quantity' => $qty,
+                    'unit_price' => $unitPrice,
+                    'selected_month' => $currentMonth,
+                    'target_month' => $targetMonth,
+                    'status' => 'active',
+                ]
+            );
+            $msg = "'{$product->name}' saved in your Next-Month Recurring Orders list.";
+        } else {
+            RecurringOrder::where('user_id', $userId)
+                ->where('product_id', $productId)
+                ->update(['status' => 'cancelled']);
+
+            $msg = "'{$product->name}' removed from your Next-Month Recurring Orders list.";
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $msg,
+            'is_recurring' => $isRecurring,
+            'target_month' => $targetMonth
+        ]);
     }
 
     public function addToCart(Request $request)

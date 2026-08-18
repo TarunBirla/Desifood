@@ -48,6 +48,12 @@
                         <span>Food Catalog</span>
                     </a>
                 </li>
+                <li class="admin-menu-item {{ request()->routeIs('admin.reports*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.index') }}">
+                        <i class="fa-solid fa-chart-pie" style="font-size: 1.1rem; width: 22px;"></i>
+                        <span>Analytics & Reports</span>
+                    </a>
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
                     <a href="{{ route('admin.reviews.index') }}">
                         <i class="fa-solid fa-star" style="font-size: 1.1rem; width: 22px;"></i>

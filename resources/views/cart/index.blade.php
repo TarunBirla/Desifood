@@ -5,10 +5,11 @@
 @section('content')
 
 @php
-    $cartItems = $cart && $cart->items->count() > 0 ? $cart->items->map(function($i) {
+    $cartItems = $cart && $cart->items->count() > 0 ? $cart->items->map(function($i) use ($userRecurringProductIds) {
         return [
             'id' => $i->id,
             'product_id' => $i->product_id,
+            'variant_id' => $i->variant_id,
             'name' => $i->product->name,
             'slug' => $i->product->slug,
             'brand' => $i->product->brand ? $i->product->brand->name : 'Desi Foods',
@@ -16,6 +17,7 @@
             'price' => (float)$i->unit_price,
             'qty' => (int)$i->quantity,
             'subtotal' => (float)$i->subtotal,
+            'is_recurring' => in_array($i->product_id, $userRecurringProductIds ?? []),
         ];
     })->values() : collect([]);
 @endphp
@@ -47,12 +49,18 @@
                                         <div>
                                             <a :href="'/products/' + item.slug" style="font-weight: 600; color: var(--maroon);" x-text="item.name"></a>
                                             <div style="font-size: 0.8rem; color: var(--saffron-deep); font-weight: 500;" x-text="item.brand"></div>
+                                            
+                                            <!-- Recurring Next-Month Checkbox -->
+                                            <label style="margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--charcoal); cursor: pointer; background: rgba(230,126,34,0.08); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(230,126,34,0.2);" title="Select to prepare a draft order for next month. You won't be charged automatically.">
+                                                <input type="checkbox" :checked="item.is_recurring" @change="toggleRecurring(item, $event)" style="accent-color: var(--saffron); cursor: pointer;">
+                                                <span style="font-weight: 600; color: var(--maroon);"><i class="fa-solid fa-repeat me-1" style="color: var(--saffron);"></i> Order Again Next Month ({{ $targetMonthName ?? 'Next Month' }})</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </td>
                                 <td style="font-weight: 600; color: var(--maroon);" x-text="'£' + item.price.toFixed(2)"></td>
                                 <td>
-                                    <!-- Auto-Updating Quantity Stepper without manual submit button -->
+                                    <!-- Auto-Updating Quantity Stepper -->
                                     <div style="display: inline-flex; align-items: center; border: 1px solid var(--cream-dark); border-radius: 12px; background: var(--cream); overflow: hidden;">
                                         <button type="button" @click="changeQuantity(item, -1)" style="width: 34px; height: 34px; border: none; background: none; font-weight: 700; color: var(--maroon); cursor: pointer; display: flex; align-items: center; justify-content: center;">
                                             <i class="fa-solid fa-minus" style="font-size: 0.75rem;"></i>
@@ -108,24 +116,22 @@
 
                 <div style="border-top: 1px solid var(--cream-dark); padding-top: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: baseline;">
                     <span style="font-size: 1.1rem; font-weight: 700; color: var(--maroon);">Est. Subtotal</span>
-                    <span style="font-size: 1.8rem; font-weight: 700; color: var(--maroon);" x-text="'£' + subtotal.toFixed(2)"></span>
+                    <span style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; color: var(--maroon);" x-text="'£' + subtotal.toFixed(2)"></span>
                 </div>
 
-                <a href="{{ route('checkout.index') }}" class="btn btn-primary btn-block" style="padding: 14px 24px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span>Proceed to Checkout</span> <i class="fa-solid fa-arrow-right"></i>
+                <a href="{{ route('checkout.index') }}" class="btn btn-primary btn-block btn-lg" style="text-align: center; display: block; font-size: 1.05rem; padding: 14px 24px; font-weight: 700;">
+                    Proceed to Checkout <i class="fa-solid fa-arrow-right me-1"></i>
                 </a>
             </div>
         </div>
     </template>
 
     <template x-if="items.length === 0">
-        <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 60px; text-align: center; border-radius: 20px; box-shadow: var(--shadow-sm);">
-            <div style="font-size: 3.5rem; color: var(--saffron); margin-bottom: 16px;">
-                <i class="fa-solid fa-basket-shopping"></i>
-            </div>
-            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--maroon); margin-bottom: 12px;">Your Cart is Empty</h3>
-            <p style="color: var(--charcoal-light); margin-bottom: 24px;">Explore our 4,000+ authentic Indian spices, Basmati rice, and snacks to add items.</p>
-            <a href="{{ route('products.index') }}" class="btn btn-primary">Start Shopping</a>
+        <div style="text-align: center; padding: 80px 20px; background: var(--white); border-radius: 24px; border: 1px solid var(--cream-dark);">
+            <i class="fa-solid fa-basket-shopping" style="font-size: 4rem; color: var(--cream-dark); margin-bottom: 20px; display: block;"></i>
+            <h2 style="font-family: 'Playfair Display', serif; color: var(--maroon); font-size: 1.8rem; margin-bottom: 12px;">Your Shopping Cart is Empty</h2>
+            <p style="color: var(--charcoal-light); margin-bottom: 28px;">Explore our authentic Indian groceries, spices, basmati rice, and fresh sweets!</p>
+            <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">Browse Food Catalog</a>
         </div>
     </template>
 </div>
@@ -136,7 +142,7 @@
 <script>
     function shoppingCartApp(initialItems) {
         return {
-            items: initialItems || [],
+            items: initialItems,
             get subtotal() {
                 return this.items.reduce((sum, i) => sum + (i.price * i.qty), 0);
             },
@@ -146,7 +152,6 @@
                 
                 item.qty = newQty;
                 
-                // AJAX call to update server cart without page reload
                 fetch(`/cart/update/${item.id}`, {
                     method: 'POST',
                     headers: {
@@ -164,7 +169,7 @@
                         if (badge) badge.textContent = data.cart_count;
                         showToast('Cart quantity updated.');
                     } else {
-                        item.qty -= delta; // revert
+                        item.qty -= delta;
                         showToast(data.message || 'Could not update stock.', 'error');
                     }
                 })
@@ -195,6 +200,41 @@
                         showToast('Item removed from cart.');
                     });
                 }
+            },
+            toggleRecurring(item, event) {
+                const checked = event.target.checked;
+                item.is_recurring = checked;
+                
+                fetch("{{ route('cart.recurring.toggle') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        product_id: item.product_id,
+                        variant_id: item.variant_id || null,
+                        recurring: checked ? 1 : 0,
+                        quantity: item.qty
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message);
+                    } else {
+                        event.target.checked = !checked;
+                        item.is_recurring = !checked;
+                        showToast(data.message || 'Could not update recurring preference.', 'error');
+                    }
+                })
+                .catch(err => {
+                    event.target.checked = !checked;
+                    item.is_recurring = !checked;
+                    showToast('Error updating recurring order preference.', 'error');
+                });
             }
         }
     }

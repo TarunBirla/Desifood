@@ -12,7 +12,7 @@ class Order extends Model
 
     protected $fillable = [
         'order_number', 'user_id', 'shipping_address_id', 'shipping_address_json',
-        'order_status', 'payment_status', 'payment_method',
+        'order_status', 'payment_status', 'payment_method', 'order_type', 'parent_order_id',
         'subtotal', 'discount_amount', 'coupon_code', 'shipping_fee', 'tax_amount', 'grand_total',
         'tracking_number', 'delivery_partner', 'customer_note', 'admin_note',
         'cancellation_reason', 'paid_at', 'shipped_at', 'delivered_at'
@@ -28,6 +28,21 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function parentOrder()
+    {
+        return $this->belongsTo(Order::class, 'parent_order_id');
+    }
+
+    public function repeatOrders()
+    {
+        return $this->hasMany(Order::class, 'parent_order_id');
+    }
+
+    public function recurringOrders()
+    {
+        return $this->hasMany(RecurringOrder::class, 'completed_order_id');
     }
 
     public function items()
