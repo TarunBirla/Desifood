@@ -33,7 +33,7 @@
 
     <!-- Sticky Main Header Navigation -->
     <header style="position: sticky; top: 0; z-index: 9999; background-color: rgba(255, 248, 240, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
-        <div style="max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 20px;">
+        <div class="header-main-row" style="max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 20px;">
             
             <!-- Logo Section -->
             <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
@@ -42,7 +42,7 @@
             </a>
 
             <!-- Search Bar Form -->
-            <form action="{{ route('products.index') }}" method="GET" style="flex: 1; max-width: 480px; position: relative;" x-data="liveSearch()">
+            <form action="{{ route('products.index') }}" method="GET" class="header-search-wrap" style="flex: 1; max-width: 480px; position: relative;" x-data="liveSearch()">
                 <div style="position: relative;">
                     <input type="text" name="search" x-model="query" @input.debounce.300ms="fetchResults()" placeholder="Search Basmati rice, MDH masalas, frozen parathas, sweets..." value="{{ request('search') }}"
                            style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 30px; border: 1.5px solid var(--cream-dark); outline: none; background-color: var(--white); font-size: 0.9rem; color: var(--charcoal); transition: all 0.3s ease;"
@@ -71,9 +71,7 @@
 
             <!-- Action Controls -->
             <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="{{ route('categories.index') }}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; padding: 8px 16px;">
-                    <i class="fa-solid fa-layer-group" style="color: var(--saffron);"></i> Categories
-                </a>
+                
 
                 @auth
                     <!-- Wishlist Icon with Dynamic Badge Counter -->
@@ -125,8 +123,7 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline btn-sm">Log In</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Register</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Log In</a>
                 @endauth
             </div>
         </div>

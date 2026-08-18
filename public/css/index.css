@@ -771,7 +771,10 @@ a {
     box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15);
 }
 
-/* Responsive Utilities */
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVE DESIGN SYSTEM (Mobile, Tablet, Laptop, Desktop)
+   ========================================================================== */
+
 .catalog-layout, .product-details-grid, .checkout-layout, .cart-layout {
     display: grid;
     gap: 36px;
@@ -781,10 +784,43 @@ a {
 .checkout-layout { grid-template-columns: 1fr 420px; }
 .cart-layout { grid-template-columns: 1fr 380px; }
 
-@media (max-width: 992px) {
-    .catalog-layout, .product-details-grid, .checkout-layout, .cart-layout {
-        grid-template-columns: 1fr;
+/* Large Laptops & Desktops (1200px+) */
+@media (min-width: 1200px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
         gap: 24px;
+    }
+}
+
+/* Medium Laptops & Small Desktops (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 20px;
+    }
+    .catalog-layout {
+        grid-template-columns: 240px 1fr;
+        gap: 24px;
+    }
+    .checkout-layout {
+        grid-template-columns: 1fr 360px;
+        gap: 24px;
+    }
+    .cart-layout {
+        grid-template-columns: 1fr 340px;
+        gap: 24px;
+    }
+}
+
+/* Tablets & iPad Screen Size (768px - 991px) */
+@media (max-width: 991px) {
+    .catalog-layout, .product-details-grid, .checkout-layout, .cart-layout {
+        grid-template-columns: 1fr !important;
+        gap: 24px;
+    }
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px;
     }
     .admin-sidebar {
         width: 70px;
@@ -794,5 +830,90 @@ a {
     }
     .admin-main {
         margin-left: 70px;
+        padding: 16px;
     }
 }
+
+/* Mobile Portrait & Mobile Landscape (up to 767px) */
+@media (max-width: 767px) {
+    /* Header Responsive Layout */
+    .header-main-row {
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+        padding: 10px 16px !important;
+    }
+    .header-search-wrap {
+        order: 3;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 4px !important;
+    }
+
+    /* Product Grid: 2 Columns on Mobile for clean viewing */
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .product-card .content {
+        padding: 10px !important;
+    }
+
+    .product-card .title {
+        font-size: 0.9rem !important;
+        line-height: 1.25 !important;
+        height: 2.5em !important;
+    }
+
+    .product-card .price {
+        font-size: 1.05rem !important;
+    }
+
+    .product-card .media-wrapper {
+        padding-top: 75% !important;
+    }
+
+    /* Tables & Forms Responsiveness */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cart-table, .custom-table {
+        min-width: 540px;
+    }
+
+    /* Modals Responsive */
+    .modal-dialog, .modal-content {
+        width: 96% !important;
+        max-width: 96% !important;
+        margin: 10px auto !important;
+        padding: 16px !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+
+    .register-grid-2col {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+}
+
+/* Small Mobile Screens (360px - 480px) */
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .btn-sm {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    h1, .page-title {
+        font-size: 1.6rem !important;
+    }
+}
+
