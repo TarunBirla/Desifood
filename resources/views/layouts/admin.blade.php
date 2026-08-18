@@ -27,7 +27,7 @@
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="brand" style="padding: 20px 24px;">
-                <img src="{{ asset('images/logo.jpeg') }}" alt="Desi Foods Logo" style="height: 46px; width: auto; object-fit: contain;">
+                <img src="{{ asset('images/logo.png') }}" alt="Desi Foods Logo" style="height: 46px; width: auto; object-fit: contain;">
             </div>
             <ul class="admin-menu">
                 <li class="admin-menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">

@@ -37,7 +37,7 @@
             
             <!-- Logo Section -->
             <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-                <img src="{{ asset('images/logo.jpeg') }}" alt="Desi Foods Logo" style="height: 48px; width: 200px;">
+                <img src="{{ asset('images/logo.png') }}" alt="Desi Foods Logo" style="height: 48px; width: 200px;">
                 
             </a>
 
@@ -192,7 +192,7 @@
         <div style="max-width: 1320px; margin: 0 auto; padding: 60px 24px 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
             <div>
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <img src="{{ asset('images/logo.jpeg') }}" alt="Desi Foods Logo" style="height: 44px; width: 200px;" >
+                    <img src="{{ asset('images/logo.png') }}" alt="Desi Foods Logo" style="height: 44px; width: 200px;" >
                 </div>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px;">
                     Hounslow's leading destination for authentic Indian groceries, spices, Basmati rice, fresh vegetables, frozen parathas, and traditional sweets.
