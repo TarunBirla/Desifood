@@ -32,4 +32,21 @@ class AdminCustomerController extends Controller
 
         return back()->with('success', "Customer {$user->name} is now " . ucfirst($newStatus) . ".");
     }
+
+    public function subscribers(Request $request)
+    {
+        $query = \App\Models\NewsletterSubscriber::query();
+        if ($request->has('search') && $request->search) {
+            $query->where('email', 'like', "%{$request->search}%");
+        }
+        $subscribers = $query->latest()->paginate(20);
+        return view('admin.subscribers.index', compact('subscribers'));
+    }
+
+    public function deleteSubscriber($id)
+    {
+        $subscriber = \App\Models\NewsletterSubscriber::findOrFail($id);
+        $subscriber->delete();
+        return back()->with('success', 'Subscriber deleted successfully.');
+    }
 }

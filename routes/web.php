@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 // Homepage & Catalog
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/newsletter/subscribe', [HomeController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
 Route::get('/categories', [ProductCatalogController::class, 'allCategories'])->name('categories.index');
 Route::get('/products', [ProductCatalogController::class, 'index'])->name('products.index');
 Route::get('/products/search', [ProductCatalogController::class, 'liveSearch'])->name('products.search');
@@ -97,9 +98,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/coupons', [AdminCouponController::class, 'store'])->name('coupons.store');
     Route::delete('/coupons/{coupon}', [AdminCouponController::class, 'destroy'])->name('coupons.destroy');
 
-    // Admin Customers & Settings
+    // Admin Customers, Subscribers & Settings
     Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
     Route::post('/customers/{id}/block', [AdminCustomerController::class, 'toggleBlock'])->name('customers.block');
+
+    Route::get('/subscribers', [AdminCustomerController::class, 'subscribers'])->name('subscribers.index');
+    Route::delete('/subscribers/{id}', [AdminCustomerController::class, 'deleteSubscriber'])->name('subscribers.destroy');
 
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');

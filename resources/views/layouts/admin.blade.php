@@ -72,6 +72,12 @@
                         <span>Shopper Directory</span>
                     </a>
                 </li>
+                <li class="admin-menu-item {{ request()->routeIs('admin.subscribers*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.subscribers.index') }}">
+                        <i class="fa-solid fa-envelope-open-text" style="font-size: 1.1rem; width: 22px;"></i>
+                        <span>Subscribers</span>
+                    </a>
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
                     <a href="{{ route('admin.settings.index') }}">
                         <i class="fa-solid fa-gear" style="font-size: 1.1rem; width: 22px;"></i>

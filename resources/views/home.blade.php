@@ -443,15 +443,51 @@
 </section>
 
 <!-- Newsletter -->
-<section style="background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-deep) 100%); padding: 70px 24px; color: var(--white); text-align: center;" id="contact">
+<section style="background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-deep) 100%); padding: 60px 24px; color: var(--white); text-align: center;" id="contact">
     <div style="max-width: 650px; margin: 0 auto;">
         <h2 style="font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--white); margin-bottom: 0.8rem;">Stay in the Loop</h2>
         <p style="color: rgba(255,255,255,0.9); margin-bottom: 2rem; font-size: 1.05rem;">Subscribe for weekly specials, fresh vegetable arrivals, and exclusive offers for Desi Foods customers.</p>
-        <form style="display: flex; gap: 12px; max-width: 500px; margin: 0 auto;" onsubmit="event.preventDefault(); alert('Thank you for subscribing! We will send you our weekly special offers.');">
-            <input type="email" placeholder="Enter your email address" required style="flex: 1; padding: 14px 22px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50px; background: rgba(255,255,255,0.15); color: var(--white); font-size: 1rem; outline: none;">
-            <button type="submit" class="btn" style="background: var(--white); color: var(--saffron-deep); font-weight: 700; padding: 14px 28px;">Subscribe</button>
+        
+        <form class="newsletter-form" onsubmit="submitNewsletterAjax(event)">
+            @csrf
+            <input type="email" id="newsletterEmailInput" name="email" placeholder="Enter your email address" required style="flex: 1; padding: 14px 22px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50px; background: rgba(255,255,255,0.15); color: var(--white); font-size: 1rem; outline: none;">
+            <button type="submit" class="btn" style="background: var(--white); color: var(--saffron-deep); font-weight: 700; padding: 14px 28px; white-space: nowrap;">Subscribe</button>
         </form>
     </div>
 </section>
 
+@endsection
+
+@section('scripts')
+<script>
+    function submitNewsletterAjax(e) {
+        e.preventDefault();
+        const emailInput = document.getElementById('newsletterEmailInput');
+        if (!emailInput || !emailInput.value) return;
+
+        fetch("{{ route('newsletter.subscribe') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ email: emailInput.value })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message);
+                emailInput.value = '';
+            } else {
+                showToast(data.message || 'Error subscribing to newsletter.', 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('Could not subscribe. Please try again.', 'error');
+        });
+    }
+</script>
 @endsection

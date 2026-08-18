@@ -64,4 +64,27 @@ class HomeController extends Controller
 
         return view('home', compact('categories', 'featuredProducts', 'newArrivals', 'trendingProducts', 'brands', 'storyImages'));
     }
+
+    public function subscribeNewsletter(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $subscriber = \App\Models\NewsletterSubscriber::firstOrCreate(
+            ['email' => strtolower(trim($request->email))]
+        );
+
+        if ($subscriber->wasRecentlyCreated) {
+            $msg = 'Thank you for subscribing! We will send you our weekly special offers.';
+        } else {
+            $msg = 'You are already subscribed to our newsletter offers!';
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
+        return back()->with('success', $msg);
+    }
 }

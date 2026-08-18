@@ -143,7 +143,7 @@
     </div>
 
     <!-- Enhanced Premium Footer -->
-    <footer style="background-color: var(--charcoal); color: var(--white); margin-top: 80px; border-top: 4px solid var(--saffron);">
+    <footer style="background-color: var(--charcoal); color: var(--white); border-top: 4px solid var(--saffron);">
         
         <!-- Top Feature Highlights Banner -->
         <div style="background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 32px 0;">
