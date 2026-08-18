@@ -28,7 +28,7 @@
         </div>
 
         <!-- Dashboard Content -->
-        <div>
+        <div style="width: 100%; box-sizing: border-box;">
             <!-- Stats -->
             <div class="account-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
                 <div class="stat-card">
@@ -77,39 +77,43 @@
                 </div>
 
                 <!-- Mobile View Cards (< 768px) -->
-                <div class="mobile-orders-cards" style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="mobile-orders-cards" style="display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box;">
                     @foreach($recentOrders as $order)
-                        <div style="background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 18px; padding: 16px; box-shadow: var(--shadow-sm);">
+                        <div style="background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 20px; padding: 18px; box-shadow: var(--shadow-sm); width: 100%; box-sizing: border-box;">
                             <!-- Top Row: Order # + Status Badge -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--cream-dark);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed var(--cream-dark); gap: 8px;">
                                 <div>
-                                    <span style="font-size: 0.75rem; color: var(--muted); display: block;">ORDER NUMBER</span>
+                                    <span style="font-size: 0.72rem; color: var(--muted); display: block; letter-spacing: 0.5px; text-transform: uppercase;">ORDER NUMBER</span>
                                     <strong style="color: var(--maroon); font-family: monospace; font-size: 0.95rem;">{{ $order->order_number }}</strong>
                                 </div>
                                 <div>
-                                    <span class="badge-status badge-success" style="font-size: 0.78rem; padding: 4px 10px;">{{ ucfirst($order->order_status) }}</span>
+                                    @if($order->order_status === 'delivered')
+                                        <span class="badge-status badge-success" style="font-size: 0.78rem; padding: 4px 12px; border-radius: 20px;">Delivered</span>
+                                    @else
+                                        <span class="badge-status badge-warning" style="font-size: 0.78rem; padding: 4px 12px; border-radius: 20px; background: rgba(230,126,34,0.15); color: var(--saffron-deep);">{{ ucfirst($order->order_status) }}</span>
+                                    @endif
                                 </div>
                             </div>
 
                             <!-- Middle Row: Date + Payment + Total -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; font-size: 0.88rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; font-size: 0.88rem;">
                                 <div>
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Date:</span>
-                                    <strong style="color: var(--charcoal);">{{ $order->created_at->format('d M Y') }}</strong>
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Date:</span>
+                                    <strong style="color: var(--charcoal); font-size: 0.92rem;">{{ $order->created_at->format('d M Y') }}</strong>
                                 </div>
                                 <div>
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Payment Status:</span>
-                                    <span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}" style="font-size: 0.75rem;">{{ strtoupper($order->payment_status) }}</span>
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Payment Status:</span>
+                                    <span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}" style="font-size: 0.75rem; padding: 3px 10px; border-radius: 12px;">{{ strtoupper($order->payment_status) }}</span>
                                 </div>
-                                <div style="grid-column: span 2;">
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Total Amount:</span>
-                                    <strong style="color: var(--maroon); font-size: 1.1rem;">£{{ number_format($order->grand_total, 2) }}</strong>
+                                <div style="grid-column: span 2; margin-top: 2px;">
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Total Amount:</span>
+                                    <strong style="color: var(--maroon); font-size: 1.15rem; font-weight: 800;">£{{ number_format($order->grand_total, 2) }}</strong>
                                 </div>
                             </div>
 
                             <!-- Action Button -->
-                            <div style="border-top: 1px solid var(--cream-dark); padding-top: 12px;">
-                                <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm" style="width: 100%; text-align: center; justify-content: center; border-radius: 20px; padding: 8px;">
+                            <div style="border-top: 1px solid var(--cream-dark); padding-top: 14px;">
+                                <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm" style="width: 100%; text-align: center; justify-content: center; border-radius: 30px; padding: 10px; font-weight: 600; font-size: 0.9rem;">
                                     <i class="fa-solid fa-eye me-1"></i> View Order Details
                                 </a>
                             </div>

@@ -27,7 +27,7 @@
             </a>
         </div>
 
-        <div>
+        <div style="width: 100%; box-sizing: border-box;">
             @if(session('success'))
                 <div style="background: rgba(46,125,50,0.1); color: #2E7D32; padding: 14px 20px; border-radius: 12px; border-left: 4px solid #2E7D32; margin-bottom: 24px; font-weight: 600;">
                     <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
@@ -103,54 +103,58 @@
                 </div>
 
                 <!-- Mobile View Cards (< 768px) -->
-                <div class="mobile-orders-cards" style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="mobile-orders-cards" style="display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box;">
                     @foreach($orders as $order)
-                        <div style="background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 18px; padding: 16px; box-shadow: var(--shadow-sm);">
+                        <div style="background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 20px; padding: 18px; box-shadow: var(--shadow-sm); width: 100%; box-sizing: border-box;">
                             <!-- Top Row: Order # + Status Badge -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--cream-dark);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed var(--cream-dark); gap: 8px;">
                                 <div>
-                                    <span style="font-size: 0.75rem; color: var(--muted); display: block;">ORDER NUMBER</span>
+                                    <span style="font-size: 0.72rem; color: var(--muted); display: block; letter-spacing: 0.5px; text-transform: uppercase;">ORDER NUMBER</span>
                                     <strong style="color: var(--maroon); font-family: monospace; font-size: 0.95rem;">{{ $order->order_number }}</strong>
                                 </div>
                                 <div>
-                                    <span class="badge-status badge-success" style="font-size: 0.78rem; padding: 4px 10px;">{{ ucfirst($order->order_status) }}</span>
+                                    @if($order->order_status === 'delivered')
+                                        <span class="badge-status badge-success" style="font-size: 0.78rem; padding: 4px 12px; border-radius: 20px;">Delivered</span>
+                                    @else
+                                        <span class="badge-status badge-warning" style="font-size: 0.78rem; padding: 4px 12px; border-radius: 20px; background: rgba(230,126,34,0.15); color: var(--saffron-deep);">{{ ucfirst($order->order_status) }}</span>
+                                    @endif
                                 </div>
                             </div>
 
                             <!-- Middle Row: Date + Type + Payment + Total -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; font-size: 0.88rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; font-size: 0.88rem;">
                                 <div>
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Date:</span>
-                                    <strong style="color: var(--charcoal);">{{ $order->created_at->format('d M Y') }}</strong>
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Date:</span>
+                                    <strong style="color: var(--charcoal); font-size: 0.92rem;">{{ $order->created_at->format('d M Y') }}</strong>
                                 </div>
                                 <div>
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Order Type:</span>
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Order Type:</span>
                                     @if($order->order_type === 'repeat')
-                                        <span class="badge-status badge-info" style="font-size: 0.75rem;"><i class="fa-solid fa-rotate-right me-1"></i> Repeat</span>
+                                        <span class="badge-status badge-info" style="font-size: 0.75rem; padding: 3px 10px; border-radius: 12px;"><i class="fa-solid fa-rotate-right me-1"></i> Repeat</span>
                                     @elseif($order->order_type === 'recurring')
-                                        <span class="badge-status badge-info" style="font-size: 0.75rem; background: rgba(46,125,50,0.15); color: #2E7D32;"><i class="fa-solid fa-calendar-check me-1"></i> Recurring</span>
+                                        <span class="badge-status badge-info" style="font-size: 0.75rem; padding: 3px 10px; border-radius: 12px; background: rgba(46,125,50,0.15); color: #2E7D32;"><i class="fa-solid fa-calendar-check me-1"></i> Recurring</span>
                                     @else
-                                        <span style="color: var(--muted); font-size: 0.85rem;">Standard</span>
+                                        <span style="color: var(--muted); font-size: 0.88rem;">Standard</span>
                                     @endif
                                 </div>
                                 <div>
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Payment Status:</span>
-                                    <span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}" style="font-size: 0.75rem;">{{ strtoupper($order->payment_status) }}</span>
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Payment Status:</span>
+                                    <span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}" style="font-size: 0.75rem; padding: 3px 10px; border-radius: 12px;">{{ strtoupper($order->payment_status) }}</span>
                                 </div>
                                 <div>
-                                    <span style="color: var(--muted); font-size: 0.78rem; display: block;">Total Amount:</span>
-                                    <strong style="color: var(--maroon); font-size: 1.1rem;">£{{ number_format($order->grand_total, 2) }}</strong>
+                                    <span style="color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px;">Total Amount:</span>
+                                    <strong style="color: var(--maroon); font-size: 1.15rem; font-weight: 800;">£{{ number_format($order->grand_total, 2) }}</strong>
                                 </div>
                             </div>
 
                             <!-- Action Buttons -->
-                            <div style="display: flex; gap: 8px; border-top: 1px solid var(--cream-dark); padding-top: 12px;">
-                                <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm" style="flex: 1; text-align: center; justify-content: center; border-radius: 20px; padding: 8px;">
+                            <div style="display: flex; gap: 10px; border-top: 1px solid var(--cream-dark); padding-top: 14px;">
+                                <a href="{{ route('account.orders.details', $order->order_number) }}" class="btn btn-outline btn-sm" style="flex: 1; text-align: center; justify-content: center; border-radius: 30px; padding: 10px; font-weight: 600; font-size: 0.9rem;">
                                     <i class="fa-solid fa-eye me-1"></i> Details
                                 </a>
                                 <form action="{{ route('account.orders.repeat', $order->order_number) }}" method="POST" style="flex: 1; margin: 0;">
                                     @csrf
-                                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; justify-content: center; border-radius: 20px; padding: 8px; font-weight: 600;">
+                                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; justify-content: center; border-radius: 30px; padding: 10px; font-weight: 600; font-size: 0.9rem;">
                                         <i class="fa-solid fa-rotate-right me-1"></i> Repeat
                                     </button>
                                 </form>

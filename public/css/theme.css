@@ -1105,13 +1105,15 @@ a {
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
-        gap: 10px !important;
+        gap: 8px !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        padding: 10px 12px !important;
-        border-radius: 24px !important;
-        margin-bottom: 16px !important;
+        padding: 8px 10px !important;
+        border-radius: 50px !important;
+        margin-bottom: 18px !important;
         scrollbar-width: none !important;
+        background: var(--white) !important;
+        border: 1px solid var(--cream-dark) !important;
     }
     .account-nav-wrapper::-webkit-scrollbar {
         display: none !important;
@@ -1120,10 +1122,10 @@ a {
     .account-nav-pill {
         flex: 0 0 auto !important;
         white-space: nowrap !important;
-        padding: 10px 18px !important;
+        padding: 9px 18px !important;
         font-size: 0.85rem !important;
-        border-radius: 30px !important;
-        background: rgba(230, 126, 34, 0.08);
+        border-radius: 50px !important;
+        background: rgba(137, 15, 20, 0.05);
         color: var(--maroon);
         width: auto !important;
     }
@@ -1131,6 +1133,7 @@ a {
     .account-nav-pill.active {
         background: var(--maroon) !important;
         color: var(--white) !important;
+        box-shadow: 0 4px 12px rgba(137, 15, 20, 0.25) !important;
     }
 
     /* Account Stats Grid on Mobile: 1 Column Vertical Stack */
