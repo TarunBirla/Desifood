@@ -48,8 +48,7 @@ class CustomerAccountController extends Controller
 
     public function addresses()
     {
-        $addresses = Address::where('user_id', Auth::id())->get();
-        return view('account.addresses', compact('addresses'));
+        return redirect()->route('account.dashboard');
     }
 
     public function storeAddress(Request $request)

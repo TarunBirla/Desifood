@@ -91,8 +91,8 @@
     </div>
 
     <!-- Send Email Notification Modal Box -->
-    <div x-show="showModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px;" x-cloak>
-        <div @click.away="showModal = false" style="background: var(--white); border-radius: 24px; width: 100%; max-width: 540px; padding: 32px; box-shadow: var(--shadow-lg); border: 1px solid var(--cream-dark);">
+    <div x-show="showModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 999999; padding: 20px;" x-cloak>
+        <div @click.away="showModal = false" style="background: var(--white); border-radius: 24px; width: 100%; max-width: 540px; padding: 32px; box-shadow: var(--shadow-lg); border: 1px solid var(--cream-dark); margin: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--cream-dark); padding-bottom: 12px;">
                 <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--maroon); margin: 0;">
                     <i class="fa-solid fa-paper-plane me-2" style="color: var(--saffron);"></i> Send Direct Email Notification
