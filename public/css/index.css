@@ -779,6 +779,13 @@ a {
     box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15);
 }
 
+.admin-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
 /* ==========================================================================
    COMPREHENSIVE RESPONSIVE DESIGN SYSTEM (Mobile, Tablet, Laptop, Desktop)
    ========================================================================== */
