@@ -23,6 +23,10 @@ class AdminOrderController extends Controller
             $query->where('payment_status', $request->payment_status);
         }
 
+        if ($request->has('order_type') && $request->order_type && $request->order_type !== 'all') {
+            $query->where('order_type', $request->order_type);
+        }
+
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {

@@ -19,16 +19,25 @@
     @endif
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
-        <form action="{{ route('admin.orders.index') }}" method="GET" style="display: flex; gap: 12px; margin: 0;">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Order #, Customer Name, Email..." style="padding: 10px 18px; border: 1px solid var(--cream-dark); border-radius: 30px; width: 340px; outline: none; font-size: 0.92rem;">
+        <form action="{{ route('admin.orders.index') }}" method="GET" style="display: flex; gap: 12px; margin: 0; flex-wrap: wrap;">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Order #, Customer Name, Email..." style="padding: 10px 18px; border: 1px solid var(--cream-dark); border-radius: 30px; width: 320px; outline: none; font-size: 0.92rem;">
+            
+            <select name="order_type" onchange="this.form.submit()" style="padding: 10px 18px; border: 1px solid var(--cream-dark); border-radius: 30px; outline: none; font-size: 0.92rem; background: var(--white); font-weight: 600; color: var(--maroon);">
+                <option value="all">All Order Types</option>
+                <option value="normal" {{ request('order_type') == 'normal' ? 'selected' : '' }}>Standard Orders</option>
+                <option value="repeat" {{ request('order_type') == 'repeat' ? 'selected' : '' }}>Repeat Orders</option>
+                <option value="recurring" {{ request('order_type') == 'recurring' ? 'selected' : '' }}>Next-Month Recurring</option>
+            </select>
+
             <select name="status" onchange="this.form.submit()" style="padding: 10px 18px; border: 1px solid var(--cream-dark); border-radius: 30px; outline: none; font-size: 0.92rem; background: var(--white);">
-                <option value="">All Order Statuses</option>
+                <option value="">All Statuses</option>
                 <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                 <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
                 <option value="packed" {{ request('status') == 'packed' ? 'selected' : '' }}>Packed</option>
                 <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>Shipped</option>
                 <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>Delivered</option>
             </select>
+
             <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 30px; padding: 0 20px;">Filter</button>
         </form>
     </div>
@@ -40,6 +49,7 @@
                     <tr>
                         <th>Order #</th>
                         <th>Customer Name & Email</th>
+                        <th>Order Type</th>
                         <th>Grand Total</th>
                         <th>Order Status</th>
                         <th>Payment</th>
@@ -57,6 +67,21 @@
                                     <div style="font-size: 0.82rem; color: var(--charcoal-light);">{{ $order->user->email }}</div>
                                 @else
                                     <span style="color: var(--muted);">Guest User</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($order->order_type === 'repeat')
+                                    <span class="badge-status" style="background: rgba(230,126,34,0.15); color: var(--saffron-deep); font-weight: 700; padding: 6px 12px; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-rotate-right me-1"></i> Repeat Order
+                                    </span>
+                                @elseif($order->order_type === 'recurring')
+                                    <span class="badge-status" style="background: rgba(46,125,50,0.15); color: #2E7D32; font-weight: 700; padding: 6px 12px; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-calendar-check me-1"></i> Next-Month Recurring
+                                    </span>
+                                @else
+                                    <span class="badge-status" style="background: rgba(137,15,20,0.08); color: var(--maroon); font-weight: 700; padding: 6px 12px; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-cart-shopping me-1"></i> Standard Order
+                                    </span>
                                 @endif
                             </td>
                             <td style="font-weight: 800; color: var(--maroon); font-size: 1.05rem;">£{{ number_format($order->grand_total, 2) }}</td>
@@ -81,7 +106,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--muted);">No orders found.</td>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: var(--muted);">No orders found.</td>
                         </tr>
                     @endforelse
                 </tbody>
