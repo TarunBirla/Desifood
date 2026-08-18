@@ -860,7 +860,7 @@ a {
 
 /* Mobile Portrait & Mobile Landscape (up to 767px) */
 @media (max-width: 767px) {
-    /* Header Responsive Layout: Logo & Action Controls only */
+    /* Header Responsive Layout: Hide Wishlist & Order History on Mobile */
     .header-main-row {
         flex-wrap: nowrap !important;
         justify-content: space-between !important;
@@ -870,18 +870,22 @@ a {
     .header-search-wrap {
         display: none !important; /* Hide search bar on mobile screens as requested */
     }
-    .header-action-controls {
-        gap: 6px !important;
+    .header-icon-wishlist,
+    .header-icon-orders {
+        display: none !important; /* Hide Wishlist and Order History icons on mobile as requested */
     }
-    .header-action-controls a {
-        width: 35px !important;
-        height: 35px !important;
-        font-size: 1.05rem !important;
+    .header-action-controls {
+        gap: 8px !important;
+    }
+    .header-icon-cart {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1.1rem !important;
     }
     .user-dropdown-btn {
         padding: 0 !important;
-        width: 35px !important;
-        height: 35px !important;
+        width: 36px !important;
+        height: 36px !important;
         border-radius: 50% !important;
         display: inline-flex !important;
         align-items: center !important;
@@ -889,6 +893,11 @@ a {
     }
     .header-user-name, .header-chevron {
         display: none !important;
+    }
+    .user-dropdown-menu {
+        right: 0 !important;
+        width: 190px !important;
+        max-width: 80vw !important;
     }
 
     .newsletter-form {

@@ -75,7 +75,7 @@
 
                 @auth
                     <!-- Wishlist Icon with Dynamic Badge Counter -->
-                    <a href="{{ route('account.wishlist') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Wishlist"
+                    <a href="{{ route('account.wishlist') }}" class="header-icon-wishlist" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Wishlist"
                        onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-regular fa-heart"></i>
                         @php
@@ -85,7 +85,7 @@
                     </a>
 
                     <!-- Cart Icon with Dynamic Counter -->
-                    <a href="{{ route('cart.index') }}" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Shopping Cart"
+                    <a href="{{ route('cart.index') }}" class="header-icon-cart" style="position: relative; color: var(--maroon); font-size: 1.3rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Shopping Cart"
                        onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-solid fa-basket-shopping"></i>
                         @php
@@ -95,7 +95,7 @@
                     </a>
 
                     <!-- Order History Direct Icon -->
-                    <a href="{{ route('account.orders') }}" style="position: relative; color: var(--maroon); font-size: 1.25rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Order History"
+                    <a href="{{ route('account.orders') }}" class="header-icon-orders" style="position: relative; color: var(--maroon); font-size: 1.25rem; text-decoration: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(230, 126, 34, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Order History"
                        onmouseover="this.style.background='var(--saffron)'; this.style.color='var(--white)';" onmouseout="this.style.background='rgba(230, 126, 34, 0.08)'; this.style.color='var(--maroon)';">
                         <i class="fa-solid fa-box"></i>
                     </a>
@@ -106,7 +106,7 @@
                             <span class="header-user-name">{{ auth()->user()->name }}</span>
                             <i class="fa-solid fa-chevron-down header-chevron" style="font-size: 0.75rem;"></i>
                         </button>
-                        <div x-show="open" @click.away="open = false" 
+                        <div x-show="open" @click.away="open = false" class="user-dropdown-menu"
                              style="position: absolute; right: 0; top: 120%; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 14px; box-shadow: var(--shadow-md); width: 210px; padding: 8px 0; z-index: 1000;" x-cloak>
                             <a href="{{ route('account.dashboard') }}" style="display: block; padding: 10px 18px; color: var(--charcoal-light); font-size: 0.9rem; font-weight: 500;">
                                 <i class="fa-solid fa-gauge-high me-2" style="color: var(--saffron);"></i> My Account
