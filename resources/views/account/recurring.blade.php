@@ -15,6 +15,25 @@
         </a>
     </div>
 
+    <!-- Account Sidebar Navigation -->
+    <div class="account-nav-wrapper" style="margin-bottom: 24px;">
+        <a href="{{ route('account.dashboard') }}" class="account-nav-pill">
+            <i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span>
+        </a>
+        <a href="{{ route('account.orders') }}" class="account-nav-pill">
+            <i class="fa-solid fa-box"></i> <span>My Grocery Orders</span>
+        </a>
+        <a href="{{ route('account.recurring') }}" class="account-nav-pill active">
+            <i class="fa-solid fa-repeat"></i> <span>Next-Month Orders</span>
+        </a>
+        <a href="{{ route('account.profile') }}" class="account-nav-pill">
+            <i class="fa-solid fa-user-gear"></i> <span>Profile Details</span>
+        </a>
+        <a href="{{ route('account.wishlist') }}" class="account-nav-pill">
+            <i class="fa-solid fa-heart"></i> <span>Wishlist</span>
+        </a>
+    </div>
+
     <!-- Important Notice Alert -->
     <div style="background: rgba(230,126,34,0.08); border-left: 4px solid var(--saffron); border-radius: 12px; padding: 16px 20px; margin-bottom: 32px;">
         <div style="display: flex; gap: 12px; align-items: flex-start;">
