@@ -166,7 +166,7 @@
 </section>
 
 <!-- Categories Section (Top 8 on Homepage) -->
-<section style="padding: 80px 24px; background: linear-gradient(180deg, var(--cream) 0%, var(--cream-warm) 100%);" id="categories">
+<!-- <section style="padding: 80px 24px; background: linear-gradient(180deg, var(--cream) 0%, var(--cream-warm) 100%);" id="categories">
     <div class="section-header">
         <div class="section-label">Browse By</div>
         <h2 class="section-title">Top Food Categories</h2>
@@ -198,13 +198,12 @@
         @endforeach
     </div>
 
-    <!-- View All Categories CTA -->
     <div style="text-align: center; margin-top: 40px;">
         <a href="{{ route('categories.index') }}" class="btn btn-primary" style="padding: 12px 32px; display: inline-flex; align-items: center; gap: 8px;">
             <span>View All Food Categories</span> <i class="fa-solid fa-arrow-right"></i>
         </a>
     </div>
-</section>
+</section> -->
 
 <!-- Featured Products Section (Top 8 on Homepage) -->
 <section style="padding: 80px 24px; background: var(--white);" id="products" x-data="{ activeTab: 'all' }">

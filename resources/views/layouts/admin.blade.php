@@ -27,7 +27,7 @@
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="brand" style="padding: 20px 24px;">
-                <img src="{{ asset('images/logo-light.svg') }}" alt="Desi Foods Logo" style="height: 46px; width: auto; object-fit: contain;">
+                <img src="{{ asset('images/logo.jpeg') }}" alt="Desi Foods Logo" style="height: 46px; width: auto; object-fit: contain;">
             </div>
             <ul class="admin-menu">
                 <li class="admin-menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -54,7 +54,7 @@
                         <span>Analytics & Reports</span>
                     </a>
                 </li>
-                <li class="admin-menu-item {{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
+                <!-- <li class="admin-menu-item {{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
                     <a href="{{ route('admin.reviews.index') }}">
                         <i class="fa-solid fa-star" style="font-size: 1.1rem; width: 22px;"></i>
                         <span>Customer Reviews</span>
@@ -101,11 +101,11 @@
                         <i class="fa-solid fa-user-gear" style="font-size: 1.1rem; width: 22px;"></i>
                         <span>Admin Profile</span>
                     </a>
-                </li>
+                </li> -->
                 @php
                     $unreadNotiCount = \App\Models\AdminNotification::where('is_read', false)->count();
                 @endphp
-                <li class="admin-menu-item {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}">
+                <!-- <li class="admin-menu-item {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}">
                     <a href="{{ route('admin.notifications.index') }}" style="display: flex; align-items: center; justify-content: space-between;">
                         <span style="display: flex; align-items: center; gap: 10px;">
                             <i class="fa-solid fa-bell" style="font-size: 1.1rem; width: 22px;"></i>
@@ -115,7 +115,7 @@
                             <span class="badge-status badge-danger" style="font-size: 0.72rem; padding: 2px 7px; border-radius: 10px;">{{ $unreadNotiCount }}</span>
                         @endif
                     </a>
-                </li>
+                </li> -->
                 <li class="admin-menu-item {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
                     <a href="{{ route('admin.settings.index') }}">
                         <i class="fa-solid fa-gear" style="font-size: 1.1rem; width: 22px;"></i>
