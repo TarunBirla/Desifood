@@ -32,7 +32,7 @@
    
 
     <!-- Sticky Main Header Navigation -->
-    <header style="position: sticky; top: 0; z-index: 9999; background-color: rgba(255, 248, 240, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
+    <header class="site-header" style="position: sticky !important; position: -webkit-sticky !important; top: 0 !important; z-index: 99999 !important; background-color: rgba(255, 248, 240, 0.98) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border-bottom: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
         <div class="header-main-row" style="max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 20px;">
             
             <!-- Logo Section -->
