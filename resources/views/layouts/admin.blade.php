@@ -84,6 +84,18 @@
                         <span>Subscribers</span>
                     </a>
                 </li>
+                <li class="admin-menu-item {{ request()->routeIs('admin.faqs*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.faqs.index') }}">
+                        <i class="fa-solid fa-circle-question" style="font-size: 1.1rem; width: 22px;"></i>
+                        <span>FAQ Manager</span>
+                    </a>
+                </li>
+                <li class="admin-menu-item {{ request()->routeIs('admin.pages*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.pages.index') }}">
+                        <i class="fa-solid fa-file-signature" style="font-size: 1.1rem; width: 22px;"></i>
+                        <span>Terms & Privacy</span>
+                    </a>
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.profile*') ? 'active' : '' }}">
                     <a href="{{ route('admin.profile') }}">
                         <i class="fa-solid fa-user-gear" style="font-size: 1.1rem; width: 22px;"></i>

@@ -80,6 +80,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/account/review', [CustomerAccountController::class, 'submitReview'])->name('account.review.submit');
 });
 
+// Public Content & CMS Pages
+Route::get('/faqs', [\App\Http\Controllers\PageController::class, 'faqs'])->name('faqs');
+Route::get('/terms-and-conditions', [\App\Http\Controllers\PageController::class, 'terms'])->name('terms');
+Route::get('/privacy-policy', [\App\Http\Controllers\PageController::class, 'privacy'])->name('privacy');
+
 // Admin Protected Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -113,6 +118,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/subscribers', [AdminCustomerController::class, 'subscribers'])->name('subscribers.index');
     Route::delete('/subscribers/{id}', [AdminCustomerController::class, 'deleteSubscriber'])->name('subscribers.destroy');
+
+    // Admin FAQs & CMS Pages
+    Route::get('/faqs', [\App\Http\Controllers\Admin\AdminFaqController::class, 'index'])->name('faqs.index');
+    Route::post('/faqs', [\App\Http\Controllers\Admin\AdminFaqController::class, 'store'])->name('faqs.store');
+    Route::put('/faqs/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('faqs.update');
+    Route::delete('/faqs/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('faqs.destroy');
+
+    Route::get('/pages', [\App\Http\Controllers\Admin\AdminPageController::class, 'index'])->name('pages.index');
+    Route::post('/pages', [\App\Http\Controllers\Admin\AdminPageController::class, 'update'])->name('pages.update');
 
     // Admin Reports & Analytics Suite
     Route::get('/reports', [\App\Http\Controllers\Admin\AdminReportController::class, 'index'])->name('reports.index');

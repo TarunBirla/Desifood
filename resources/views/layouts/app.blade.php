@@ -221,9 +221,10 @@
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.75);">
                     <li><a href="{{ route('categories.index') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> All Food Categories</a></li>
                     <li><a href="{{ route('products.index') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Full Grocery Catalog</a></li>
+                    <li><a href="{{ route('faqs') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Customer FAQs</a></li>
+                    <li><a href="{{ route('terms') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Terms & Conditions</a></li>
+                    <li><a href="{{ route('privacy') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Privacy Policy</a></li>
                     <li><a href="{{ route('blog.index') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Indian Recipes & Blog</a></li>
-                    <li><a href="{{ route('account.orders') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Track Your Order</a></li>
-                    <li><a href="{{ route('account.wishlist') }}" style="color: inherit;"><i class="fa-solid fa-angle-right me-1" style="font-size: 0.75rem; color: var(--saffron);"></i> Saved Wishlist</a></li>
                 </ul>
             </div>
 

@@ -86,7 +86,7 @@
             </div>
 
             <!-- Quantity Selector & AJAX Add to Cart Button -->
-            <div style="display: flex; gap: 16px; margin-bottom: 32px; align-items: center;" x-data="{ itemQty: 1 }">
+            <div style="display: flex; gap: 16px; margin-bottom: 32px; align-items: center; flex-wrap: wrap;" x-data="{ itemQty: 1 }">
                 <div style="display: inline-flex; align-items: center; border: 1px solid var(--cream-dark); border-radius: 14px; background: var(--cream); overflow: hidden; height: 50px;">
                     <button type="button" @click="if (itemQty > 1) itemQty--" style="width: 44px; height: 100%; border: none; background: none; font-weight: 700; color: var(--maroon); cursor: pointer; font-size: 1.1rem;">
                         <i class="fa-solid fa-minus"></i>
@@ -97,13 +97,13 @@
                     </button>
                 </div>
 
-                <button type="button" @click="addToCartAjax({{ $product->id }}, itemQty, $event)" class="btn btn-primary" style="flex: 1; height: 50px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;" :disabled="stock <= 0">
+                <button type="button" @click="addToCartAjax({{ $product->id }}, itemQty, $event)" class="btn btn-primary" style="flex: 1; min-width: 220px; height: 50px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 8px;" :disabled="stock <= 0">
                     <i class="fa-solid fa-plus"></i> <span>Add to Shopping Cart</span>
                 </button>
             </div>
 
             <!-- Policy Assurances -->
-            <div style="border-top: 1px solid var(--cream-dark); padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.88rem; color: var(--charcoal-light);">
+            <div style="border-top: 1px solid var(--cream-dark); padding-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; font-size: 0.88rem; color: var(--charcoal-light);">
                 <div><i class="fa-solid fa-shield-halved me-2" style="color: var(--saffron);"></i> 100% Genuine Indian Brand</div>
                 <div><i class="fa-solid fa-square-parking me-2" style="color: var(--saffron);"></i> Free Parking at Store (Whitton Rd)</div>
             </div>

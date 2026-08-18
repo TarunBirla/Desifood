@@ -10,7 +10,7 @@
     <div class="catalog-layout">
         <!-- Account Sidebar -->
         <div style="background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 20px; height: fit-content; box-shadow: var(--shadow-sm);">
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;">
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;" class="account-sidebar-menu">
                 <li><a href="{{ route('account.dashboard') }}" style="display: block; padding: 12px 16px; font-weight: 700; color: var(--maroon); background: rgba(137, 15, 20, 0.08); border-radius: 12px;">Dashboard</a></li>
                 <li><a href="{{ route('account.orders') }}" style="display: block; padding: 12px 16px; color: var(--charcoal-light); font-weight: 500;">My Grocery Orders</a></li>
                 <li><a href="{{ route('account.recurring') }}" style="display: block; padding: 12px 16px; color: var(--saffron-deep); font-weight: 600;"><i class="fa-solid fa-repeat me-1"></i> Next-Month Orders</a></li>

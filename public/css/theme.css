@@ -959,6 +959,48 @@ a {
         overflow-y: auto !important;
     }
 
+    /* Product Details Page Responsiveness */
+    .product-details-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        padding: 20px 16px !important;
+        margin-bottom: 24px !important;
+        border-radius: 18px !important;
+    }
+
+    .product-details-grid > div:first-child > div {
+        height: 300px !important;
+        border-radius: 16px !important;
+    }
+
+    /* Customer Account & Catalog Layouts */
+    .catalog-layout {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* Cart & Checkout Layouts */
+    .cart-layout, .checkout-layout {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+
+    /* Account Sidebar Menu Horizontal Wrapping on Mobile */
+    .account-sidebar-menu {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+    .account-sidebar-menu li {
+        flex: 1 1 auto !important;
+    }
+    .account-sidebar-menu a {
+        text-align: center !important;
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+        border-radius: 10px !important;
+    }
+
     .register-grid-2col {
         grid-template-columns: 1fr !important;
         gap: 10px !important;
