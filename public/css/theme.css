@@ -1013,14 +1013,23 @@ a {
         height: 48px !important;
         font-size: 0.98rem !important;
     }
+}
 
-    /* Customer Account Catalog Layout */
-    .catalog-layout {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
+/* Base Desktop Layouts (>= 768px) */
+.catalog-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+    align-items: start;
+}
 
-/* Account Pill Navigation Bar (Desktop & Mobile) */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+}
+
 .account-nav-wrapper {
     display: flex;
     flex-direction: column;
@@ -1033,6 +1042,7 @@ a {
     padding: 16px;
     box-shadow: var(--shadow-sm);
     height: fit-content;
+    box-sizing: border-box;
 }
 
 .account-nav-pill {
@@ -1046,6 +1056,8 @@ a {
     color: var(--charcoal-light);
     text-decoration: none;
     transition: all 0.2s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .account-nav-pill:hover {
@@ -1060,12 +1072,31 @@ a {
     box-shadow: 0 4px 12px rgba(137, 15, 20, 0.25);
 }
 
-/* Mobile responsive navigation & layout adjustments */
+.desktop-orders-table {
+    display: block;
+}
+.mobile-orders-cards {
+    display: none;
+}
+.cart-desktop-table {
+    display: block;
+}
+.cart-mobile-cards {
+    display: none;
+}
+
+/* Mobile responsive navigation & layout adjustments (< 768px) */
 @media (max-width: 767px) {
     .catalog-layout {
         display: flex !important;
         flex-direction: column !important;
         gap: 16px !important;
+    }
+
+    .cart-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
     }
 
     .account-nav-wrapper {
@@ -1094,6 +1125,7 @@ a {
         border-radius: 30px !important;
         background: rgba(230, 126, 34, 0.08);
         color: var(--maroon);
+        width: auto !important;
     }
     
     .account-nav-pill.active {
@@ -1144,13 +1176,6 @@ a {
     .mobile-orders-cards {
         display: flex !important;
     }
-
-    /* Shopping Cart Layout & Summary Box Fixes */
-    .cart-layout {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
-
     .cart-desktop-table {
         display: none !important;
     }
