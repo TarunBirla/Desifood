@@ -22,7 +22,7 @@
         <!-- Dashboard Content -->
         <div>
             <!-- Stats -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
+            <div class="account-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
                 <div class="stat-card">
                     <span class="label">Total Orders Placed</span>
                     <div class="value">{{ $totalOrdersCount }}</div>
@@ -51,7 +51,7 @@
                     <tbody>
                         @foreach($recentOrders as $order)
                             <tr>
-                                <td style="font-weight: 700; color: var(--maroon);">{{ $order->order_number }}</td>
+                                <td style="font-weight: 700; color: var(--maroon); white-space: nowrap; font-family: monospace;">{{ $order->order_number }}</td>
                                 <td>{{ $order->created_at->format('d M Y') }}</td>
                                 <td><span class="badge-status badge-info">{{ ucfirst($order->order_status) }}</span></td>
                                 <td><span class="badge-status {{ $order->payment_status == 'paid' ? 'badge-success' : 'badge-warning' }}">{{ strtoupper($order->payment_status) }}</span></td>

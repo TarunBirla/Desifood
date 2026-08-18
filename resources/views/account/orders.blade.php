@@ -43,7 +43,7 @@
                     <tbody>
                         @foreach($orders as $order)
                             <tr>
-                                <td style="font-weight: 700; color: var(--maroon);">{{ $order->order_number }}</td>
+                                <td style="font-weight: 700; color: var(--maroon); white-space: nowrap; font-family: monospace;">{{ $order->order_number }}</td>
                                 <td>{{ $order->created_at->format('d M Y') }}</td>
                                 <td>
                                     @if($order->order_type === 'repeat')
