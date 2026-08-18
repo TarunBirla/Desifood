@@ -77,6 +77,8 @@ Route::middleware(['auth'])->group(function () {
 // Admin Protected Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [AdminDashboardController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AdminDashboardController::class, 'updateProfile'])->name('profile.update');
 
     // Admin Products & Inventory
     Route::resource('products', AdminProductController::class);
