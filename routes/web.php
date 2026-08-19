@@ -128,6 +128,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/pages', [\App\Http\Controllers\Admin\AdminPageController::class, 'index'])->name('pages.index');
     Route::post('/pages', [\App\Http\Controllers\Admin\AdminPageController::class, 'update'])->name('pages.update');
 
+    // Admin Customer Testimonials Management
+    Route::resource('testimonials', \App\Http\Controllers\Admin\AdminTestimonialController::class);
+
     // Admin Notification Center
     Route::get('/notifications', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'markAsRead'])->name('notifications.read');

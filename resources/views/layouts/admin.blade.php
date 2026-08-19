@@ -54,7 +54,7 @@
                         <span>Analytics & Reports</span>
                     </a>
                 </li>
-                <!-- <li class="admin-menu-item {{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
+                <li class="admin-menu-item {{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
                     <a href="{{ route('admin.reviews.index') }}">
                         <i class="fa-solid fa-star" style="font-size: 1.1rem; width: 22px;"></i>
                         <span>Customer Reviews</span>
@@ -96,16 +96,22 @@
                         <span>Terms & Privacy</span>
                     </a>
                 </li>
+                <li class="admin-menu-item {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.testimonials.index') }}">
+                        <i class="fa-solid fa-quote-left" style="font-size: 1.1rem; width: 22px;"></i>
+                        <span>Testimonials</span>
+                    </a>
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.profile*') ? 'active' : '' }}">
                     <a href="{{ route('admin.profile') }}">
                         <i class="fa-solid fa-user-gear" style="font-size: 1.1rem; width: 22px;"></i>
                         <span>Admin Profile</span>
                     </a>
-                </li> -->
+                </li>
                 @php
                     $unreadNotiCount = \App\Models\AdminNotification::where('is_read', false)->count();
                 @endphp
-                <!-- <li class="admin-menu-item {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}">
+                <li class="admin-menu-item {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}">
                     <a href="{{ route('admin.notifications.index') }}" style="display: flex; align-items: center; justify-content: space-between;">
                         <span style="display: flex; align-items: center; gap: 10px;">
                             <i class="fa-solid fa-bell" style="font-size: 1.1rem; width: 22px;"></i>
@@ -115,7 +121,7 @@
                             <span class="badge-status badge-danger" style="font-size: 0.72rem; padding: 2px 7px; border-radius: 10px;">{{ $unreadNotiCount }}</span>
                         @endif
                     </a>
-                </li> -->
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
                     <a href="{{ route('admin.settings.index') }}">
                         <i class="fa-solid fa-gear" style="font-size: 1.1rem; width: 22px;"></i>

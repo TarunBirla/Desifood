@@ -117,7 +117,7 @@ class ProductCatalogController extends Controller
             return response()->json([]);
         }
 
-        $products = Product::with(['primaryImage', 'category', 'brand'])
+        $products = Product::with(['primaryImage', 'images', 'category', 'brand'])
             ->where('is_active', true)
             ->where(function ($q) use ($term) {
                 $q->where('name', 'like', "%{$term}%")
@@ -126,12 +126,24 @@ class ProductCatalogController extends Controller
             ->take(8)
             ->get()
             ->map(function ($p) {
-                $imgPath = asset('images/placeholder.jpg');
-                if ($p->primaryImage && $p->primaryImage->image_path) {
-                    $imgPath = str_starts_with($p->primaryImage->image_path, 'http')
-                        ? $p->primaryImage->image_path
-                        : asset('storage/' . $p->primaryImage->image_path);
+                $imageObj = $p->primaryImage ?? $p->images->first();
+                $imgPath = 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800';
+
+                if ($imageObj && $imageObj->image_path) {
+                    $rawPath = $imageObj->image_path;
+                    if (str_starts_with($rawPath, 'http://') || str_starts_with($rawPath, 'https://')) {
+                        $imgPath = $rawPath;
+                    } elseif (str_starts_with($rawPath, '/uploads/') || str_starts_with($rawPath, 'uploads/')) {
+                        $imgPath = asset(ltrim($rawPath, '/'));
+                    } elseif (str_starts_with($rawPath, '/storage/') || str_starts_with($rawPath, 'storage/')) {
+                        $imgPath = asset(ltrim($rawPath, '/'));
+                    } elseif (str_starts_with($rawPath, '/images/') || str_starts_with($rawPath, 'images/')) {
+                        $imgPath = asset(ltrim($rawPath, '/'));
+                    } else {
+                        $imgPath = asset('storage/' . ltrim($rawPath, '/'));
+                    }
                 }
+
                 return [
                     'id' => $p->id,
                     'name' => $p->name,

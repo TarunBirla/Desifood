@@ -22,7 +22,7 @@
                    x-model="query" 
                    @input.debounce.300ms="fetchSuggestions()" 
                    @keydown.escape="showDropdown = false"
-                   placeholder="🔍 Forgot something? Search and add items directly to your takeaway order (e.g. Samosas, Basmati Rice, Sweets)..." 
+                   placeholder="Forgot something? Search and add items directly to your takeaway order (e.g. Samosas, Basmati Rice, Sweets)..." 
                    style="width: 100%; box-sizing: border-box; padding: 14px 18px 14px 48px; border-radius: 50px; border: 2px solid var(--cream-dark); background: var(--white); font-size: 0.98rem; outline: none; box-shadow: var(--shadow-sm); transition: border-color 0.2s;"
                    onfocus="this.style.borderColor='var(--saffron)'"
                    onblur="this.style.borderColor='var(--cream-dark)'">
@@ -44,7 +44,7 @@
                     
                     <!-- Product Image & Details -->
                     <div style="display: flex; align-items: center; gap: 14px; flex: 1;">
-                        <img :src="prod.image" style="width: 52px; height: 52px; object-fit: cover; border-radius: 12px; border: 1px solid var(--cream-dark); flex-shrink: 0;">
+                        <img :src="prod.image" style="width: 52px; height: 52px; object-fit: cover; border-radius: 12px; border: 1px solid var(--cream-dark); flex-shrink: 0;" onerror="this.src='https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800'">
                         <div>
                             <a :href="prod.url" target="_blank" style="font-weight: 700; color: var(--maroon); font-size: 0.95rem; text-decoration: none; display: block; line-height: 1.3;" x-text="prod.name"></a>
                             <div style="font-size: 0.78rem; color: var(--saffron-deep); font-weight: 600;" x-text="prod.brand"></div>
