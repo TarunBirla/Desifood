@@ -45,4 +45,21 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Report or log an exception.
+     *
+     * @param Throwable $e
+     * @return void
+     *
+     * @throws Throwable
+     */
+    public function report(Throwable $e): void
+    {
+        if ($this->shouldReport($e)) {
+            \App\Services\ErrorLoggerService::log($e);
+        }
+
+        parent::report($e);
+    }
 }
