@@ -39,6 +39,6 @@
     </tbody>
 </table>
 
-<div style="margin-top: 24px;">{{ $blogs->links() }}</div>
+<div style="margin-top: 24px;">{{ $blogs->links('vendor.pagination.custom') }}</div>
 
 @endsection

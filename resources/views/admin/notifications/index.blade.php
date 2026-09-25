@@ -96,7 +96,7 @@
             </div>
 
             <div style="padding: 16px 24px;">
-                {{ $notifications->links() }}
+                {{ $notifications->links('vendor.pagination.custom') }}
             </div>
         @else
             <div style="padding: 60px 20px; text-align: center;">

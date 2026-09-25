@@ -124,7 +124,7 @@
         </div>
 
         <div style="padding: 16px 24px;">
-            {{ $testimonials->links() }}
+            {{ $testimonials->links('vendor.pagination.custom') }}
         </div>
     </div>
 

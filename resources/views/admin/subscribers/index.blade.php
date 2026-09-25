@@ -69,7 +69,7 @@
 
     @if($subscribers->hasPages())
         <div style="padding: 16px 20px; border-top: 1px solid var(--cream-dark);">
-            {{ $subscribers->links() }}
+            {{ $subscribers->links('vendor.pagination.custom') }}
         </div>
     @endif
 </div>

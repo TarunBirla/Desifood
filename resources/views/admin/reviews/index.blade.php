@@ -67,6 +67,6 @@
     </tbody>
 </table>
 
-<div style="margin-top: 24px;">{{ $reviews->links() }}</div>
+<div style="margin-top: 24px;">{{ $reviews->links('vendor.pagination.custom') }}</div>
 
 @endsection

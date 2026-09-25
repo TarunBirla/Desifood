@@ -12,7 +12,7 @@ class AdminBlogController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::with('category')->latest()->paginate(15);
+        $blogs = Blog::with('category')->latest()->paginate(15)->withQueryString();
         return view('admin.blogs.index', compact('blogs'));
     }
 

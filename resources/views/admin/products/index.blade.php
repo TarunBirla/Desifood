@@ -62,6 +62,6 @@
     </tbody>
 </table>
 
-<div style="margin-top: 24px;">{{ $products->links() }}</div>
+<div style="margin-top: 24px;">{{ $products->links('vendor.pagination.custom') }}</div>
 
 @endsection

@@ -16,7 +16,7 @@ class AdminReviewController extends Controller
             $query->where('status', $request->status);
         }
 
-        $reviews = $query->latest()->paginate(15);
+        $reviews = $query->latest()->paginate(20)->withQueryString();
         return view('admin.reviews.index', compact('reviews'));
     }
 

@@ -20,7 +20,7 @@ class AdminCustomerController extends Controller
                   ->orWhere('phone', 'like', "%{$request->search}%");
         }
 
-        $customers = $query->latest()->paginate(15);
+        $customers = $query->latest()->paginate(20)->withQueryString();
         return view('admin.customers.index', compact('customers'));
     }
 
@@ -39,7 +39,7 @@ class AdminCustomerController extends Controller
         if ($request->has('search') && $request->search) {
             $query->where('email', 'like', "%{$request->search}%");
         }
-        $subscribers = $query->latest()->paginate(20);
+        $subscribers = $query->latest()->paginate(20)->withQueryString();
         return view('admin.subscribers.index', compact('subscribers'));
     }
 

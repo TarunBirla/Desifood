@@ -107,7 +107,7 @@
         </div>
 
         <div style="padding: 16px 24px; border-top: 1px solid var(--cream-dark);">
-            {{ $topCustomers->links() }}
+            {{ $topCustomers->links('vendor.pagination.custom') }}
         </div>
     </div>
 </div>

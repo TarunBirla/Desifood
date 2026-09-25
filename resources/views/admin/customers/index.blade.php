@@ -86,7 +86,7 @@
         </div>
 
         <div style="padding: 16px 24px; border-top: 1px solid var(--cream-dark);">
-            {{ $customers->links() }}
+            {{ $customers->links('vendor.pagination.custom') }}
         </div>
     </div>
 
