@@ -32,12 +32,49 @@ class ProductImportController extends Controller
         set_time_limit(0);
         ini_set('memory_limit', '512M');
 
-        $filePath = storage_path('app/imports/products.xlsx');
-        if (!file_exists($filePath)) {
+        $candidatePaths = [
+            storage_path('app/imports/products.xlsx'),
+            storage_path('app/imports/Products.xlsx'),
+            storage_path('app/imports/products.XLSX'),
+            storage_path('app/products.xlsx'),
+            storage_path('imports/products.xlsx'),
+            base_path('storage/app/imports/products.xlsx'),
+            base_path('products.xlsx'),
+        ];
+
+        $filePath = null;
+        foreach ($candidatePaths as $candidate) {
+            if (file_exists($candidate)) {
+                $filePath = $candidate;
+                break;
+            }
+        }
+
+        // Case-insensitive search in storage/app/imports directory
+        if (!$filePath) {
+            $importsDir = storage_path('app/imports');
+            if (is_dir($importsDir)) {
+                $files = scandir($importsDir);
+                foreach ($files as $file) {
+                    if (strtolower($file) === 'products.xlsx') {
+                        $filePath = $importsDir . '/' . $file;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!$filePath) {
+            $appFiles = is_dir(storage_path('app')) ? array_values(array_diff(scandir(storage_path('app')), ['.', '..'])) : [];
+            $importsFiles = is_dir(storage_path('app/imports')) ? array_values(array_diff(scandir(storage_path('app/imports')), ['.', '..'])) : [];
+
             return response()->json([
                 'status' => 'error',
-                'message' => "Excel file not found at: {$filePath}. Please ensure 'storage/app/imports/products.xlsx' is present."
-            ], 404);
+                'message' => "Excel file missing on server at: /home/nextecki/desifoods/storage/app/imports/products.xlsx",
+                'instructions' => "Aapko cPanel File Manager me '/home/nextecki/desifoods/storage/app/' ke andar 'imports' folder bana kar usme 'products.xlsx' upload karna hai.",
+                'server_storage_app_contents' => $appFiles,
+                'server_storage_app_imports_contents' => $importsFiles,
+            ], 404, [], JSON_PRETTY_PRINT);
         }
 
         $startTime = microtime(true);
