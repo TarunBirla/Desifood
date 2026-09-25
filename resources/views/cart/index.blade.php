@@ -13,7 +13,7 @@
             'name' => $i->product->name,
             'slug' => $i->product->slug,
             'brand' => $i->product->brand ? $i->product->brand->name : 'Desi Foods',
-            'image' => $i->variant && $i->variant->image ? $i->variant->image : ($i->product->primaryImage ? $i->product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800'),
+            'image' => $i->variant && $i->variant->image ? $i->variant->image : ($i->product->primaryImage ? $i->product->primaryImage->image_path : asset('images/default-product.svg')),
             'price' => (float)$i->unit_price,
             'qty' => (int)$i->quantity,
             'subtotal' => (float)$i->subtotal,
@@ -53,7 +53,7 @@
                     
                     <!-- Product Image & Details -->
                     <div style="display: flex; align-items: center; gap: 14px; flex: 1;">
-                        <img :src="prod.image" style="width: 52px; height: 52px; object-fit: cover; border-radius: 12px; border: 1px solid var(--cream-dark); flex-shrink: 0;" onerror="this.src='https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800'">
+                        <img :src="prod.image" style="width: 52px; height: 52px; object-fit: cover; border-radius: 12px; border: 1px solid var(--cream-dark); flex-shrink: 0;" onerror="this.src='{{ asset('images/default-product.svg') }}'">
                         <div>
                             <a :href="prod.url" target="_blank" style="font-weight: 700; color: var(--maroon); font-size: 0.95rem; text-decoration: none; display: block; line-height: 1.3;" x-text="prod.name"></a>
                             <div style="font-size: 0.78rem; color: var(--saffron-deep); font-weight: 600;" x-text="prod.brand"></div>

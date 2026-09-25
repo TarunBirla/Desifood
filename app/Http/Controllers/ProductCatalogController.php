@@ -127,7 +127,7 @@ class ProductCatalogController extends Controller
             ->get()
             ->map(function ($p) {
                 $imageObj = $p->primaryImage ?? $p->images->first();
-                $imgPath = 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800';
+                $imgPath = asset('images/default-product.svg');
 
                 if ($imageObj && $imageObj->image_path) {
                     $rawPath = $imageObj->image_path;

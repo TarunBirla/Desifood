@@ -47,7 +47,7 @@
                                 </form>
 
                                 <a href="{{ route('products.show', $product->slug) }}" class="media-wrapper" style="display: block;">
-                                    <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }}" alt="{{ $product->name }}">
+                                    <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : asset('images/default-product.svg') }}" onerror="this.src='{{ asset('images/default-product.svg') }}'" alt="{{ $product->name }}">
                                 </a>
 
                                 <div class="content">

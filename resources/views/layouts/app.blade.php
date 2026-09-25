@@ -59,7 +59,7 @@
                     <template x-for="item in results" :key="item.slug">
                         <a :href="item.url" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--cream-dark); text-decoration: none; transition: background 0.2s;"
                            onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
-                            <img :src="item.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=100'" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
+                            <img :src="item.image || '{{ asset('images/default-product.svg') }}'" onerror="this.src='{{ asset('images/default-product.svg') }}'" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
                             <div>
                                 <div style="font-weight: 600; color: var(--maroon); font-size: 0.92rem;" x-text="item.name"></div>
                                 <div style="font-size: 0.78rem; color: var(--saffron-deep); font-weight: 500;" x-text="item.category + ' • ' + item.price"></div>

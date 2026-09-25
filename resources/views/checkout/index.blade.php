@@ -154,11 +154,11 @@
                         @foreach($cart->items as $item)
                             @php
                                 $price = $item->variant ? $item->variant->effective_price : $item->product->effective_price;
-                                $img = $item->variant && $item->variant->image ? $item->variant->image : ($item->product->primaryImage ? $item->product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800');
+                                $img = $item->variant && $item->variant->image ? $item->variant->image : ($item->product->primaryImage ? $item->product->primaryImage->image_path : asset('images/default-product.svg'));
                             @endphp
                             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <img src="{{ $img }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--cream-dark);">
+                                    <img src="{{ $img }}" onerror="this.src='{{ asset('images/default-product.svg') }}'" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--cream-dark);">
                                     <div>
                                         <div style="font-weight: 600; color: var(--maroon); line-height: 1.2;">{{ $item->product->name }}</div>
                                         <div style="font-size: 0.78rem; color: var(--saffron-deep);">Qty: {{ $item->quantity }}</div>

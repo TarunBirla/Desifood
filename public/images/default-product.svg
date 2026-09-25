@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <rect width="500" height="500" fill="#FAF7F2" rx="20"/>
+  <circle cx="250" cy="200" r="85" fill="#890F14" opacity="0.06"/>
+  
+  <!-- Grocery Basket / Shopping Bag Icon -->
+  <path d="M185 275 H315 L300 185 H200 Z" fill="none" stroke="#890F14" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M215 185 C215 145, 285 145, 285 185" fill="none" stroke="#E67E22" stroke-width="7" stroke-linecap="round"/>
+  
+  <!-- Center Star/Sparkle -->
+  <path d="M250 215 L253 226 L264 229 L253 232 L250 243 L247 232 L236 229 L247 226 Z" fill="#E67E22"/>
+  
+  <!-- Brand Text -->
+  <text x="250" y="335" font-family="'Playfair Display', serif" font-size="22" font-weight="700" fill="#890F14" text-anchor="middle" letter-spacing="1">DESI FOODS</text>
+  <text x="250" y="362" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#E67E22" text-anchor="middle" letter-spacing="0.5">HOUNSLOW</text>
+  <text x="250" y="388" font-family="'Inter', sans-serif" font-size="12" font-weight="500" fill="#999999" text-anchor="middle">Product Image Coming Soon</text>
+</svg>

@@ -138,6 +138,12 @@
                         @php
                             $inWishlist = in_array($product->id, $userWishlistProductIds ?? []);
                             $inCart = in_array($product->id, $userCartProductIds ?? []);
+                            
+                            $cardImg = asset('images/default-product.svg');
+                            if ($product->primaryImage && !empty($product->primaryImage->image_path)) {
+                                $rawPath = $product->primaryImage->image_path;
+                                $cardImg = (str_starts_with($rawPath, 'http://') || str_starts_with($rawPath, 'https://')) ? $rawPath : asset(ltrim($rawPath, '/'));
+                            }
                         @endphp
                         <div class="product-card">
                             <!-- Wishlist Toggle Button -->
@@ -146,7 +152,7 @@
                             </button>
 
                             <a href="{{ route('products.show', $product->slug) }}" class="media-wrapper" style="display: block;">
-                                <img src="{{ $product->primaryImage ? $product->primaryImage->image_path : 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }}" alt="{{ $product->name }}">
+                                <img src="{{ $cardImg }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/default-product.svg') }}'">
                             </a>
 
                             <div class="content">

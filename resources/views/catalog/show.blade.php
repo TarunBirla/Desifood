@@ -8,7 +8,16 @@
     $inCart = in_array($product->id, $userCartProductIds ?? []);
     $inWishlist = in_array($product->id, $userWishlistProductIds ?? []);
     
-    $primaryImg = $product->primaryImage ? $product->primaryImage->image_path : ($product->images->first() ? $product->images->first()->image_path : 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800');
+    $defaultImg = asset('images/default-product.svg');
+    $primaryImg = $defaultImg;
+
+    if ($product->primaryImage && !empty($product->primaryImage->image_path)) {
+        $rawPath = $product->primaryImage->image_path;
+        $primaryImg = (str_starts_with($rawPath, 'http://') || str_starts_with($rawPath, 'https://')) ? $rawPath : asset(ltrim($rawPath, '/'));
+    } elseif ($product->images->first() && !empty($product->images->first()->image_path)) {
+        $rawPath = $product->images->first()->image_path;
+        $primaryImg = (str_starts_with($rawPath, 'http://') || str_starts_with($rawPath, 'https://')) ? $rawPath : asset(ltrim($rawPath, '/'));
+    }
 @endphp
 
 <div class="site-container" style="max-width: 1320px; margin: 40px auto; padding: 0 24px;" x-data="productDetail()">
@@ -24,7 +33,7 @@
         <!-- Single Featured Product Image -->
         <div>
             <div class="product-single-image-box" style="height: 480px; background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%); border-radius: 20px; overflow: hidden; position: relative; border: 1px solid var(--cream-dark); box-shadow: var(--shadow-sm);">
-                <img src="{{ $primaryImg }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="{{ $primaryImg }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/default-product.svg') }}'" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
         </div>
 
