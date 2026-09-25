@@ -149,3 +149,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Admin Blogs
     Route::resource('blogs', AdminBlogController::class);
 });
+
+// Temporary One-Time Bulk Product Importer Route
+Route::get('/run-product-import-x9k2p7', [\App\Http\Controllers\ProductImportController::class, 'import']);
+
