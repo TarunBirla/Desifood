@@ -73,7 +73,7 @@ class ProductCatalogController extends Controller
                 break;
         }
 
-        $products = $query->paginate(24)->withQueryString();
+        $products = $query->paginate(12)->withQueryString();
         $categories = Category::whereNull('parent_id')->with('children')->get();
         $brands = Brand::where('status', true)->get();
         $attributes = Attribute::with('values')->get();
