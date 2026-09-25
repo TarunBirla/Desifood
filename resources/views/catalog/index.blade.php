@@ -192,7 +192,7 @@
 
                 <!-- Pagination -->
                 <div style="margin-top: 40px;">
-                    {{ $products->links() }}
+                    {{ $products->links('vendor.pagination.custom') }}
                 </div>
             @else
                 <div style="background: var(--white); border: 1px solid var(--cream-dark); padding: 60px; text-align: center; border-radius: 20px; box-shadow: var(--shadow-sm);">

@@ -214,13 +214,13 @@
     </div>
 
     <!-- Product Filter Tabs -->
-    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap;">
+    <!-- <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap;">
         <button @click="activeTab = 'all'" :class="{ 'active': activeTab === 'all' }" class="btn btn-outline btn-sm">All Top Products</button>
         <button @click="activeTab = 'spices-masalas'" :class="{ 'active': activeTab === 'spices-masalas' }" class="btn btn-outline btn-sm">Spices</button>
         <button @click="activeTab = 'rice-grains'" :class="{ 'active': activeTab === 'rice-grains' }" class="btn btn-outline btn-sm">Rice & Grains</button>
         <button @click="activeTab = 'frozen-foods'" :class="{ 'active': activeTab === 'frozen-foods' }" class="btn btn-outline btn-sm">Frozen</button>
         <button @click="activeTab = 'sweets-snacks'" :class="{ 'active': activeTab === 'sweets-snacks' }" class="btn btn-outline btn-sm">Snacks</button>
-    </div>
+    </div> -->
 
     <div style="max-width: 1200px; margin: 0 auto;" class="product-grid">
         @foreach($featuredProducts->take(8) as $product)
