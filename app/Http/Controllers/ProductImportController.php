@@ -8,7 +8,6 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ProductImportController extends Controller
 {
@@ -110,12 +109,15 @@ class ProductImportController extends Controller
         $existingSkus = Product::pluck('sku')->mapWithKeys(fn($sku) => [$sku => true])->toArray();
         $existingSlugs = Product::pluck('slug')->mapWithKeys(fn($slug) => [$slug => true])->toArray();
 
-        // 6. Read Excel spreadsheet in memory-efficient read-only mode
-        $reader = IOFactory::createReaderForFile($filePath);
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($filePath);
-        $sheet = $spreadsheet->getActiveSheet();
-        $rows = $sheet->toArray();
+        // 6. Read Excel spreadsheet (PhpSpreadsheet or Native zero-dependency fallback)
+        $rows = $this->parseExcelFile($filePath);
+
+        if ($rows === false || empty($rows)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Failed to read Excel file at '{$filePath}'. Please verify the file is a valid .xlsx file."
+            ], 500);
+        }
 
         $totalRows = count($rows);
         $insertedCount = 0;
@@ -225,5 +227,105 @@ class ProductImportController extends Controller
             ],
             'REMINDER' => 'SECURITY NOTICE: Import full complete ho chuka hai. Security purpose ke liye routes/web.php me se is route ko delete ya comment out kar dein.'
         ], 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Read XLSX file using PhpSpreadsheet if available, or native ZipArchive XML parser as fallback.
+     */
+    private function parseExcelFile($filePath)
+    {
+        if (class_exists(\PhpOffice\PhpSpreadsheet\IOFactory::class)) {
+            try {
+                $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filePath);
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($filePath);
+                return $spreadsheet->getActiveSheet()->toArray();
+            } catch (\Throwable $e) {
+                // Fallback to native ZipArchive XML reader below
+            }
+        }
+
+        // Zero-Dependency Native ZipArchive + XMLReader Parser
+        if (!class_exists('\ZipArchive')) {
+            return false;
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($filePath) !== true) {
+            return false;
+        }
+
+        // 1. Shared Strings XML
+        $sharedStrings = [];
+        $sharedStringsXml = $zip->getFromName('xl/sharedStrings.xml');
+        if ($sharedStringsXml !== false) {
+            $xml = @simplexml_load_string($sharedStringsXml);
+            if ($xml && isset($xml->si)) {
+                foreach ($xml->si as $val) {
+                    if (isset($val->t)) {
+                        $sharedStrings[] = (string)$val->t;
+                    } elseif (isset($val->r)) {
+                        $text = '';
+                        foreach ($val->r as $run) {
+                            $text .= (string)$run->t;
+                        }
+                        $sharedStrings[] = $text;
+                    } else {
+                        $sharedStrings[] = (string)$val;
+                    }
+                }
+            }
+        }
+
+        // 2. Sheet1 XML
+        $sheetXml = $zip->getFromName('xl/worksheets/sheet1.xml');
+        $zip->close();
+
+        if ($sheetXml === false) {
+            return false;
+        }
+
+        $xmlReader = new \XMLReader();
+        if (!@$xmlReader->XML($sheetXml)) {
+            return false;
+        }
+
+        $rows = [];
+        $currentRow = [];
+        $currentCellRef = '';
+        $cellType = '';
+
+        while (@$xmlReader->read()) {
+            if ($xmlReader->nodeType == \XMLReader::ELEMENT) {
+                if ($xmlReader->name === 'row') {
+                    $currentRow = [];
+                } elseif ($xmlReader->name === 'c') {
+                    $currentCellRef = $xmlReader->getAttribute('r');
+                    $cellType = $xmlReader->getAttribute('t');
+                } elseif ($xmlReader->name === 'v') {
+                    $val = $xmlReader->readString();
+                    if ($cellType === 's' && isset($sharedStrings[(int)$val])) {
+                        $val = $sharedStrings[(int)$val];
+                    }
+                    
+                    if (preg_match('/([A-Z]+)(\d+)/', $currentCellRef, $matches)) {
+                        $colLetter = $matches[1];
+                        $colIndex = 0;
+                        for ($i = 0; $i < strlen($colLetter); $i++) {
+                            $colIndex = $colIndex * 26 + (ord($colLetter[$i]) - 64);
+                        }
+                        $colIndex -= 1;
+                        $currentRow[$colIndex] = $val;
+                    }
+                }
+            } elseif ($xmlReader->nodeType == \XMLReader::END_ELEMENT && $xmlReader->name === 'row') {
+                if (!empty($currentRow)) {
+                    $rows[] = $currentRow;
+                }
+            }
+        }
+        $xmlReader->close();
+
+        return $rows;
     }
 }
