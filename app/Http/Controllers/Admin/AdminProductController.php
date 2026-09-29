@@ -28,7 +28,7 @@ class AdminProductController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        $products = $query->latest()->paginate(25)->withQueryString();
+        $products = $query->latest()->paginate(10)->withQueryString();
         $categories = Category::all();
 
         return view('admin.products.index', compact('products', 'categories'));
