@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminBlogController;
+use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -91,7 +92,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/profile', [AdminDashboardController::class, 'profile'])->name('profile');
     Route::post('/profile', [AdminDashboardController::class, 'updateProfile'])->name('profile.update');
 
-    // Admin Products & Inventory
+    // Admin Categories, Products & Inventory
+    Route::resource('categories', AdminCategoryController::class);
     Route::resource('products', AdminProductController::class);
     Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
     Route::post('/inventory/adjust', [AdminInventoryController::class, 'adjust'])->name('inventory.adjust');

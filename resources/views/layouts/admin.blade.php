@@ -42,6 +42,12 @@
                         <span>Grocery Orders</span>
                     </a>
                 </li>
+                <li class="admin-menu-item {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.categories.index') }}">
+                        <i class="fa-solid fa-layer-group" style="font-size: 1.1rem; width: 22px;"></i>
+                        <span>Category Manage</span>
+                    </a>
+                </li>
                 <li class="admin-menu-item {{ request()->routeIs('admin.products*') ? 'active' : '' }}">
                     <a href="{{ route('admin.products.index') }}">
                         <i class="fa-solid fa-utensils" style="font-size: 1.1rem; width: 22px;"></i>
