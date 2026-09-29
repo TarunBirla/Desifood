@@ -152,6 +152,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('blogs', AdminBlogController::class);
 });
 
-// Temporary One-Time Bulk Product Importer Route
+// Temporary One-Time Bulk Product Importer & Enricher Routes
 Route::get('/run-product-import-x9k2p7', [\App\Http\Controllers\ProductImportController::class, 'import']);
+Route::get('/run-catalog-enrich-k9x2m4', [\App\Http\Controllers\CatalogEnrichController::class, 'enrich']);
 
