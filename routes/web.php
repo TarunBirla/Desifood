@@ -25,6 +25,11 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+use App\Http\Controllers\ProductImageToolController;
+
+   Route::get('/tools/product-images', [ProductImageToolController::class, 'index']);
+   Route::post('/tools/product-images/run', [ProductImageToolController::class, 'run']);
+
 // Homepage & Catalog
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/newsletter/subscribe', [HomeController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');

@@ -84,62 +84,54 @@ class PopulateProductImagesAndBrands extends Seeder
             ]);
         }
 
-        // 2. High Quality Category Image Mapping
+        // 2. Map category slugs to actual database IDs
+        $slugToId = Category::pluck('id', 'slug')->toArray();
+        $defaultCatId = current($slugToId) ?: 1;
+
         $categoryImages = [
-            1 => [ // Rice, Atta & Grains
-                'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800',
-                'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
-                'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=800',
-                'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800',
-            ],
-            2 => [ // Spices & Masalas
+            'spices-masalas' => [
                 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800',
                 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800',
                 'https://images.unsplash.com/photo-1509358271058-acd01cc9386a?w=800',
                 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800',
             ],
-            3 => [ // Dal, Pulses & Lentils
+            'rice-grains' => [
+                'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800',
+                'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
+                'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=800',
+                'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800',
+            ],
+            'lentils-pulses' => [
                 'https://images.unsplash.com/photo-1515543904379-3d757afe72e3?w=800',
                 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800',
                 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=800',
             ],
-            4 => [ // Snacks & Namkeen
+            'sweets-snacks' => [
                 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800',
                 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800',
                 'https://images.unsplash.com/photo-1621996346565-e3d5d6281270?w=800',
             ],
-            5 => [ // Oils & Cooking Mediums
+            'ghee-oils' => [
                 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800',
                 'https://images.unsplash.com/photo-1620706857397-e172df2856c1?w=800',
             ],
-            6 => [ // Dairy & Ghee
-                'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=800',
-                'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=800',
-            ],
-            7 => [ // Pickles, Chutneys & Sauces
-                'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=800',
-                'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800',
-            ],
-            8 => [ // Tea, Coffee & Beverages
-                'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800',
-                'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800',
-                'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800',
-            ],
-            9 => [ // Ready Meals & Frozen Foods
+            'frozen-foods' => [
                 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800',
                 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=800',
             ],
-            10 => [ // Sweets, Mithai & Desserts
-                'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800',
-                'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=800',
+            'flour-atta' => [
+                'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
             ],
+            'fresh-vegetables' => [
+                'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800',
+            ]
         ];
 
-        // 3. Process all 5,741 products
+        // 3. Process all products
         $updatedProductsCount = 0;
         $addedImagesCount = 0;
 
-        Product::chunk(200, function ($products) use (&$updatedProductsCount, &$addedImagesCount, $brandModels, $categoryImages) {
+        Product::chunk(200, function ($products) use (&$updatedProductsCount, &$addedImagesCount, $brandModels, $slugToId, $defaultCatId, $categoryImages) {
             foreach ($products as $product) {
                 $nameUpper = strtoupper($product->name);
 
@@ -152,33 +144,29 @@ class PopulateProductImagesAndBrands extends Seeder
                     }
                 }
 
-                // Identify Category
-                $matchedCategoryId = $product->category_id ?: 1;
+                // Identify Category Slug
+                $targetSlug = 'spices-masalas';
                 if (preg_match('/MASALA|POWDER|TURMERIC|CHILLI|CORIANDER|CUMIN|GARAM|SPICE|METHI|HING|AMCHUR|SAFFRON/i', $product->name)) {
-                    $matchedCategoryId = 2;
+                    $targetSlug = 'spices-masalas';
                 } elseif (preg_match('/DAL|LENTIL|PULSE|CHANA|RAJMA|MOONG|TOOR|URAD|KABULI|MATAR|PEAS/i', $product->name)) {
-                    $matchedCategoryId = 3;
-                } elseif (preg_match('/RICE|ATTA|FLOUR|POHA|WHEAT|GRAIN|SUJI|MAIDA|BESAN|BASMATI|OATS|CEREAL/i', $product->name)) {
-                    $matchedCategoryId = 1;
-                } elseif (preg_match('/SNACK|NAMKEEN|BHUJIA|BISCUIT|PARLE|CHIPS|SEV|MATHRI|COOKIES|RUSK|PAPAD/i', $product->name)) {
-                    $matchedCategoryId = 4;
+                    $targetSlug = 'lentils-pulses';
+                } elseif (preg_match('/ATTA|FLOUR|SUJI|MAIDA|BESAN/i', $product->name)) {
+                    $targetSlug = 'flour-atta';
+                } elseif (preg_match('/RICE|POHA|WHEAT|GRAIN|BASMATI|OATS|CEREAL/i', $product->name)) {
+                    $targetSlug = 'rice-grains';
+                } elseif (preg_match('/SNACK|NAMKEEN|BHUJIA|BISCUIT|PARLE|CHIPS|SEV|MATHRI|COOKIES|RUSK|PAPAD|GULAB|JAMUN|SWEET|MITHAI|SOAN|RASGULLA|HALWA|LADDU|BARFI|DESSERT/i', $product->name)) {
+                    $targetSlug = 'sweets-snacks';
                 } elseif (preg_match('/OIL|GHEE|MUSTARD|SUNFLOWER|REFINED|SESAME|CANOLA|COCONUT OIL/i', $product->name)) {
-                    if (preg_match('/GHEE|BUTTER/i', $product->name)) {
-                        $matchedCategoryId = 6;
-                    } else {
-                        $matchedCategoryId = 5;
-                    }
+                    $targetSlug = 'ghee-oils';
                 } elseif (preg_match('/MILK|BUTTER|PANEER|CHEESE|CREAM|CURD|YOGURT/i', $product->name)) {
-                    $matchedCategoryId = 6;
-                } elseif (preg_match('/PICKLE|CHUTNEY|SAUCE|PASTE|KETCHUP|ACCHAR|VINEGAR/i', $product->name)) {
-                    $matchedCategoryId = 7;
-                } elseif (preg_match('/TEA|COFFEE|BEVERAGE|JUICE|DRINK|ROOH|SODA|SHARBATH/i', $product->name)) {
-                    $matchedCategoryId = 8;
+                    $targetSlug = 'ghee-oils';
                 } elseif (preg_match('/FROZEN|READY|MEAL|PARATHA|NAAN|SAMOSA|PANEER PALAK/i', $product->name)) {
-                    $matchedCategoryId = 9;
-                } elseif (preg_match('/GULAB|JAMUN|SWEET|MITHAI|SOAN|RASGULLA|HALWA|LADDU|BARFI|DESSERT/i', $product->name)) {
-                    $matchedCategoryId = 10;
+                    $targetSlug = 'frozen-foods';
+                } elseif (preg_match('/VEGETABLE|OKRA|KARELA|ONION|POTATO|TOMATO/i', $product->name)) {
+                    $targetSlug = 'fresh-vegetables';
                 }
+
+                $matchedCategoryId = $slugToId[$targetSlug] ?? $product->category_id ?: $defaultCatId;
 
                 // Update product category & brand if changed
                 if ($product->category_id !== $matchedCategoryId || $product->brand_id !== $matchedBrandId) {
@@ -191,7 +179,7 @@ class PopulateProductImagesAndBrands extends Seeder
 
                 // Check and Add Images in product_images table
                 if ($product->images()->count() === 0) {
-                    $imgsPool = $categoryImages[$matchedCategoryId] ?? $categoryImages[1];
+                    $imgsPool = $categoryImages[$targetSlug] ?? current($categoryImages);
                     $imgUrl = $imgsPool[$product->id % count($imgsPool)];
 
                     ProductImage::create([
