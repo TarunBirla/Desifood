@@ -89,11 +89,26 @@ class ProductImageToolController extends Controller
         foreach ($products as $n => $p) {
             $res = $responses[(string) $n] ?? null;
             $cands = [];
-            if ($res && !($res instanceof \Throwable) && $res->ok()) {
-                foreach ($res->json('images') ?? [] as $img) {
+            $err = null;
+            $raw = 0;
+            if ($res instanceof \Throwable) {
+                $err = 'Search request failed: ' . $res->getMessage();
+            } elseif (!$res) {
+                $err = 'No response from search API';
+            } elseif (!$res->ok()) {
+                $err = 'Search API HTTP ' . $res->status() . ': ' . substr($res->body(), 0, 150);
+            } else {
+                $list = $res->json('images') ?? [];
+                $raw = count($list);
+                foreach ($list as $img) {
                     if (!empty($img['imageUrl']) && $this->allowed($img['imageUrl'])) {
                         $cands[] = $img['imageUrl'];
                     }
+                }
+                if (!$raw) {
+                    $err = 'Search returned 0 results';
+                } elseif (!$cands) {
+                    $err = "Search returned {$raw} results, all filtered out";
                 }
             }
             $cands = array_slice($cands, $offset, 5);
@@ -102,8 +117,14 @@ class ProductImageToolController extends Controller
             if ($dry) {
                 $path = $cands[0] ?? null;
             } else {
+                $dlErr = [];
                 foreach ($cands as $url) {
-                    if ($file = $this->download($url, $p->id, $dest)) {
+                    $file = $this->download($url, $p->id, $dest, $why);
+                    if (!$file) {
+                        $dlErr[] = $why;
+                        continue;
+                    }
+                    if ($file) {
                         $path = '/' . self::DIR . '/' . $file;
                         $now = now();
                         if ($p->image_id) {
@@ -119,7 +140,10 @@ class ProductImageToolController extends Controller
                     }
                 }
             }
-            $items[] = ['id' => $p->id, 'name' => $p->name, 'query' => $queries[$n], 'path' => $path];
+            if (!$path && !$err && !empty($dlErr)) {
+                $err = 'Downloads failed: ' . implode(' | ', array_slice($dlErr, 0, 3));
+            }
+            $items[] = ['id' => $p->id, 'name' => $p->name, 'query' => $queries[$n], 'path' => $path, 'error' => $path ? null : $err];
         }
 
         return response()->json([
@@ -163,7 +187,7 @@ button.alt{background:#e5e9f5;color:#1c2333}button.red{background:#d64545}button
 <div class="card" id="log"></div></div>
 <script>
 const KEY="{$key}",CSRF="{$csrf}",URL_RUN="{$run}";
-let running=false,after=0,done=0,nf=0,start=null;
+let running=false,after=0,done=0,nf=0,start=null,streak=0;
 const \$=id=>document.getElementById(id);
 async function call(body){
   const r=await fetch(URL_RUN+"?key="+encodeURIComponent(KEY),{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF,"Accept":"application/json"},body:JSON.stringify(body)});
@@ -173,7 +197,7 @@ async function call(body){
 function add(it,dry){
   const row=document.createElement("div");row.className="row";row.dataset.id=it.id;
   const img=it.path?'<img src="'+it.path+'">':'<div style="width:56px;height:56px"></div>';
-  row.innerHTML=img+'<div class="t"><b>'+it.name+'</b><small>'+it.query+'</small>'+(it.path?'<small>'+it.path+'</small>':'<span class="fail">not found</span>')+'</div>'
+  row.innerHTML=img+'<div class="t"><b>'+it.name+'</b><small>'+it.query+'</small>'+(it.path?'<small>'+it.path+'</small>':'<span class="fail">not found</span><small style="white-space:normal;color:#d64545">'+(it.error||'')+'</small>')+'</div>'
     +(dry?'':'<button class="alt redo">Redo (next image)</button>');
   const b=row.querySelector(".redo");
   if(b)b.onclick=async()=>{b.disabled=true;b.textContent="...";const n=(+row.dataset.off||0)+1;row.dataset.off=n;
@@ -182,12 +206,13 @@ function add(it,dry){
 }
 async function loop(dry,max){
   running=true;\$("start").disabled=\$("test").disabled=true;\$("stop").disabled=false;
-  start=start||+("{$total}");let batches=0;
+  start=start||+("{$total}");let batches=0;streak=0;
   while(running){
     try{
       const d=await call({after:after,size:5,dry:dry});
       if(d.done){\$("msg").textContent="Finished.";break;}
-      d.items.forEach(i=>{add(i,dry);done++;if(!i.path)nf++;});
+      d.items.forEach(i=>{add(i,dry);done++;if(!i.path){nf++;streak++;}else{streak=0;}});
+      if(streak>=5){\$("msg").textContent="Stopped: 5 failures in a row. Read the red error under the products.";break;}
       after=d.last_id;\$("rem").textContent=d.remaining;\$("done").textContent=done;\$("nf").textContent=nf;
       \$("pb").style.width=Math.min(100,done/start*100)+"%";
       if(dry||(max&&++batches>=max))break;
@@ -212,7 +237,7 @@ HTML);
     private function allowed(string $url): bool
     {
         $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
-        if (!$host || !preg_match('/\.(jpe?g|png|webp)(\?|$)/i', $url)) {
+        if (!$host || !preg_match('#^https?://#i', $url)) {
             return false;
         }
         foreach (self::BLOCKED as $b) {
@@ -223,26 +248,41 @@ HTML);
         return true;
     }
 
-    private function download(string $url, int $productId, string $dest): ?string
+    private function download(string $url, int $productId, string $dest, &$why = null): ?string
     {
+        $host = parse_url($url, PHP_URL_HOST);
         try {
-            $r = Http::timeout(8)->withHeaders(['User-Agent' => 'Mozilla/5.0 (compatible; ProductImageBot/1.0)'])->get($url);
+            $r = Http::timeout(8)->withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36',
+                'Accept' => 'image/avif,image/webp,image/*,*/*;q=0.8',
+            ])->get($url);
             if (!$r->ok()) {
+                $why = "{$host} HTTP " . $r->status();
                 return null;
             }
             $body = $r->body();
             $info = @getimagesizefromstring($body);
-            if (!$info || $info[0] < 200 || $info[1] < 200 || strlen($body) < 5000 || strlen($body) > 4 * 1024 * 1024) {
+            if (!$info) {
+                $why = "{$host} not an image";
+                return null;
+            }
+            if ($info[0] < 200 || $info[1] < 200 || strlen($body) < 5000 || strlen($body) > 4 * 1024 * 1024) {
+                $why = "{$host} bad size {$info[0]}x{$info[1]}, " . strlen($body) . ' bytes';
                 return null;
             }
             $ext = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'][$info[2]] ?? null;
             if (!$ext) {
+                $why = "{$host} unsupported type";
                 return null;
             }
             $file = time() . "_{$productId}_" . substr(md5($url), 0, 6) . ".{$ext}";
-            file_put_contents($dest . '/' . $file, $body);
+            if (@file_put_contents($dest . '/' . $file, $body) === false) {
+                $why = 'cannot write to public/uploads/products (permissions?)';
+                return null;
+            }
             return $file;
         } catch (\Throwable $e) {
+            $why = "{$host} " . substr($e->getMessage(), 0, 80);
             return null;
         }
     }
