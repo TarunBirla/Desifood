@@ -75,7 +75,7 @@ class ProductImageToolController extends Controller
 
         $queries = $products->map(fn ($p) => $this->cleanName($p->name));
         $responses = Http::pool(fn ($pool) => $products->map(
-            fn ($p, $n) => $pool->as((string) $n)->timeout(15)
+            fn ($p, $n) => $pool->as((string) $n)->timeout(20)->withOptions(['force_ip_resolve' => 'v4', 'connect_timeout' => 10])
                 ->withHeaders(['X-API-KEY' => $apiKey])
                 ->post('https://google.serper.dev/images', ['q' => $queries[$n], 'gl' => 'gb', 'num' => 10])
         )->all());
@@ -152,6 +152,29 @@ class ProductImageToolController extends Controller
             'last_id' => $products->last()->id,
             'remaining' => $this->pending()->count(),
         ]);
+    }
+
+    /** GET /tools/product-images/ping?key=...  - checks what this server can reach */
+    public function ping(Request $r)
+    {
+        $this->guard($r);
+        $out = [];
+        $tests = [
+            'serper (default)' => ['https://google.serper.dev', []],
+            'serper (IPv4 forced)' => ['https://google.serper.dev', ['force_ip_resolve' => 'v4']],
+            'example.com (IPv4 forced)' => ['https://example.com', ['force_ip_resolve' => 'v4']],
+            'google.com (IPv4 forced)' => ['https://www.google.com', ['force_ip_resolve' => 'v4']],
+        ];
+        foreach ($tests as $label => [$url, $opt]) {
+            $t = microtime(true);
+            try {
+                $res = Http::timeout(12)->withOptions($opt + ['connect_timeout' => 8])->get($url);
+                $out[] = "OK   {$label}: HTTP " . $res->status() . ' in ' . round(microtime(true) - $t, 1) . 's';
+            } catch (\Throwable $e) {
+                $out[] = "FAIL {$label}: " . substr($e->getMessage(), 0, 120);
+            }
+        }
+        return response(implode("\n", $out), 200, ['Content-Type' => 'text/plain']);
     }
 
     public function index(Request $r)
@@ -252,7 +275,7 @@ HTML);
     {
         $host = parse_url($url, PHP_URL_HOST);
         try {
-            $r = Http::timeout(8)->withHeaders([
+            $r = Http::timeout(10)->withOptions(['force_ip_resolve' => 'v4', 'connect_timeout' => 6])->withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36',
                 'Accept' => 'image/avif,image/webp,image/*,*/*;q=0.8',
             ])->get($url);
