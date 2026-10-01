@@ -1,333 +1,164 @@
 <?php
 
-namespace App\Http\Controllers;
+use App\Http\Controllers\Admin\AdminBlogController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminCouponController;
+use App\Http\Controllers\Admin\AdminCustomerController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminInventoryController;
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminReviewController;
+use App\Http\Controllers\Admin\AdminSettingController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CartWishlistController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CustomerAccountController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductCatalogController;
+use Illuminate\Support\Facades\Route;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
-/**
- * Browser-based bulk product image fetcher (for shared hosting).
- * Open:  /tools/product-images?key=YOUR_IMAGE_TOOL_KEY
- * .env:  SERPER_API_KEY=...   IMAGE_TOOL_KEY=some-long-random-string
- * Remove the routes when the job is finished.
- */
-class ProductImageToolController extends Controller
-{
-    private const PLACEHOLDER = 'images.unsplash.com';
-    private const DIR = 'uploads/products';
-    private const BLOCKED = [
-        'shutterstock', 'alamy', 'gettyimages', 'istockphoto', 'dreamstime',
-        'depositphotos', '123rf', 'adobestock', 'pinterest', 'facebook', 'instagram',
-    ];
+use App\Http\Controllers\ProductImageToolController;
 
-    private function guard(Request $r): void
-    {
-        $k = env('IMAGE_TOOL_KEY');
-        abort_unless($k && hash_equals($k, (string) $r->query('key', $r->header('X-Tool-Key', ''))), 404);
-    }
+   Route::get('/tools/product-images', [ProductImageToolController::class, 'index']);
+   Route::post('/tools/product-images/run', [ProductImageToolController::class, 'run']);
+   Route::get('/tools/product-images/ping', [ProductImageToolController::class, 'ping']);
 
-    private function pending()
-    {
-        return DB::table('products as p')
-            ->leftJoin('product_images as i', function ($j) {
-                $j->on('i.product_id', '=', 'p.id')->where('i.is_primary', 1);
-            })
-            ->whereNull('p.deleted_at')
-            ->where(function ($q) {
-                $q->whereNull('i.id')->orWhere('i.image_path', 'like', '%' . self::PLACEHOLDER . '%');
-            });
-    }
+// Homepage & Catalog
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/newsletter/subscribe', [HomeController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
+Route::get('/categories', [ProductCatalogController::class, 'allCategories'])->name('categories.index');
+Route::get('/products', [ProductCatalogController::class, 'index'])->name('products.index');
+Route::get('/products/search', [ProductCatalogController::class, 'liveSearch'])->name('products.search');
+Route::get('/products/{slug}', [ProductCatalogController::class, 'show'])->name('products.show');
 
-    /** POST /tools/product-images/run  {after, size, dry, ids[], offset} */
-    public function run(Request $r)
-    {
-        $this->guard($r);
-        @set_time_limit(120);
+// Blog Routes
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
-        $provider = env('SEARCH_PROVIDER', 'serper');   // serper | google
-        $relay = env('SERPER_RELAY_URL');               // optional: Cloudflare Worker that forwards to Serper
-        $apiKey = env('SERPER_API_KEY');
-        if ($provider === 'google' && (!env('GOOGLE_CSE_KEY') || !env('GOOGLE_CSE_CX'))) {
-            return response()->json(['error' => 'GOOGLE_CSE_KEY / GOOGLE_CSE_CX missing in .env'], 500);
-        }
-        if ($provider === 'serper' && !$apiKey && !$relay) {
-            return response()->json(['error' => 'SERPER_API_KEY missing in .env'], 500);
-        }
+// Cart Routes
+Route::get('/cart', [CartWishlistController::class, 'viewCart'])->name('cart.index');
+Route::post('/cart/add', [CartWishlistController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/update/{id}', [CartWishlistController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/remove/{id}', [CartWishlistController::class, 'removeCartItem'])->name('cart.remove');
+Route::post('/cart/recurring-toggle', [CartWishlistController::class, 'toggleRecurringPreference'])->name('cart.recurring.toggle');
 
-        $size = min(10, max(1, (int) $r->input('size', 5)));
-        $dry = (bool) $r->input('dry', false);
-        $offset = max(0, (int) $r->input('offset', 0));
+// Authentication Routes
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        $q = DB::table('products as p')
-            ->leftJoin('product_images as i', function ($j) {
-                $j->on('i.product_id', '=', 'p.id')->where('i.is_primary', 1);
-            })
-            ->select('p.id', 'p.name', 'i.id as image_id')
-            ->orderBy('p.id');
+// Customer Protected Routes
+Route::middleware(['auth'])->group(function () {
+    // Checkout Flow
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/coupon/verify', [CheckoutController::class, 'verifyCoupon'])->name('checkout.coupon.verify');
+    Route::post('/checkout/place', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
+    Route::post('/checkout/payment/verify', [CheckoutController::class, 'verifyPayment'])->name('checkout.payment.verify');
+    Route::get('/checkout/confirmation/{order_number}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
 
-        if ($ids = $r->input('ids')) {
-            $q->whereIn('p.id', array_map('intval', (array) $ids));      // redo specific products
-        } else {
-            $q = $this->pending()->select('p.id', 'p.name', 'i.id as image_id')->orderBy('p.id')
-                ->where('p.id', '>', (int) $r->input('after', 0))->limit($size);
-        }
+    // Customer Account & History
+    Route::get('/account', [CustomerAccountController::class, 'dashboard'])->name('account.dashboard');
+    Route::get('/account/orders', [CustomerAccountController::class, 'orders'])->name('account.orders');
+    Route::get('/account/orders/{order_number}', [CustomerAccountController::class, 'orderDetails'])->name('account.orders.details');
+    Route::post('/account/orders/{order_number}/repeat', [CustomerAccountController::class, 'repeatOrder'])->name('account.orders.repeat');
+    Route::get('/account/recurring', [CustomerAccountController::class, 'recurringOrders'])->name('account.recurring');
+    Route::post('/account/recurring/{id}/update', [CustomerAccountController::class, 'updateRecurringOrder'])->name('account.recurring.update');
+    Route::delete('/account/recurring/{id}', [CustomerAccountController::class, 'deleteRecurringOrder'])->name('account.recurring.delete');
+    Route::post('/account/recurring/checkout', [CustomerAccountController::class, 'checkoutRecurringOrder'])->name('account.recurring.checkout');
+    Route::post('/account/orders/{order_number}/return', [CustomerAccountController::class, 'requestReturn'])->name('account.orders.return');
+    Route::get('/account/invoice/{order_number}', [CustomerAccountController::class, 'downloadInvoice'])->name('account.invoice.download');
+    Route::get('/account/profile', [CustomerAccountController::class, 'profile'])->name('account.profile');
+    Route::post('/account/profile', [CustomerAccountController::class, 'updateProfile'])->name('account.profile.update');
+    Route::get('/account/addresses', [CustomerAccountController::class, 'addresses'])->name('account.addresses');
+    Route::post('/account/addresses', [CustomerAccountController::class, 'storeAddress'])->name('account.addresses.store');
+    Route::post('/account/addresses/{id}/delete', [CustomerAccountController::class, 'deleteAddress'])->name('account.addresses.delete');
+    Route::get('/account/wishlist', [CartWishlistController::class, 'viewWishlist'])->name('account.wishlist');
+    Route::post('/account/wishlist/toggle', [CartWishlistController::class, 'toggleWishlist'])->name('account.wishlist.toggle');
+    Route::post('/account/review', [CustomerAccountController::class, 'submitReview'])->name('account.review.submit');
+});
 
-        $products = $q->get()->values();
-        if ($products->isEmpty()) {
-            return response()->json(['done' => true, 'items' => [], 'remaining' => 0]);
-        }
+// Public Content & CMS Pages
+Route::get('/faqs', [\App\Http\Controllers\PageController::class, 'faqs'])->name('faqs');
+Route::get('/terms-and-conditions', [\App\Http\Controllers\PageController::class, 'terms'])->name('terms');
+Route::get('/privacy-policy', [\App\Http\Controllers\PageController::class, 'privacy'])->name('privacy');
 
-        $queries = $products->map(fn ($p) => $this->cleanName($p->name));
-        $responses = Http::pool(function ($pool) use ($products, $queries, $provider, $apiKey, $relay) {
-            return $products->map(function ($p, $n) use ($pool, $queries, $provider, $apiKey, $relay) {
-                $req = $pool->as((string) $n)->timeout(20)
-                    ->withOptions(['force_ip_resolve' => 'v4', 'connect_timeout' => 10]);
-                if ($provider === 'google') {
-                    return $req->get('https://www.googleapis.com/customsearch/v1', [
-                        'key' => env('GOOGLE_CSE_KEY'), 'cx' => env('GOOGLE_CSE_CX'),
-                        'q' => $queries[$n], 'searchType' => 'image', 'num' => 10, 'gl' => 'uk',
-                    ]);
-                }
-                if ($relay) {
-                    return $req->withHeaders(['X-Relay-Secret' => (string) env('SERPER_RELAY_SECRET')])
-                        ->post($relay, ['q' => $queries[$n], 'gl' => 'gb', 'num' => 10]);
-                }
-                return $req->withHeaders(['X-API-KEY' => $apiKey])
-                    ->post('https://google.serper.dev/images', ['q' => $queries[$n], 'gl' => 'gb', 'num' => 10]);
-            })->all();
-        });
+// Admin Protected Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [AdminDashboardController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AdminDashboardController::class, 'updateProfile'])->name('profile.update');
 
-        $dest = public_path(self::DIR);
-        if (!is_dir($dest)) {
-            mkdir($dest, 0775, true);
-        }
+    // Admin Categories, Products & Inventory
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('products', AdminProductController::class);
+    Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory/adjust', [AdminInventoryController::class, 'adjust'])->name('inventory.adjust');
 
-        $items = [];
-        foreach ($products as $n => $p) {
-            $res = $responses[(string) $n] ?? null;
-            $cands = [];
-            $err = null;
-            $raw = 0;
-            if ($res instanceof \Throwable) {
-                $err = 'Search request failed: ' . $res->getMessage();
-            } elseif (!$res) {
-                $err = 'No response from search API';
-            } elseif (!$res->ok()) {
-                $err = 'Search API HTTP ' . $res->status() . ': ' . substr($res->body(), 0, 150);
-            } else {
-                $list = $provider === 'google' ? ($res->json('items') ?? []) : ($res->json('images') ?? []);
-                $raw = count($list);
-                foreach ($list as $img) {
-                    $u = $provider === 'google' ? ($img['link'] ?? null) : ($img['imageUrl'] ?? null);
-                    if ($u && $this->allowed($u)) {
-                        $cands[] = $u;
-                    }
-                }
-                if (!$raw) {
-                    $err = 'Search returned 0 results';
-                } elseif (!$cands) {
-                    $err = "Search returned {$raw} results, all filtered out";
-                }
-            }
-            $cands = array_slice($cands, $offset, 5);
+    // Admin Orders & Status Management
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 
-            $path = null;
-            if ($dry) {
-                $path = $cands[0] ?? null;
-            } else {
-                $dlErr = [];
-                foreach ($cands as $url) {
-                    $file = $this->download($url, $p->id, $dest, $why);
-                    if (!$file) {
-                        $dlErr[] = $why;
-                        continue;
-                    }
-                    if ($file) {
-                        $path = '/' . self::DIR . '/' . $file;
-                        $now = now();
-                        if ($p->image_id) {
-                            DB::table('product_images')->where('id', $p->image_id)
-                                ->update(['image_path' => $path, 'updated_at' => $now]);
-                        } else {
-                            DB::table('product_images')->insert([
-                                'product_id' => $p->id, 'image_path' => $path, 'is_primary' => 1,
-                                'sort_order' => 0, 'created_at' => $now, 'updated_at' => $now,
-                            ]);
-                        }
-                        break;
-                    }
-                }
-            }
-            if (!$path && !$err && !empty($dlErr)) {
-                $err = 'Downloads failed: ' . implode(' | ', array_slice($dlErr, 0, 3));
-            }
-            $items[] = ['id' => $p->id, 'name' => $p->name, 'query' => $queries[$n], 'path' => $path, 'error' => $path ? null : $err];
-        }
+    // Admin Reviews Moderation
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews/{id}/update-status', [AdminReviewController::class, 'updateStatus'])->name('reviews.update-status');
+    Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 
-        return response()->json([
-            'done' => false,
-            'items' => $items,
-            'last_id' => $products->last()->id,
-            'remaining' => $this->pending()->count(),
-        ]);
-    }
+    // Admin Coupons & Discounts
+    Route::get('/coupons', [AdminCouponController::class, 'index'])->name('coupons.index');
+    Route::post('/coupons', [AdminCouponController::class, 'store'])->name('coupons.store');
+    Route::delete('/coupons/{coupon}', [AdminCouponController::class, 'destroy'])->name('coupons.destroy');
 
-    /** GET /tools/product-images/ping?key=...  - checks what this server can reach */
-    public function ping(Request $r)
-    {
-        $this->guard($r);
-        $out = [];
-        $tests = [
-            'googleapis.com (IPv4 forced)' => ['https://www.googleapis.com/discovery/v1/apis', ['force_ip_resolve' => 'v4']],
-            'relay (SERPER_RELAY_URL)' => [env('SERPER_RELAY_URL') ?: 'https://example.com', ['force_ip_resolve' => 'v4']],
-            'serper (default)' => ['https://google.serper.dev', []],
-            'serper (IPv4 forced)' => ['https://google.serper.dev', ['force_ip_resolve' => 'v4']],
-            'example.com (IPv4 forced)' => ['https://example.com', ['force_ip_resolve' => 'v4']],
-            'google.com (IPv4 forced)' => ['https://www.google.com', ['force_ip_resolve' => 'v4']],
-        ];
-        foreach ($tests as $label => [$url, $opt]) {
-            $t = microtime(true);
-            try {
-                $res = Http::timeout(12)->withOptions($opt + ['connect_timeout' => 8])->get($url);
-                $out[] = "OK   {$label}: HTTP " . $res->status() . ' in ' . round(microtime(true) - $t, 1) . 's';
-            } catch (\Throwable $e) {
-                $out[] = "FAIL {$label}: " . substr($e->getMessage(), 0, 120);
-            }
-        }
-        return response(implode("\n", $out), 200, ['Content-Type' => 'text/plain']);
-    }
+    // Admin Customers, Subscribers & Settings
+    Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
+    Route::post('/customers/{id}/block', [AdminCustomerController::class, 'toggleBlock'])->name('customers.block');
+    Route::post('/customers/{id}/send-notification', [AdminCustomerController::class, 'sendNotification'])->name('customers.notify');
 
-    public function index(Request $r)
-    {
-        $this->guard($r);
-        $key = e($r->query('key'));
-        $total = $this->pending()->count();
-        $csrf = csrf_token();
-        $run = url('/tools/product-images/run');
+    Route::get('/subscribers', [AdminCustomerController::class, 'subscribers'])->name('subscribers.index');
+    Route::delete('/subscribers/{id}', [AdminCustomerController::class, 'deleteSubscriber'])->name('subscribers.destroy');
 
-        return response(<<<HTML
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Product Image Tool</title>
-<style>
-body{font-family:system-ui,sans-serif;margin:0;background:#f4f6fb;color:#1c2333}
-.wrap{max-width:980px;margin:24px auto;padding:0 16px}
-.card{background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px #0001;margin-bottom:16px}
-button{padding:9px 16px;border:0;border-radius:8px;background:#2f5bea;color:#fff;font-weight:600;cursor:pointer;margin-right:6px}
-button.alt{background:#e5e9f5;color:#1c2333}button.red{background:#d64545}button:disabled{opacity:.5}
-.bar{height:10px;background:#e5e9f5;border-radius:6px;overflow:hidden;margin:12px 0}.bar div{height:100%;background:#2f5bea;width:0}
-.row{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid #eef0f6}
-.row img{width:56px;height:56px;object-fit:contain;background:#f4f6fb;border-radius:6px}
-.row .t{flex:1;min-width:0}.row small{color:#6b7488;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fail{color:#d64545;font-weight:600}
-</style></head><body><div class="wrap">
-<div class="card"><h2 style="margin-top:0">Product Image Tool</h2>
-<p>Products still needing an image: <b id="rem">{$total}</b> &nbsp; Processed this session: <b id="done">0</b> &nbsp; Not found: <b id="nf">0</b></p>
-<div class="bar"><div id="pb"></div></div>
-<button id="test" class="alt">Test 5 (no save)</button>
-<button id="start">Start</button>
-<button id="stop" class="red" disabled>Stop</button>
-<span id="msg" style="margin-left:8px"></span></div>
-<div class="card" id="log"></div></div>
-<script>
-const KEY="{$key}",CSRF="{$csrf}",URL_RUN="{$run}";
-let running=false,after=0,done=0,nf=0,start=null,streak=0;
-const \$=id=>document.getElementById(id);
-async function call(body){
-  const r=await fetch(URL_RUN+"?key="+encodeURIComponent(KEY),{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":CSRF,"Accept":"application/json"},body:JSON.stringify(body)});
-  if(!r.ok)throw new Error("HTTP "+r.status+" "+(await r.text()).slice(0,200));
-  return r.json();
-}
-function add(it,dry){
-  const row=document.createElement("div");row.className="row";row.dataset.id=it.id;
-  const img=it.path?'<img src="'+it.path+'">':'<div style="width:56px;height:56px"></div>';
-  row.innerHTML=img+'<div class="t"><b>'+it.name+'</b><small>'+it.query+'</small>'+(it.path?'<small>'+it.path+'</small>':'<span class="fail">not found</span><small style="white-space:normal;color:#d64545">'+(it.error||'')+'</small>')+'</div>'
-    +(dry?'':'<button class="alt redo">Redo (next image)</button>');
-  const b=row.querySelector(".redo");
-  if(b)b.onclick=async()=>{b.disabled=true;b.textContent="...";const n=(+row.dataset.off||0)+1;row.dataset.off=n;
-    try{const d=await call({ids:[it.id],offset:n});const x=d.items[0];if(x&&x.path){row.querySelector("img")&&(row.querySelector("img").src=x.path+"?"+Date.now());b.textContent="Redo (next image)";}else{b.textContent="no more";}}catch(e){b.textContent="error"}b.disabled=false;};
-  \$("log").prepend(row);
-}
-async function loop(dry,max){
-  running=true;\$("start").disabled=\$("test").disabled=true;\$("stop").disabled=false;
-  start=start||+("{$total}");let batches=0;streak=0;
-  while(running){
-    try{
-      const d=await call({after:after,size:5,dry:dry});
-      if(d.done){\$("msg").textContent="Finished.";break;}
-      d.items.forEach(i=>{add(i,dry);done++;if(!i.path){nf++;streak++;}else{streak=0;}});
-      if(streak>=5){\$("msg").textContent="Stopped: 5 failures in a row. Read the red error under the products.";break;}
-      after=d.last_id;\$("rem").textContent=d.remaining;\$("done").textContent=done;\$("nf").textContent=nf;
-      \$("pb").style.width=Math.min(100,done/start*100)+"%";
-      if(dry||(max&&++batches>=max))break;
-    }catch(e){\$("msg").textContent="Error: "+e.message+" - retrying in 10s";await new Promise(r=>setTimeout(r,10000));}
-  }
-  if(dry)after=0;
-  running=false;\$("start").disabled=\$("test").disabled=false;\$("stop").disabled=true;
-}
-\$("start").onclick=()=>{\$("msg").textContent="";loop(false)};
-\$("test").onclick=()=>{\$("msg").textContent="";loop(true)};
-\$("stop").onclick=()=>{running=false;\$("msg").textContent="Stopping after current batch..."};
-</script></body></html>
-HTML);
-    }
+    // Admin FAQs & CMS Pages
+    Route::get('/faqs', [\App\Http\Controllers\Admin\AdminFaqController::class, 'index'])->name('faqs.index');
+    Route::post('/faqs', [\App\Http\Controllers\Admin\AdminFaqController::class, 'store'])->name('faqs.store');
+    Route::put('/faqs/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('faqs.update');
+    Route::delete('/faqs/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('faqs.destroy');
 
-    public function cleanName(string $name): string
-    {
-        $n = preg_replace('/\b(SW)?PM\s?\d+\b/i', '', $name);
-        return preg_replace('/\s+/', ' ', trim($n)) . ' uk grocery product';
-    }
+    Route::get('/pages', [\App\Http\Controllers\Admin\AdminPageController::class, 'index'])->name('pages.index');
+    Route::post('/pages', [\App\Http\Controllers\Admin\AdminPageController::class, 'update'])->name('pages.update');
 
-    private function allowed(string $url): bool
-    {
-        $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
-        if (!$host || !preg_match('#^https?://#i', $url)) {
-            return false;
-        }
-        foreach (self::BLOCKED as $b) {
-            if (str_contains($host, $b)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    // Admin Customer Testimonials Management
+    Route::resource('testimonials', \App\Http\Controllers\Admin\AdminTestimonialController::class);
 
-    private function download(string $url, int $productId, string $dest, &$why = null): ?string
-    {
-        $host = parse_url($url, PHP_URL_HOST);
-        try {
-            $r = Http::timeout(10)->withOptions(['force_ip_resolve' => 'v4', 'connect_timeout' => 6])->withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36',
-                'Accept' => 'image/avif,image/webp,image/*,*/*;q=0.8',
-            ])->get($url);
-            if (!$r->ok()) {
-                $why = "{$host} HTTP " . $r->status();
-                return null;
-            }
-            $body = $r->body();
-            $info = @getimagesizefromstring($body);
-            if (!$info) {
-                $why = "{$host} not an image";
-                return null;
-            }
-            if ($info[0] < 200 || $info[1] < 200 || strlen($body) < 5000 || strlen($body) > 4 * 1024 * 1024) {
-                $why = "{$host} bad size {$info[0]}x{$info[1]}, " . strlen($body) . ' bytes';
-                return null;
-            }
-            $ext = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'][$info[2]] ?? null;
-            if (!$ext) {
-                $why = "{$host} unsupported type";
-                return null;
-            }
-            $file = time() . "_{$productId}_" . substr(md5($url), 0, 6) . ".{$ext}";
-            if (@file_put_contents($dest . '/' . $file, $body) === false) {
-                $why = 'cannot write to public/uploads/products (permissions?)';
-                return null;
-            }
-            return $file;
-        } catch (\Throwable $e) {
-            $why = "{$host} " . substr($e->getMessage(), 0, 80);
-            return null;
-        }
-    }
-}
+    // Admin Notification Center
+    Route::get('/notifications', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications/{id}', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    // Admin Reports & Analytics Suite
+    Route::get('/reports', [\App\Http\Controllers\Admin\AdminReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/top-products', [\App\Http\Controllers\Admin\AdminReportController::class, 'topProducts'])->name('reports.top-products');
+    Route::get('/reports/top-customers', [\App\Http\Controllers\Admin\AdminReportController::class, 'topCustomers'])->name('reports.top-customers');
+    Route::get('/reports/export', [\App\Http\Controllers\Admin\AdminReportController::class, 'exportCsv'])->name('reports.export');
+
+    Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Admin Blogs
+    Route::resource('blogs', AdminBlogController::class);
+});
+
+// Temporary One-Time Bulk Product Importer & Enricher Routes
+Route::get('/run-product-import-x9k2p7', [\App\Http\Controllers\ProductImportController::class, 'import']);
+Route::get('/run-catalog-enrich-k9x2m4', [\App\Http\Controllers\CatalogEnrichController::class, 'enrich']);
+
