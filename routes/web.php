@@ -29,6 +29,7 @@ use App\Http\Controllers\ProductImageToolController;
 
    Route::get('/tools/product-images', [ProductImageToolController::class, 'index']);
    Route::post('/tools/product-images/run', [ProductImageToolController::class, 'run']);
+   Route::get('/tools/product-images/ping', [ProductImageToolController::class, 'ping']);
 
 // Homepage & Catalog
 Route::get('/', [HomeController::class, 'index'])->name('home');
